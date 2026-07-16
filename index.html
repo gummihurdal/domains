@@ -17,6 +17,8 @@
 <meta name="twitter:image" content="https://domains.azurenexus.com/og-card.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0E1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
@@ -714,6 +716,141 @@
 
   .photo-note.err { color: #A23B2E; }
 
+  .photo-strip-head, .photo-month {
+    margin: 2.2rem 0 0.9rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .photo-strip-head::after, .photo-month::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .photo-strip-head { color: var(--accent); }
+
+  .photo-strip {
+    display: flex;
+    gap: 0.8rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.4rem;
+  }
+
+  .photo-strip::-webkit-scrollbar { display: none; }
+
+  .photo-strip figure { flex: 0 0 11rem; margin: 0; }
+
+  .photo-strip img { display: block; width: 100%; height: 8rem; object-fit: cover; outline: 1px solid var(--line); }
+
+  .photo-strip figcaption {
+    margin-top: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .photo-grid figure { position: relative; }
+
+  .fav-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: rgba(14, 18, 26, 0.45);
+    color: rgba(245, 240, 230, 0.85);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.25s ease, background-color 0.25s ease;
+  }
+
+  .fav-btn.on { color: #E36C5B; background: rgba(14, 18, 26, 0.6); }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(10, 12, 20, 0.96);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    touch-action: pan-y;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 96vw;
+    max-height: 86vh;
+    display: block;
+  }
+
+  .lb-cap {
+    position: absolute;
+    left: 0; right: 0; bottom: 1.4rem;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 230, 0.7);
+  }
+
+  .lb-x {
+    position: absolute;
+    top: 0.9rem; right: 0.9rem;
+    width: 2.6rem; height: 2.6rem;
+    border: 1px solid rgba(245,240,230,0.3);
+    background: none;
+    color: rgba(245,240,230,0.85);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .lb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.8rem; height: 3.6rem;
+    border: none;
+    background: rgba(14,18,26,0.4);
+    color: rgba(245,240,230,0.8);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .lb-prev { left: 0.6rem; }
+  .lb-next { right: 0.6rem; }
+  @media (max-width: 720px) { .lb-nav { display: none; } }
+
+  .countdown {
+    margin: 0 0 1.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .countdown b { color: var(--ink); font-weight: 500; }
+
   /* ---------------- reveal ---------------- */
   .reveal { opacity: 0; }
 
@@ -787,6 +924,14 @@
     </div>
   </div>
 </nav>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Photo viewer">
+  <button class="lb-x" id="lb-x" aria-label="Close">✕</button>
+  <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">←</button>
+  <img id="lb-img" alt="">
+  <button class="lb-nav lb-next" id="lb-next" aria-label="Next">→</button>
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
 
 <div class="wrap">
 
@@ -1148,24 +1293,18 @@
     if (e.key === 'Escape') setOpen(false);
   });
 
-  // Photographs: encrypted gallery synced from pCloud
+  // Photographs: encrypted gallery — favourites, on-this-day, timeline, lightbox
   (function(){
     const grid = document.getElementById('photo-grid');
     const unlockRow = document.getElementById('photo-unlock');
     const note = document.getElementById('photo-note');
     const passInput = document.getElementById('photo-pass');
     const openBtn = document.getElementById('photo-open');
-    const PASSKEY = 'cw_photos_pass';
+    const PASSKEY = 'cw_photos_pass', FAVKEY = 'cw_favs';
     const enc = new TextEncoder();
-
-    const figure = (src, cap, w, h) => `<figure>
-      <a href="${src}" target="_blank" rel="noopener">
-        <img src="${src}" alt="${cap}" loading="lazy"${w?` width="${w}" height="${h}"`:''}>
-      </a>
-      <figcaption>${cap}</figcaption>
-    </figure>`;
-
     const esc = t => (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const favs = new Set(JSON.parse(localStorage.getItem(FAVKEY) || '[]'));
+    const blobCache = new Map();
 
     async function deriveKey(password, saltB64, iters){
       const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
@@ -1180,104 +1319,235 @@
       return crypto.subtle.decrypt({name:'AES-GCM', iv: b.slice(0,12)}, key, b.slice(12));
     }
 
-    async function showGallery(m, key){
-      unlockRow.hidden = true; note.hidden = true;
-      // Placeholders first; decrypt each photo only as it approaches the viewport
-      const frag = document.createDocumentFragment();
-      m.photos.forEach((p, i) => {
-        const fig = document.createElement('figure');
-        const ratio = p.w && p.h ? (p.h / p.w * 100) : 66;
-        fig.innerHTML = `<a href="#" rel="noopener" style="position:relative;display:block;padding-top:${ratio}%;background:var(--surface);outline:1px solid var(--line)"></a>
-          <figcaption>${esc(p.caption)}</figcaption>`;
-        fig.dataset.i = i;
-        frag.appendChild(fig);
+    async function fetchClear(key, file, type){
+      if (blobCache.has(file)) return blobCache.get(file);
+      const r = await fetch('photos/' + file);
+      const clear = await decrypt(key, await r.arrayBuffer());
+      const url = URL.createObjectURL(new Blob([clear], {type}));
+      blobCache.set(file, url);
+      return url;
+    }
+
+    const parseDate = p => { const d = new Date(p.created || 0); return isNaN(d) ? null : d; };
+    const idOf = p => p.source_id || p.file;
+
+    /* ---------- lightbox ---------- */
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCap = document.getElementById('lb-cap');
+    let lbList = [], lbIdx = 0, lbKey = null;
+
+    async function lbShow(i){
+      lbIdx = (i + lbList.length) % lbList.length;
+      const p = lbList[lbIdx];
+      lbImg.src = await fetchClear(lbKey, p.file, 'image/jpeg');
+      lbCap.textContent = p.caption || '';
+    }
+    function lbOpen(list, i, key){ lbList = list; lbKey = key; lb.classList.add('open'); document.body.style.overflow='hidden'; lbShow(i); }
+    function lbClose(){ lb.classList.remove('open'); document.body.style.overflow=''; lbImg.src=''; }
+    document.getElementById('lb-x').addEventListener('click', lbClose);
+    document.getElementById('lb-prev').addEventListener('click', () => lbShow(lbIdx-1));
+    document.getElementById('lb-next').addEventListener('click', () => lbShow(lbIdx+1));
+    lb.addEventListener('click', e => { if (e.target === lb) lbClose(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') lbClose();
+      if (e.key === 'ArrowLeft') lbShow(lbIdx-1);
+      if (e.key === 'ArrowRight') lbShow(lbIdx+1);
+    });
+    let tx = null;
+    lb.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+    lb.addEventListener('touchend', e => {
+      if (tx === null) return;
+      const dx = e.changedTouches[0].clientX - tx; tx = null;
+      if (Math.abs(dx) > 45) lbShow(lbIdx + (dx < 0 ? 1 : -1));
+    }, {passive:true});
+
+    /* ---------- figures ---------- */
+    function heartBtn(p){
+      const b = document.createElement('button');
+      b.className = 'fav-btn' + (favs.has(idOf(p)) ? ' on' : '');
+      b.setAttribute('aria-label', 'Favourite');
+      b.textContent = '\u2665';
+      b.addEventListener('click', e => {
+        e.stopPropagation(); e.preventDefault();
+        const id = idOf(p);
+        favs.has(id) ? favs.delete(id) : favs.add(id);
+        localStorage.setItem(FAVKEY, JSON.stringify([...favs]));
+        document.querySelectorAll(`[data-fav-id="${CSS.escape(id)}"] .fav-btn`)
+          .forEach(x => x.classList.toggle('on', favs.has(id)));
+        renderFavStrip();
       });
-      grid.appendChild(frag);
+      return b;
+    }
 
-      const fetchClear = async (file, type) => {
-        const r = await fetch('photos/' + file);
-        const clear = await decrypt(key, await r.arrayBuffer());
-        return URL.createObjectURL(new Blob([clear], {type}));
-      };
+    function makeFigure(p, key, photoList){
+      const fig = document.createElement('figure');
+      fig.dataset.favId = idOf(p);
+      const ratio = p.w && p.h ? (p.h / p.w * 100) : 66;
+      const a = document.createElement('a');
+      a.href = '#'; a.rel = 'noopener';
+      a.style.cssText = `position:relative;display:block;padding-top:${ratio}%;background:var(--surface);outline:1px solid var(--line)`;
+      fig.appendChild(a);
+      fig.appendChild(heartBtn(p));
+      const cap = document.createElement('figcaption');
+      cap.textContent = p.caption || '';
+      fig.appendChild(cap);
 
-      const loadOne = async (fig) => {
-        const p = m.photos[fig.dataset.i];
+      fig._load = async () => {
         try{
-          const a = fig.querySelector('a');
           if (p.type === 'video'){
-            const posterUrl = await fetchClear(p.poster, 'image/jpeg');
+            const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
             a.removeAttribute('style');
-            a.href = '#';
             a.innerHTML = `<span style="position:relative;display:block">
               <img src="${posterUrl}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>
               <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
-              </span>
-            </span>`;
-            a.addEventListener('click', async (e) => {
+              </span></span>`;
+            a.addEventListener('click', async e => {
               e.preventDefault();
               const btn = a.querySelector('span span span');
               if (btn) btn.textContent = 'loading\u2026';
               try{
-                const vUrl = await fetchClear(p.file, 'video/mp4');
+                const vUrl = await fetchClear(key, p.file, 'video/mp4');
                 const v = document.createElement('video');
-                v.controls = true; v.autoplay = true; v.playsInline = true;
-                v.src = vUrl;
+                v.controls = true; v.autoplay = true; v.playsInline = true; v.src = vUrl;
                 v.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
                 a.replaceWith(v);
               }catch(err){ if (btn) btn.textContent = 'could not load'; }
-            }, {once: true});
+            }, {once:true});
           } else if (p.type === 'stream'){
-            const posterUrl = await fetchClear(p.poster, 'image/jpeg');
+            const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
             a.removeAttribute('style');
-            a.href = '#';
             a.innerHTML = `<span style="position:relative;display:block">
               <img src="${posterUrl}" alt="${esc(p.caption)}">
               <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
                 <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
-              </span>
-            </span>`;
-            a.addEventListener('click', async (e) => {
+              </span></span>`;
+            a.addEventListener('click', async e => {
               e.preventDefault();
               const btn = a.querySelector('span span span');
               if (btn) btn.textContent = 'loading\u2026';
               try{
-                const j = await fetch(`https://eapi.pcloud.com/getpubvideolinks?code=${m.pcloud}&fileid=${p.fileid}`).then(r=>r.json());
+                const j = await fetch(`https://eapi.pcloud.com/getpubvideolinks?code=${MANIFEST.pcloud}&fileid=${p.fileid}`).then(r=>r.json());
                 const variants = (j.variants||[]).sort((x,y)=>(x.isoriginal?1:0)-(y.isoriginal?1:0));
                 if (!variants.length) throw new Error('no stream');
                 const v = document.createElement('video');
                 v.controls = true; v.autoplay = true; v.playsInline = true;
                 v.src = 'https://' + variants[0].hosts[0] + variants[0].path;
                 v.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
-                v.onerror = () => window.open(`https://e.pcloud.link/publink/show?code=${m.pcloud}`, '_blank');
+                v.onerror = () => window.open(`https://e.pcloud.link/publink/show?code=${MANIFEST.pcloud}`, '_blank');
                 a.replaceWith(v);
-              }catch(err){
-                window.open(`https://e.pcloud.link/publink/show?code=${m.pcloud}`, '_blank');
-              }
-            }, {once: true});
+              }catch(err){ window.open(`https://e.pcloud.link/publink/show?code=${MANIFEST.pcloud}`, '_blank'); }
+            }, {once:true});
           } else {
-            const url = await fetchClear(p.file, 'image/jpeg');
-            a.href = url; a.target = '_blank';
+            const url = await fetchClear(key, p.file, 'image/jpeg');
             a.removeAttribute('style');
             a.innerHTML = `<img src="${url}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>`;
+            a.addEventListener('click', e => {
+              e.preventDefault();
+              lbOpen(photoList, photoList.indexOf(p), key);
+            });
           }
         }catch(e){ fig.remove(); }
       };
+      return fig;
+    }
 
-      const lazy = new IntersectionObserver((entries) => {
-        entries.forEach(en => {
-          if (en.isIntersecting){ lazy.unobserve(en.target); loadOne(en.target); }
+    const lazy = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting){ lazy.unobserve(en.target); en.target._load && en.target._load(); }
+      });
+    }, { rootMargin: '600px 0px' });
+
+    /* ---------- sections ---------- */
+    let MANIFEST = null, KEY = null;
+    let favWrap = null;
+
+    function stripSection(title, cls){
+      const head = document.createElement('div');
+      head.className = 'photo-strip-head' + (cls ? ' ' + cls : '');
+      head.textContent = title;
+      const strip = document.createElement('div');
+      strip.className = 'photo-strip';
+      const wrap = document.createElement('div');
+      wrap.appendChild(head); wrap.appendChild(strip);
+      return {wrap, strip};
+    }
+
+    function fillStrip(strip, list, photosOnly){
+      strip.innerHTML = '';
+      list.forEach(p => {
+        const fig = makeFigure(p, KEY, photosOnly);
+        strip.appendChild(fig);
+        lazy.observe(fig);
+      });
+    }
+
+    function renderFavStrip(){
+      if (!MANIFEST) return;
+      const favList = MANIFEST.photos.filter(p => favs.has(idOf(p)));
+      const photosOnly = favList.filter(p => !p.type);
+      if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
+      if (!favWrap){
+        const sec = stripSection('Favourites \u2665');
+        favWrap = sec.wrap;
+        grid.parentNode.insertBefore(favWrap, grid.previousSibling && grid.previousSibling.classList && grid.previousSibling.classList.contains('otd') ? grid.previousSibling : grid);
+      }
+      fillStrip(favWrap.querySelector('.photo-strip'), favList, photosOnly);
+    }
+
+    async function showGallery(m, key){
+      MANIFEST = m; KEY = key;
+      unlockRow.hidden = true; note.hidden = true;
+      grid.innerHTML = '';
+
+      const withDates = m.photos.map(p => ({p, d: parseDate(p)}));
+      const today = new Date();
+
+      // On this day — same day of the month, from an earlier month or year
+      const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const otd = withDates.filter(({d}) => d && d.getDate() === today.getDate()
+        && d < startOfToday).map(x => x.p);
+      if (otd.length){
+        const sec = stripSection('On this day');
+        sec.wrap.classList.add('otd');
+        grid.parentNode.insertBefore(sec.wrap, grid);
+        fillStrip(sec.strip, otd, otd.filter(p => !p.type));
+      }
+
+      renderFavStrip();
+
+      // Timeline: newest month first, chronological within month
+      const groups = new Map();
+      withDates.forEach(({p, d}) => {
+        const k = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'undated';
+        if (!groups.has(k)) groups.set(k, {d, list: []});
+        groups.get(k).list.push(p);
+      });
+      const monthName = d => d.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'});
+      const keys = [...groups.keys()].sort().reverse();
+      const allPhotosOnly = m.photos.filter(p => !p.type);
+      keys.forEach(k => {
+        const g = groups.get(k);
+        const head = document.createElement('div');
+        head.className = 'photo-month';
+        head.textContent = g.d ? monthName(g.d) : 'Undated';
+        grid.appendChild(head);
+        head.style.gridColumn = '1 / -1';
+        g.list.forEach(p => {
+          const fig = makeFigure(p, key, allPhotosOnly);
+          grid.appendChild(fig);
+          lazy.observe(fig);
         });
-      }, { rootMargin: '600px 0px' });
-
-      grid.querySelectorAll('figure[data-i]').forEach(f => lazy.observe(f));
+      });
     }
 
     fetch('photos/manifest.json').then(r => r.json()).then(async m => {
-      if (!m || !m.v || !m.photos || !m.photos.length) return;   // nothing synced yet
+      if (!m || !m.v || !m.photos || !m.photos.length) return;
       unlockRow.hidden = false;
       note.hidden = false;
-      note.textContent = m.photos.length + ' more — for the two of us';
+      note.textContent = m.photos.length + ' more \u2014 for the two of us';
 
       async function tryPass(password, silent){
         try{
@@ -1287,17 +1557,30 @@
           await showGallery(m, key);
           return true;
         }catch(e){
-          if (!silent){ note.hidden = false; note.className = 'photo-note err'; note.textContent = 'that\u2019s not it — try again'; }
+          if (!silent){ note.hidden = false; note.className = 'photo-note err'; note.textContent = 'that\u2019s not it \u2014 try again'; }
           return false;
         }
       }
 
       const saved = localStorage.getItem(PASSKEY);
       if (saved) await tryPass(saved, true);
-
       openBtn.addEventListener('click', () => tryPass(passInput.value, false));
       passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryPass(passInput.value, false); });
     }).catch(() => {});
+  })();
+
+  // Wedding countdown — set the date and the line appears
+  (function(){
+    const WEDDING = null;               // e.g. '2026-10-17'
+    const LABEL = 'until the wedding';
+    if (!WEDDING) return;
+    const days = Math.ceil((new Date(WEDDING) - new Date()) / 86400000);
+    if (days <= 0) return;
+    const el = document.createElement('p');
+    el.className = 'countdown';
+    el.innerHTML = `<b>${days}</b> days ${LABEL}`;
+    const foot = document.querySelector('footer');
+    foot.insertBefore(el, foot.firstChild);
   })();
 
   // Nav shadow once it sticks  // Nav shadow once it sticks
