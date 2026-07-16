@@ -1635,7 +1635,7 @@
 
     /* ---------- sections ---------- */
     let MANIFEST = null, KEY = null;
-    let favWrap = null;
+    let favWrap = null, otdWrap = null;
 
     function stripSection(title, cls){
       const head = document.createElement('div');
@@ -1670,7 +1670,7 @@
         const g = document.createElement('div');
         g.className = 'photo-grid';
         favWrap.appendChild(g);
-        grid.parentNode.insertBefore(favWrap, grid);
+        grid.parentNode.insertBefore(favWrap, otdWrap || grid);
       }
       favWrap.querySelector('.photo-strip-head').textContent =
         `Favourites \u2665 \u2014 ${favList.length}`;
@@ -1698,6 +1698,7 @@
       if (otd.length){
         const sec = stripSection('On this day');
         sec.wrap.classList.add('otd');
+        otdWrap = sec.wrap;
         grid.parentNode.insertBefore(sec.wrap, grid);
         fillStrip(sec.strip, otd, otd.filter(p => !p.type));
       }
