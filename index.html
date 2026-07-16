@@ -4,19 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Azurenexus — Collected Work</title>
-<meta name="description" content="Four hand-built sites: The Dragonfly Eye, With You, For the Middle Years, and Bond.">
+<meta name="description" content="Five hand-built sites and one song: The Dragonfly Eye, Grace for Every Day, For the Middle Years, The Foundation, and Bond.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* house palette — shared with midlife + bond */
     --paper: #F5F0E6;
     --surface: #FFFDF7;
+    --night: #0E1628;
     --ink: #2A2520;
     --ink-soft: #5D564C;
     --muted: #938A79;
     --line: #E2D8C4;
+    --song: #B8956A;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,63 +32,62 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  .wrap { max-width: 60rem; margin: 0 auto; padding: 0 2rem; }
+  .wrap { max-width: 58rem; margin: 0 auto; padding: 0 2rem; }
   @media (max-width: 640px) { .wrap { padding: 0 1.4rem; } }
 
   /* ---------------- masthead ---------------- */
   .masthead {
-    padding: 5.5rem 0 3.5rem;
+    padding: 5.5rem 0 3rem;
     border-bottom: 2px solid var(--ink);
   }
 
   .eyebrow {
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.22em;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 2.2rem;
+    margin-bottom: 2rem;
   }
 
   .masthead h1 {
     font-family: 'Fraunces', serif;
     font-variation-settings: 'opsz' 144;
     font-weight: 300;
-    font-size: clamp(2.6rem, 7vw, 4.6rem);
+    font-size: clamp(2.5rem, 7vw, 4.4rem);
     line-height: 1;
     letter-spacing: -0.028em;
-    margin-bottom: 1.6rem;
+    margin-bottom: 1.5rem;
   }
 
   .masthead h1 em { font-style: italic; font-weight: 400; }
 
   .standfirst {
-    font-size: clamp(1.02rem, 2.2vw, 1.2rem);
+    font-size: clamp(1.02rem, 2.2vw, 1.18rem);
     color: var(--ink-soft);
-    max-width: 38rem;
+    max-width: 40rem;
   }
 
-  /* ---------------- meta bar ---------------- */
   .metabar {
     display: flex;
     flex-wrap: wrap;
     gap: 0 2.5rem;
     padding: 1rem 0;
     border-bottom: 1px solid var(--line);
-    font-size: 0.72rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 500;
   }
 
   /* ---------------- entries ---------------- */
   .entry {
     display: grid;
-    grid-template-columns: 3rem 1fr 8.5rem;
+    grid-template-columns: 3rem 1fr 8rem;
     gap: 2rem;
     align-items: start;
-    padding: 3rem 0;
+    padding: 2.8rem 0;
     border-bottom: 1px solid var(--line);
     text-decoration: none;
     color: inherit;
@@ -106,12 +106,11 @@
     outline-offset: 0.4rem;
   }
 
-  /* accent rule — the one flourish, drawn from each site's real palette */
   .entry::before {
     content: '';
     position: absolute;
     left: -1.5rem;
-    top: 3rem;
+    top: 2.8rem;
     width: 2px;
     height: 0;
     background: var(--accent);
@@ -119,16 +118,14 @@
   }
 
   .entry:hover::before,
-  .entry:focus-visible::before { height: calc(100% - 6rem); }
+  .entry:focus-visible::before { height: calc(100% - 5.6rem); }
 
   .num {
-    font-family: 'Fraunces', serif;
-    font-variation-settings: 'opsz' 20;
-    font-size: 0.78rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
     color: var(--muted);
-    padding-top: 0.6rem;
+    padding-top: 0.7rem;
     font-variant-numeric: tabular-nums;
     transition: color 0.4s ease;
   }
@@ -139,10 +136,10 @@
     font-family: 'Fraunces', serif;
     font-variation-settings: 'opsz' 72;
     font-weight: 400;
-    font-size: clamp(1.55rem, 4vw, 2.15rem);
+    font-size: clamp(1.5rem, 4vw, 2.05rem);
     line-height: 1.15;
     letter-spacing: -0.018em;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.35rem;
     transition: color 0.4s ease;
   }
 
@@ -151,48 +148,47 @@
   .subtitle {
     font-style: italic;
     color: var(--ink-soft);
-    font-size: 1rem;
-    margin-bottom: 0.9rem;
+    font-size: 0.98rem;
+    margin-bottom: 0.85rem;
   }
 
   .body p {
     color: var(--ink-soft);
     max-width: 32rem;
-    font-size: 0.97rem;
+    font-size: 0.95rem;
   }
 
   .specs {
-    margin-top: 1.3rem;
+    margin-top: 1.2rem;
     display: flex;
     align-items: center;
-    gap: 1.1rem;
+    gap: 1rem;
     flex-wrap: wrap;
   }
 
-  .swatches { display: flex; gap: 0.3rem; }
+  .swatches { display: flex; gap: 0.28rem; }
 
   .swatch {
-    width: 0.72rem;
-    height: 0.72rem;
+    width: 0.7rem;
+    height: 0.7rem;
     border-radius: 50%;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
   }
 
-  .typeface {
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .domain {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
     color: var(--muted);
-    font-weight: 500;
   }
 
   .go {
     text-align: right;
-    padding-top: 0.55rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+    padding-top: 0.65rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    font-weight: 500;
     color: var(--muted);
     white-space: nowrap;
     transition: color 0.4s ease;
@@ -207,16 +203,99 @@
 
   .entry:hover .go .arrow { transform: translateX(0.3rem); }
 
-  /* ---------------- colophon ---------------- */
-  footer { padding: 4rem 0 5rem; }
+  /* ---------------- the song ---------------- */
+  .song {
+    display: block;
+    text-decoration: none;
+    background: var(--night);
+    color: var(--paper);
+    margin: 3.5rem 0 0;
+    padding: 2.4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .song::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 140% at 85% 50%, rgba(184, 149, 106, 0.18), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .song:hover::after { opacity: 1; }
+
+  .song:focus-visible { outline: 2px solid var(--song); outline-offset: 3px; }
+
+  .song-inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .song-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 230, 0.5);
+    margin-bottom: 0.5rem;
+  }
+
+  .song-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .song-sub {
+    font-size: 0.92rem;
+    color: rgba(245, 240, 230, 0.62);
+    margin-top: 0.45rem;
+    max-width: 26rem;
+  }
+
+  .song-text { flex-grow: 1; }
+
+  .song-play {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid rgba(245, 240, 230, 0.3);
+    padding: 0.75rem 1.2rem;
+    white-space: nowrap;
+    color: var(--paper);
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+  }
+
+  .song:hover .song-play {
+    background: var(--song);
+    border-color: var(--song);
+    color: var(--night);
+  }
+
+  @media (max-width: 620px) {
+    .song { padding: 1.8rem 1.4rem; margin-left: -1.4rem; margin-right: -1.4rem; }
+    .song-inner { flex-wrap: wrap; gap: 1.2rem; }
+  }
+
+  /* ---------------- footer ---------------- */
+  footer { padding: 3.5rem 0 5rem; }
 
   .footer-note {
     font-family: 'Fraunces', serif;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(1.1rem, 2.8vw, 1.45rem);
+    font-size: clamp(1.1rem, 2.8vw, 1.4rem);
     color: var(--ink-soft);
-    max-width: 28rem;
+    max-width: 26rem;
     margin-bottom: 2.5rem;
   }
 
@@ -225,13 +304,13 @@
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    padding-top: 1.4rem;
+    padding-top: 1.3rem;
     border-top: 1px solid var(--line);
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 500;
   }
 
   /* ---------------- responsive ---------------- */
@@ -239,15 +318,11 @@
     .entry {
       grid-template-columns: 2rem 1fr;
       gap: 0 1.1rem;
-      padding: 2.4rem 0;
+      padding: 2.3rem 0;
     }
     .entry:hover, .entry:focus-visible { box-shadow: none; }
     .entry::before { left: -0.7rem; }
-    .go {
-      grid-column: 2;
-      text-align: left;
-      padding-top: 1.1rem;
-    }
+    .go { grid-column: 2; text-align: left; padding-top: 1rem; }
     .entry:hover .go .arrow { transform: none; }
   }
 
@@ -263,7 +338,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
-      animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
@@ -279,14 +353,15 @@
     <div class="eyebrow">Azurenexus</div>
     <h1>Collected <em>Work</em></h1>
     <p class="standfirst">
-      Five sites, each built by hand for a single subject — an insect's eye, a song,
-      the middle years, the practice of staying close, and the evidence beneath it.
-      No frameworks, no templates. One file each, written to last.
+      Five sites and one song. A wonder of nature, a daily devotion, a book read together,
+      the evidence beneath a marriage, and the space that holds all of it.
+      No frameworks, no templates — one file each, written to last.
     </p>
   </header>
 
   <div class="metabar">
     <span>Five projects</span>
+    <span>One song</span>
     <span>2026</span>
     <span>All live</span>
   </div>
@@ -311,34 +386,35 @@
             <span class="swatch" style="background:#9BE564"></span>
             <span class="swatch" style="background:#CFE8E2"></span>
           </div>
-          <span class="typeface">Fraunces · Archivo</span>
+          <span class="domain">dragonfly.azurenexus.com</span>
         </div>
       </div>
       <div class="go">Read <span class="arrow">→</span></div>
     </a>
 
-    <a class="entry reveal" href="https://grace.azurenexus.com" target="_blank" rel="noopener"
-       style="--accent: #B8956A;">
+    <a class="entry reveal" href="https://graceforevery.day" target="_blank" rel="noopener"
+       style="--accent: #8A6E20;">
       <div class="num">02</div>
       <div class="body">
-        <h2>With You</h2>
-        <div class="subtitle">A song, and the room built to hold it</div>
+        <h2>Grace for Every Day</h2>
+        <div class="subtitle">A daily companion for the Christian life</div>
         <p>
-          Written for one person and no one else. It ends the way it should:
-          <em>Ég elska þig, alltaf.</em>
+          Scripture, devotional reflection, theological study and prayer — one entry for every
+          day of the year, with twelve study topics and an archive that keeps them all.
+          Live on the web and on iOS.
         </p>
         <div class="specs">
           <div class="swatches">
-            <span class="swatch" style="background:#0A0D18"></span>
-            <span class="swatch" style="background:#141826"></span>
-            <span class="swatch" style="background:#B8956A"></span>
-            <span class="swatch" style="background:#E6C184"></span>
-            <span class="swatch" style="background:#F5E6C8"></span>
+            <span class="swatch" style="background:#0E1628"></span>
+            <span class="swatch" style="background:#8A6E20"></span>
+            <span class="swatch" style="background:#C9A43A"></span>
+            <span class="swatch" style="background:#E0BC5A"></span>
+            <span class="swatch" style="background:#EDE0C0"></span>
           </div>
-          <span class="typeface">Cormorant · Pinyon Script</span>
+          <span class="domain">graceforevery.day</span>
         </div>
       </div>
-      <div class="go">Listen <span class="arrow">→</span></div>
+      <div class="go">Read <span class="arrow">→</span></div>
     </a>
 
     <a class="entry reveal" href="https://midlife.azurenexus.com" target="_blank" rel="noopener"
@@ -346,11 +422,11 @@
       <div class="num">03</div>
       <div class="body">
         <h2>For the Middle Years</h2>
-        <div class="subtitle">A companion for couples in midlife</div>
+        <div class="subtitle">A book, read together</div>
         <p>
-          Three readings of the same decade — a book distilled to its substance,
-          the science of desire, and an evening designed to be spent together.
-          Three doors; take any of them.
+          A reading companion to <em>How to Have a Magnificent Midlife Crisis</em> — every chapter
+          distilled to its substance, the science of desire, and an evening designed to be spent
+          together. Three paths; take any of them.
         </p>
         <div class="specs">
           <div class="swatches">
@@ -360,39 +436,15 @@
             <span class="swatch" style="background:#8A2A3A"></span>
             <span class="swatch" style="background:#2A1810"></span>
           </div>
-          <span class="typeface">Fraunces · Newsreader</span>
+          <span class="domain">midlife.azurenexus.com</span>
         </div>
       </div>
       <div class="go">Begin <span class="arrow">→</span></div>
     </a>
 
-    <a class="entry reveal" href="https://bond.azurenexus.com" target="_blank" rel="noopener"
-       style="--accent: #BD5D3A;">
-      <div class="num">04</div>
-      <div class="body">
-        <h2>Bond</h2>
-        <div class="subtitle">A daily relationship practice</div>
-        <p>
-          One honest line a day. Built on the research that actually holds up —
-          repair over perfection, responsiveness, and the friendship system underneath it all.
-        </p>
-        <div class="specs">
-          <div class="swatches">
-            <span class="swatch" style="background:#F5EFE3"></span>
-            <span class="swatch" style="background:#BD5D3A"></span>
-            <span class="swatch" style="background:#CF9A3E"></span>
-            <span class="swatch" style="background:#6F7D57"></span>
-            <span class="swatch" style="background:#2A2520"></span>
-          </div>
-          <span class="typeface">Fraunces · Newsreader</span>
-        </div>
-      </div>
-      <div class="go">Open <span class="arrow">→</span></div>
-    </a>
-
     <a class="entry reveal" href="https://foundation.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #3E5C63;">
-      <div class="num">05</div>
+      <div class="num">04</div>
       <div class="body">
         <h2>The Foundation</h2>
         <div class="subtitle">Ten practices for solidifying a relationship</div>
@@ -409,18 +461,53 @@
             <span class="swatch" style="background:#5D564C"></span>
             <span class="swatch" style="background:#2A2520"></span>
           </div>
-          <span class="typeface">Fraunces · Newsreader · Plex Mono</span>
+          <span class="domain">foundation.azurenexus.com</span>
         </div>
       </div>
       <div class="go">Study <span class="arrow">→</span></div>
     </a>
 
+    <a class="entry reveal" href="https://bond.azurenexus.com" target="_blank" rel="noopener"
+       style="--accent: #BD5D3A;">
+      <div class="num">05</div>
+      <div class="body">
+        <h2>Bond</h2>
+        <div class="subtitle">A space for two</div>
+        <p>
+          One honest line a day. A private practice built for two people — the shared home of
+          everything above, and everything still to come.
+        </p>
+        <div class="specs">
+          <div class="swatches">
+            <span class="swatch" style="background:#F5EFE3"></span>
+            <span class="swatch" style="background:#BD5D3A"></span>
+            <span class="swatch" style="background:#CF9A3E"></span>
+            <span class="swatch" style="background:#6F7D57"></span>
+            <span class="swatch" style="background:#2A2520"></span>
+          </div>
+          <span class="domain">bond.azurenexus.com</span>
+        </div>
+      </div>
+      <div class="go">Open <span class="arrow">→</span></div>
+    </a>
+
   </main>
 
+  <a class="song" href="https://grace.azurenexus.com" target="_blank" rel="noopener">
+    <div class="song-inner">
+      <div class="song-text">
+        <div class="song-kicker">Underneath it all · the song</div>
+        <div class="song-title">With You</div>
+        <div class="song-sub">Written for one person, and no one else.</div>
+      </div>
+      <div class="song-play">Listen →</div>
+    </div>
+  </a>
+
   <footer>
-    <p class="footer-note">Not built on sand — built by hand, daily.</p>
+    <p class="footer-note">Built between Baden and Basel, one at a time.</p>
     <div class="colophon">
-      <span>Azurenexus · Switzerland</span>
+      <span>Azurenexus · 2026</span>
       <span>Set in Fraunces &amp; Newsreader</span>
     </div>
   </footer>
