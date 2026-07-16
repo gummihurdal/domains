@@ -57,7 +57,7 @@
   /* ---------------- photo hero ---------------- */
   .hero {
     position: relative;
-    height: clamp(20rem, 50vh, 32rem);
+    height: clamp(24rem, 64vh, 42rem);
     overflow: hidden;
     background: var(--night);
   }
@@ -128,7 +128,7 @@
   }
 
   @media (max-width: 640px) {
-    .hero { height: clamp(16rem, 44vh, 24rem); }
+    .hero { height: clamp(21rem, 58vh, 32rem); }
     .hero-text { bottom: 1.8rem; }
   }
 
@@ -680,26 +680,26 @@
 <nav class="index" aria-label="Sections">
   <div class="index-inner">
     <div class="index-track">
-      <a href="#nature" style="--c:#1C7293">Nature</a>
-      <a href="#devotional" style="--c:#8A6E20">Devotional</a>
+      <a href="https://dragonfly.azurenexus.com" target="_blank" rel="noopener" data-spy="nature" style="--c:#1C7293">Nature</a>
+      <a href="https://graceforevery.day" target="_blank" rel="noopener" data-spy="devotional" style="--c:#8A6E20">Devotional</a>
       <button class="nav-group-btn" style="--c:#BD5D3A" aria-expanded="false" aria-controls="together-menu">
         Relationships <span class="caret">▾</span>
       </button>
-      <a href="#playvault" style="--c:#B8860B">Games</a>
-      <a href="#songs" style="--c:#B8956A">Songs</a>
+      <a href="https://games.azurenexus.com" target="_blank" rel="noopener" data-spy="playvault" style="--c:#B8860B">Games</a>
+      <a href="#songs" data-spy="songs" style="--c:#B8956A">Songs</a>
     </div>
   </div>
   <div class="nav-menu" id="together-menu">
     <div class="nav-menu-inner">
-      <a href="#midlife" style="--c:#6C3A5C">
+      <a href="https://midlife.azurenexus.com" target="_blank" rel="noopener" style="--c:#6C3A5C">
         <strong>Midlife</strong>
         <small>The workbook — three paths through the crisis</small>
       </a>
-      <a href="#foundation" style="--c:#3E5C63">
+      <a href="https://foundation.azurenexus.com" target="_blank" rel="noopener" style="--c:#3E5C63">
         <strong>Foundation</strong>
         <small>How to solidify a relationship — the method</small>
       </a>
-      <a href="#bond" style="--c:#BD5D3A">
+      <a href="https://bond.azurenexus.com" target="_blank" rel="noopener" style="--c:#BD5D3A">
         <strong>Tend</strong>
         <small>The daily practice — one honest line a day, together</small>
       </a>
@@ -974,47 +974,30 @@
 
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // Scroll-spy: highlight the section currently in view
-  const navLinks = new Map(
-    [...document.querySelectorAll('.index a[href^="#"]')].map(a => [a.getAttribute('href').slice(1), a])
-  );
+  // Scroll-spy: highlight the chip for the section being read
   const indexNav = document.querySelector('.index');
   const groupBtn = document.querySelector('.nav-group-btn');
   const groupIds = ['midlife', 'foundation', 'bond'];
-
-  const track = document.querySelector('.index-track');
-
-  // Scroll a nav link into view horizontally WITHIN the track only —
-  // element.scrollIntoView would cancel any in-progress anchor scroll.
-  const revealInTrack = (link) => {
-    const left = link.offsetLeft, width = link.offsetWidth;
-    if (left < track.scrollLeft) {
-      track.scrollTo({ left: left - 12, behavior: 'smooth' });
-    } else if (left + width > track.scrollLeft + track.clientWidth) {
-      track.scrollTo({ left: left + width - track.clientWidth + 12, behavior: 'smooth' });
-    }
-  };
+  const chips = new Map(
+    [...document.querySelectorAll('.index-track [data-spy]')].map(a => [a.dataset.spy, a])
+  );
 
   const spy = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const link = navLinks.get(entry.target.id);
-      if (!link) return;
-      if (entry.isIntersecting) {
-        navLinks.forEach(a => a.classList.remove('current'));
-        link.classList.add('current');
-        groupBtn.classList.toggle('current', groupIds.includes(entry.target.id));
-        if (!groupIds.includes(entry.target.id)) {
-          revealInTrack(link);
-        } else {
-          revealInTrack(groupBtn);
-        }
+      if (!entry.isIntersecting) return;
+      chips.forEach(a => a.classList.remove('current'));
+      groupBtn.classList.remove('current');
+      if (groupIds.includes(entry.target.id)) {
+        groupBtn.classList.add('current');
+      } else if (chips.has(entry.target.id)) {
+        chips.get(entry.target.id).classList.add('current');
       }
     });
   }, { rootMargin: '-15% 0px -70% 0px' });
 
-  navLinks.forEach((a, id) => {
-    const target = document.getElementById(id);
-    if (target) spy.observe(target);
+  ['nature', 'devotional', 'midlife', 'foundation', 'bond', 'playvault', 'songs'].forEach(id => {
+    const t = document.getElementById(id);
+    if (t) spy.observe(t);
   });
 
   // Dropdown: hover to expand (with intent delay), click for touch, Esc/outside to close
