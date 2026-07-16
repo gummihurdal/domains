@@ -666,6 +666,54 @@
     color: var(--muted);
   }
 
+  .photo-unlock {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    margin-top: 1.6rem;
+    max-width: 26rem;
+  }
+
+  .photo-unlock input {
+    flex: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+  }
+
+  .photo-unlock input:focus { border-color: var(--accent); }
+
+  .photo-unlock button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.1rem;
+    border: 1px solid var(--accent);
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .photo-unlock button:hover { background: var(--accent); color: var(--surface); }
+
+  .photo-note {
+    margin-top: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .photo-note.err { color: #A23B2E; }
+
   /* ---------------- reveal ---------------- */
   .reveal { opacity: 0; }
 
@@ -989,6 +1037,11 @@
           The places behind the work. Each one taken where something in this
           collection was made or imagined.
         </p>
+        <div class="photo-unlock" id="photo-unlock" hidden>
+          <input type="password" id="photo-pass" placeholder="password" autocomplete="current-password" aria-label="Photo password">
+          <button id="photo-open" type="button">Unlock</button>
+        </div>
+        <div class="photo-note" id="photo-note" hidden></div>
         <div class="photo-grid" id="photo-grid">
           <figure>
             <a href="lugano.jpg" target="_blank" rel="noopener">
@@ -1095,24 +1148,78 @@
     if (e.key === 'Escape') setOpen(false);
   });
 
-  // Photographs: render from photos/manifest.json (synced from pCloud)
-  fetch('photos/manifest.json').then(r => r.json()).then(list => {
-    if (!Array.isArray(list) || !list.length) return;
+  // Photographs: encrypted gallery synced from pCloud
+  (function(){
     const grid = document.getElementById('photo-grid');
-    grid.innerHTML = list.map(p => {
-      const src = p.file.startsWith('..') ? p.file.slice(3) : 'photos/' + p.file;
-      const dims = p.w && p.h ? ` width="${p.w}" height="${p.h}"` : '';
-      const cap = (p.caption || '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-      return `<figure>
-        <a href="${src}" target="_blank" rel="noopener">
-          <img src="${src}" alt="${cap}" loading="lazy"${dims}>
-        </a>
-        <figcaption>${cap}</figcaption>
-      </figure>`;
-    }).join('');
-  }).catch(() => {});
+    const unlockRow = document.getElementById('photo-unlock');
+    const note = document.getElementById('photo-note');
+    const passInput = document.getElementById('photo-pass');
+    const openBtn = document.getElementById('photo-open');
+    const PASSKEY = 'cw_photos_pass';
+    const enc = new TextEncoder();
 
-  // Nav shadow once it sticks
+    const figure = (src, cap, w, h) => `<figure>
+      <a href="${src}" target="_blank" rel="noopener">
+        <img src="${src}" alt="${cap}" loading="lazy"${w?` width="${w}" height="${h}"`:''}>
+      </a>
+      <figcaption>${cap}</figcaption>
+    </figure>`;
+
+    const esc = t => (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+    async function deriveKey(password, saltB64, iters){
+      const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+      const base = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations: iters||250000, hash:'SHA-256'},
+        base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    }
+
+    async function decrypt(key, buf){
+      const b = new Uint8Array(buf);
+      return crypto.subtle.decrypt({name:'AES-GCM', iv: b.slice(0,12)}, key, b.slice(12));
+    }
+
+    async function showGallery(m, key){
+      unlockRow.hidden = true; note.hidden = true;
+      for (const p of m.photos){
+        try{
+          const r = await fetch('photos/' + p.file);
+          const clear = await decrypt(key, await r.arrayBuffer());
+          const url = URL.createObjectURL(new Blob([clear], {type:'image/jpeg'}));
+          grid.insertAdjacentHTML('beforeend', figure(url, esc(p.caption), p.w, p.h));
+        }catch(e){ /* skip broken file */ }
+      }
+    }
+
+    fetch('photos/manifest.json').then(r => r.json()).then(async m => {
+      if (!m || !m.v || !m.photos || !m.photos.length) return;   // nothing synced yet
+      unlockRow.hidden = false;
+      note.hidden = false;
+      note.textContent = m.photos.length + ' more — for the two of us';
+
+      async function tryPass(password, silent){
+        try{
+          const key = await deriveKey(password, m.salt, m.iters);
+          await decrypt(key, Uint8Array.from(atob(m.check), c=>c.charCodeAt(0)).buffer);
+          localStorage.setItem(PASSKEY, password);
+          await showGallery(m, key);
+          return true;
+        }catch(e){
+          if (!silent){ note.hidden = false; note.className = 'photo-note err'; note.textContent = 'that\u2019s not it — try again'; }
+          return false;
+        }
+      }
+
+      const saved = localStorage.getItem(PASSKEY);
+      if (saved) await tryPass(saved, true);
+
+      openBtn.addEventListener('click', () => tryPass(passInput.value, false));
+      passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryPass(passInput.value, false); });
+    }).catch(() => {});
+  })();
+
+  // Nav shadow once it sticks  // Nav shadow once it sticks
   const sentinel = document.createElement('div');
   indexNav.parentNode.insertBefore(sentinel, indexNav);
   new IntersectionObserver(([e]) =>
