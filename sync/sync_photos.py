@@ -12,7 +12,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PHOTOS = os.path.join(ROOT, "photos")
 MANIFEST = os.path.join(PHOTOS, "manifest.json")
 SOURCE = os.path.join(PHOTOS, "source.txt")
-MAX_W, QUALITY = 1800, 72
+MAX_W, QUALITY = 1600, 70
 PBKDF2_ITERS = 250_000
 
 def b64(b): return base64.b64encode(b).decode()
@@ -62,10 +62,29 @@ def main():
     if meta.get("result") != 0: sys.exit(f"pCloud error: {meta}")
     md = meta["metadata"]
     files = md.get("contents", []) if md.get("isfolder") else [md]
-    images = [f for f in files if not f.get("isfolder") and f.get("category") == 1]
+    images = [f for f in files if not f.get("isfolder") and f.get("category") == 1
+              and "(2)" not in f["name"]]
     print(f"{len(images)} images in folder")
 
     from PIL import Image, ImageOps
+    try:
+        from pillow_heif import register_heif_opener
+        register_heif_opener()
+    except ImportError:
+        pass
+
+    import datetime
+    def caption_for(name):
+        base = os.path.splitext(name)[0].strip()
+        m = re.match(r"^(\d{4})-(\d{2})-(\d{2})[ _]", base)
+        if m:
+            try:
+                d = datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+                return d.strftime("%-d %B %Y")
+            except ValueError:
+                pass
+        return base
+
     photos, keep = [], set()
     for f in sorted(images, key=lambda x: x.get("created", "")):
         fid = str(f["fileid"]); keep.add(fid)
@@ -85,7 +104,7 @@ def main():
         fname = f"{slug}-{fid[-5:]}.enc"
         open(os.path.join(PHOTOS, fname), "wb").write(encrypt(buf.getvalue()))
         photos.append({"source_id": fid, "stamp": stamp, "file": fname,
-                       "caption": os.path.splitext(f["name"])[0].strip(),
+                       "caption": caption_for(f["name"]),
                        "w": im.width, "h": im.height, "created": f.get("created","")})
 
     # remove deleted
