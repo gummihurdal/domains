@@ -1322,6 +1322,7 @@
         </p>
         <div class="playall">
           <button class="pa-btn" id="pa-btn" type="button">▶ Play all</button>
+          <button class="pa-dir" id="pa-dir" type="button" title="Playback order">1 → 6</button>
           <div class="pa-now" id="pa-now" hidden>
             <span class="pa-title" id="pa-title"></span>
             <button class="pa-skip" id="pa-skip" type="button" aria-label="Next">→</button>
@@ -2003,9 +2004,25 @@
     ];
     const player = new Audio();
     player.preload = 'auto';
+
+    // playback order (forward 1->6 or reverse 6->1)
+    let reversed = false, pos = -1;
+    function order(){
+      const seq = TRACKS.map((_, i) => i);
+      return reversed ? seq.slice().reverse() : seq;
+    }
+    const dirBtn = document.getElementById('pa-dir');
+    if (dirBtn){
+      dirBtn.addEventListener('click', () => {
+        reversed = !reversed;
+        dirBtn.textContent = reversed ? '6 → 1' : '1 → 6';
+      });
+    }
+
     const warmed = new Set();
-    function warmNext(i){
-      const nx = TRACKS[i + 1];
+    function warmNext(){
+      const seq = order();
+      const nx = TRACKS[seq[pos + 1]];
       if (!nx || !nx.src || warmed.has(nx.src)) return;
       warmed.add(nx.src);
       fetch(nx.src, {mode: 'no-cors'}).catch(() => {});
@@ -2093,11 +2110,13 @@
       }
     }
 
-    function play(i){
-      if (i >= TRACKS.length){ stop(); return; }
-      idx = i;
-      const tr = TRACKS[i];
-      title.textContent = (i+1) + ' / ' + TRACKS.length + ' \u00B7 ' + tr.t;
+    function play(p){
+      const seq = order();
+      if (p < 0 || p >= seq.length){ stop(); return; }
+      pos = p;
+      idx = seq[p];
+      const tr = TRACKS[idx];
+      title.textContent = (pos+1) + ' / ' + TRACKS.length + ' \u00B7 ' + tr.t;
       now.hidden = false;
       btn.textContent = '\u23F8 Pause';
       active = true;
@@ -2105,33 +2124,33 @@
       hideYT();
       player.src = tr.src;
       player.load();                       // explicit load helps iOS on src change
-      const my = idx;
-      const tryPlay = () => player.play().catch(() => { if (idx === my && active) next(); });
+      const my = pos;
+      const tryPlay = () => player.play().catch(() => { if (pos === my && active) next(); });
       tryPlay();
       clearTimeout(play._watch);
       clearTimeout(play._nudge);
       play._nudge = setTimeout(() => {     // soft retry: iOS sometimes needs a second ask
-        if (active && idx === my && player.paused && !player.error) tryPlay();
+        if (active && pos === my && player.paused && !player.error) tryPlay();
       }, 3000);
       play._watch = setTimeout(() => {     // hard skip only when genuinely dead
-        if (active && idx === my && player.currentTime < 0.3 &&
+        if (active && pos === my && player.currentTime < 0.3 &&
             (player.error || player.readyState < 2)){
           next();
         }
       }, 15000);
     }
-    function next(){ play(idx + 1); }
+    function next(){ play(pos + 1); }
     function stop(){
       player.pause(); player.removeAttribute('src'); player.load();
       hideYT();
       now.hidden = true; btn.textContent = '\u25B6 Play all';
-      active = false; idx = -1;
+      active = false; idx = -1; pos = -1;
     }
 
     player.addEventListener('playing', () => {
       clearTimeout(play._watch);
       clearTimeout(play._nudge);
-      warmNext(idx);
+      warmNext();
       if ('mediaSession' in navigator && TRACKS[idx]){
         navigator.mediaSession.metadata = new MediaMetadata({
           title: TRACKS[idx].t,
@@ -2143,7 +2162,7 @@
     player.addEventListener('ended', next);
     player.addEventListener('timeupdate', () => {
       const tr = TRACKS[idx];
-      if (active && tr && tr.dur && player.currentTime >= tr.dur - 0.25) next();
+      if (active && tr && tr.dur && player.currentTime > 1 && player.currentTime >= tr.dur - 0.25) next();
     });
     player.addEventListener('error', () => { if (active) next(); });
 
@@ -2151,7 +2170,7 @@
       navigator.mediaSession.setActionHandler('play', () => { player.play(); btn.textContent = '\u23F8 Pause'; });
       navigator.mediaSession.setActionHandler('pause', () => { player.pause(); btn.textContent = '\u25B6 Resume'; });
       navigator.mediaSession.setActionHandler('nexttrack', () => next());
-      navigator.mediaSession.setActionHandler('previoustrack', () => { if (idx > 0) play(idx - 1); });
+      navigator.mediaSession.setActionHandler('previoustrack', () => { if (pos > 0) play(pos - 1); });
     }
     btn.addEventListener('click', () => {
       if (!active){ play(0); return; }
