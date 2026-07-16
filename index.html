@@ -1465,7 +1465,7 @@
         </ul>
         <div class="forthcoming">7. — to come</div>
         <div id="pa-yt-wrap" hidden style="margin-top:1.6rem">
-          <div id="pa-yt"></div>
+          <div id="pa-yt" style="width:100%;aspect-ratio:16/9;overflow:hidden;position:relative"></div>
         </div>
       </div>
     </section>
@@ -2030,84 +2030,80 @@
     const ytWrap = document.getElementById('pa-yt-wrap');
     let idx = -1, active = false, ytPlayer = null, ytReady = false;
 
-    function loadYT(){
-      return new Promise(resolve => {
-        if (window.YT && window.YT.Player) return resolve();
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        window.onYouTubeIframeAPIReady = resolve;
-        document.head.appendChild(tag);
-      });
-    }
+    // Pre-load YT API silently as soon as the module runs
+    const ytTracks = TRACKS.filter(t => t.yt);
+    const ytPlayers = new Map();   // yt videoId -> { player, ready, playReq }
+    let ytApiReady = false;
 
-    function hideYT(){
-      ytWrap.hidden = true;
-      if (ytPlayer && ytReady){ try{ ytPlayer.stopVideo(); }catch(e){} }
-    }
+    (function preloadYTApi(){
+      if (window.YT && window.YT.Player){ ytApiReady = true; return; }
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { ytApiReady = true; if (prev) prev(); };
+      document.head.appendChild(tag);
+    })();
 
-    let soundBtn = null, ytUnlocked = false;
-
-    function showSoundChip(){
-      if (soundBtn || ytUnlocked) return;
-      soundBtn = document.createElement('button');
-      soundBtn.className = 'pa-sound';
-      soundBtn.type = 'button';
-      soundBtn.textContent = '\uD83D\uDD0A Tap for sound';
-      soundBtn.addEventListener('click', () => {
-        try{ ytPlayer.unMute(); ytPlayer.setVolume(100); ytPlayer.playVideo(); }catch(e){}
-        ytUnlocked = true;
-        soundBtn.remove(); soundBtn = null;
-      });
-      ytWrap.appendChild(soundBtn);
-    }
-
-    function ensurePlaying(){
-      // ladder: if unmuted start was blocked, roll muted + offer one-tap sound
-      setTimeout(() => {
-        if (!ytPlayer || !ytReady) return;
-        const st = ytPlayer.getPlayerState();
-        if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
-          try{ ytPlayer.mute(); ytPlayer.playVideo(); }catch(e){}
-          setTimeout(() => {
-            const s2 = ytPlayer.getPlayerState();
-            if (s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING){
-              if (ytPlayer.isMuted()) showSoundChip();
-            }
-          }, 1200);
-        } else if (ytPlayer.isMuted() && !ytUnlocked){
-          showSoundChip();
-        } else {
-          ytUnlocked = true;
-        }
-      }, 2200);
-    }
-
-    async function playYT(track){
-      player.pause();
-      ytWrap.hidden = false;
-      ytWrap.scrollIntoView({behavior: 'smooth', block: 'nearest'});
-      await loadYT();
-      if (!ytPlayer){
-        ytPlayer = new YT.Player('pa-yt', {
-          videoId: track.yt,
-          playerVars: { autoplay: 1, rel: 0, playsinline: 1 },
+    // Called inside the gesture handler — creates all 3 YT players while iOS still trusts us
+    function instantiateYTPlayers(){
+      if (!ytApiReady || !window.YT || !window.YT.Player) return;
+      ytTracks.forEach(tr => {
+        if (ytPlayers.has(tr.yt)) return;
+        const wrap = document.createElement('div');
+        wrap.id = 'pa-yt-' + tr.yt;
+        wrap.style.cssText = 'position:absolute;left:-9999px;width:320px;height:180px;overflow:hidden';
+        document.body.appendChild(wrap);
+        const state = { player: null, ready: false, playReq: false };
+        state.player = new YT.Player(wrap.id, {
+          videoId: tr.yt,
+          playerVars: { autoplay: 0, rel: 0, playsinline: 1 },
           events: {
-            onReady: e => { ytReady = true; e.target.playVideo(); ensurePlaying(); },
+            onReady: () => {
+              state.ready = true;
+              if (state.playReq){ state.player.playVideo(); state.playReq = false; }
+            },
             onStateChange: e => {
               if (e.data === YT.PlayerState.ENDED) next();
-              if (e.data === YT.PlayerState.PLAYING && !ytPlayer.isMuted()){
-                ytUnlocked = true;
-                if (soundBtn){ soundBtn.remove(); soundBtn = null; }
-              }
             }
           }
         });
-      } else if (ytReady){
-        if (ytUnlocked) ytPlayer.unMute();
-        ytPlayer.loadVideoById(track.yt);
-        ytPlayer.playVideo();
-        ensurePlaying();
+        ytPlayers.set(tr.yt, state);
+      });
+    }
+
+    let activeYT = null;
+
+    function hideYT(){
+      ytWrap.hidden = true;
+      if (activeYT){
+        try{ activeYT.player.pauseVideo(); }catch(e){}
+        // move the iframe back off-screen
+        const el = activeYT.player.getIframe && activeYT.player.getIframe();
+        if (el && el.parentNode) el.parentNode.style.left = '-9999px';
+        activeYT = null;
       }
+    }
+
+    function playYT(track){
+      player.pause();
+      const state = ytPlayers.get(track.yt);
+      if (!state){ next(); return; }
+      // move the live iframe into the on-page slot
+      ytWrap.hidden = false;
+      const slot = document.getElementById('pa-yt');
+      try{
+        const iframe = state.player.getIframe && state.player.getIframe();
+        if (iframe && iframe.parentNode !== slot){
+          const oldWrap = iframe.parentNode;
+          if (oldWrap) oldWrap.style.left = '-9999px';
+          slot.appendChild(iframe);
+          iframe.style.cssText = 'display:block;width:100%;height:100%';
+        }
+      }catch(e){}
+      ytWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
+      activeYT = state;
+      if (state.ready){ state.player.playVideo(); }
+      else { state.playReq = true; }
     }
 
     function play(p){
@@ -2123,6 +2119,7 @@
       if (tr.yt){ playYT(tr); return; }
       hideYT();
       player.src = tr.src;
+
       player.load();                       // explicit load helps iOS on src change
       const my = pos;
       const tryPlay = () => player.play().catch(() => { if (pos === my && active) next(); });
@@ -2173,6 +2170,8 @@
       navigator.mediaSession.setActionHandler('previoustrack', () => { if (pos > 0) play(pos - 1); });
     }
     btn.addEventListener('click', () => {
+      // Instantiate YT players inside the gesture — iOS grants autoplay trust here
+      instantiateYTPlayers();
       if (!active){ play(0); return; }
       const tr = TRACKS[idx];
       if (tr && tr.yt && ytPlayer && ytReady){
