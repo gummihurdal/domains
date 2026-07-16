@@ -1227,6 +1227,34 @@
                 a.replaceWith(v);
               }catch(err){ if (btn) btn.textContent = 'could not load'; }
             }, {once: true});
+          } else if (p.type === 'stream'){
+            const posterUrl = await fetchClear(p.poster, 'image/jpeg');
+            a.removeAttribute('style');
+            a.href = '#';
+            a.innerHTML = `<span style="position:relative;display:block">
+              <img src="${posterUrl}" alt="${esc(p.caption)}">
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
+              </span>
+            </span>`;
+            a.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const btn = a.querySelector('span span span');
+              if (btn) btn.textContent = 'loading\u2026';
+              try{
+                const j = await fetch(`https://eapi.pcloud.com/getpubvideolinks?code=${m.pcloud}&fileid=${p.fileid}`).then(r=>r.json());
+                const variants = (j.variants||[]).sort((x,y)=>(x.isoriginal?1:0)-(y.isoriginal?1:0));
+                if (!variants.length) throw new Error('no stream');
+                const v = document.createElement('video');
+                v.controls = true; v.autoplay = true; v.playsInline = true;
+                v.src = 'https://' + variants[0].hosts[0] + variants[0].path;
+                v.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
+                v.onerror = () => window.open(`https://e.pcloud.link/publink/show?code=${m.pcloud}`, '_blank');
+                a.replaceWith(v);
+              }catch(err){
+                window.open(`https://e.pcloud.link/publink/show?code=${m.pcloud}`, '_blank');
+              }
+            }, {once: true});
           } else {
             const url = await fetchClear(p.file, 'image/jpeg');
             a.href = url; a.target = '_blank';
