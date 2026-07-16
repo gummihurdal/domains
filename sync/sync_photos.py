@@ -64,7 +64,10 @@ def main():
     files = md.get("contents", []) if md.get("isfolder") else [md]
     images = [f for f in files if not f.get("isfolder") and f.get("category") == 1
               and "(2)" not in f["name"]]
-    print(f"{len(images)} images in folder")
+    videos = [f for f in files if not f.get("isfolder") and f.get("category") == 2
+              and "(2)" not in f["name"]
+              and f.get("size", 0) <= 300 * 1024 * 1024]   # skip huge originals
+    print(f"{len(images)} images, {len(videos)} usable videos in folder")
 
     from PIL import Image, ImageOps
     try:
@@ -107,11 +110,65 @@ def main():
                        "caption": caption_for(f["name"]),
                        "w": im.width, "h": im.height, "created": f.get("created","")})
 
+    # ---- videos: transcode to 720p mp4, poster frame, encrypt both ----
+    import subprocess, tempfile
+    for f in sorted(videos, key=lambda x: x.get("created", "")):
+        fid = str(f["fileid"]); keep.add(fid)
+        stamp = f"{fid}:{f.get('hash','')}"
+        if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid]["file"])):
+            photos.append(old[fid]); continue
+        print("video:", f["name"], f.get("size",0)//(1024*1024), "MB")
+        url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
+        with tempfile.TemporaryDirectory() as td:
+            zp = os.path.join(td, "v.zip")
+            with urllib.request.urlopen(url, timeout=1800) as r, open(zp, "wb") as out:
+                while True:
+                    chunk = r.read(1 << 20)
+                    if not chunk: break
+                    out.write(chunk)
+            with zipfile.ZipFile(zp) as z:
+                src = os.path.join(td, "src")
+                open(src, "wb").write(z.read(z.namelist()[0]))
+            mp4 = os.path.join(td, "out.mp4")
+            poster = os.path.join(td, "poster.jpg")
+            try:
+                subprocess.run(["ffmpeg", "-y", "-i", src,
+                                "-vf", "scale='min(1280,iw)':-2",
+                                "-c:v", "libx264", "-crf", "28", "-preset", "veryfast",
+                                "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
+                                mp4], check=True, capture_output=True)
+                subprocess.run(["ffmpeg", "-y", "-ss", "0.5", "-i", mp4,
+                                "-frames:v", "1", "-vf", "scale='min(1200,iw)':-2",
+                                "-q:v", "4", poster], check=True, capture_output=True)
+            except subprocess.CalledProcessError as e:
+                print("  ffmpeg failed, skipping:", e.stderr[-200:] if e.stderr else "")
+                keep.discard(fid); continue
+            if os.path.getsize(mp4) > 95 * 1024 * 1024:
+                print("  transcoded output still too large, skipping")
+                keep.discard(fid); continue
+            # probe dimensions
+            probe = subprocess.run(["ffprobe", "-v", "quiet", "-select_streams", "v:0",
+                                    "-show_entries", "stream=width,height", "-of", "csv=p=0", mp4],
+                                   capture_output=True, text=True).stdout.strip().split(",")
+            vw, vh = (int(probe[0]), int(probe[1])) if len(probe) == 2 else (0, 0)
+            slug = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(f["name"])[0].lower()).strip("-")[:60] or fid
+            vname = f"{slug}-{fid[-5:]}.mp4.enc"
+            pname = f"{slug}-{fid[-5:]}.poster.enc"
+            open(os.path.join(PHOTOS, vname), "wb").write(encrypt(open(mp4, "rb").read()))
+            open(os.path.join(PHOTOS, pname), "wb").write(encrypt(open(poster, "rb").read()))
+            photos.append({"source_id": fid, "stamp": stamp, "type": "video",
+                           "file": vname, "poster": pname,
+                           "caption": caption_for(f["name"]),
+                           "w": vw, "h": vh, "mb": round(os.path.getsize(mp4)/1048576, 1),
+                           "created": f.get("created", "")})
+
     # remove deleted
     for fid, p in old.items():
         if fid not in keep:
-            fp = os.path.join(PHOTOS, p["file"])
-            if os.path.exists(fp): os.remove(fp)
+            for k in ("file", "poster"):
+                if p.get(k):
+                    fp = os.path.join(PHOTOS, p[k])
+                    if os.path.exists(fp): os.remove(fp)
 
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS,
            "check": b64(encrypt(b"grace-ok")),
