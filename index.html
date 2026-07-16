@@ -1622,11 +1622,24 @@
       const photosOnly = favList.filter(p => !p.type);
       if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
       if (!favWrap){
-        const sec = stripSection('Favourites \u2665');
-        favWrap = sec.wrap;
-        grid.parentNode.insertBefore(favWrap, grid.previousSibling && grid.previousSibling.classList && grid.previousSibling.classList.contains('otd') ? grid.previousSibling : grid);
+        favWrap = document.createElement('div');
+        const head = document.createElement('div');
+        head.className = 'photo-strip-head';
+        favWrap.appendChild(head);
+        const g = document.createElement('div');
+        g.className = 'photo-grid';
+        favWrap.appendChild(g);
+        grid.parentNode.insertBefore(favWrap, grid);
       }
-      fillStrip(favWrap.querySelector('.photo-strip'), favList, photosOnly);
+      favWrap.querySelector('.photo-strip-head').textContent =
+        `Favourites \u2665 \u2014 ${favList.length}`;
+      const g = favWrap.querySelector('.photo-grid');
+      g.innerHTML = '';
+      favList.forEach(p => {
+        const fig = makeFigure(p, KEY, photosOnly);
+        g.appendChild(fig);
+        lazy.observe(fig);
+      });
     }
 
     async function showGallery(m, key){
