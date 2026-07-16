@@ -89,6 +89,23 @@
 
   .hero h1 em { font-style: italic; font-weight: 400; }
 
+  .hero-by {
+    margin-top: 0.9rem;
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 40;
+    font-weight: 300;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    letter-spacing: 0.06em;
+    color: rgba(245, 240, 230, 0.85);
+    text-shadow: 0 1px 16px rgba(14, 18, 26, 0.4);
+  }
+
+  .hero-by em {
+    font-style: italic;
+    color: rgba(245, 240, 230, 0.65);
+    padding: 0 0.1em;
+  }
+
   @media (max-width: 640px) {
     .hero { height: clamp(16rem, 44vh, 24rem); }
     .hero-text { bottom: 1.8rem; }
@@ -633,6 +650,7 @@
   <div class="hero-text">
     <div class="wrap">
       <h1>Collected <em>Work</em></h1>
+      <div class="hero-by">Gudmundur <em>&amp;</em> Grace</div>
     </div>
   </div>
 </header>
