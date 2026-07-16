@@ -222,14 +222,22 @@
   }
 
   @media (max-width: 820px) {
-    .index-inner { padding: 0 1.4rem; }
-    .index-track { gap: 0.45rem; padding: 0.7rem 0; }
+    .index-inner { padding: 0 0.9rem; }
+    .index-track { flex-wrap: nowrap; gap: 0.3rem; padding: 0.7rem 0; }
     .index-track a,
     .nav-group-btn {
-      padding: 0.55rem 0.7rem;
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
+      flex: 1 1 auto;
+      text-align: center;
+      padding: 0.55rem 0.3rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.04em;
     }
+    .nav-group-btn .caret { font-size: 0.6rem; margin-left: 0.12rem; }
+  }
+
+  @media (max-width: 355px) {
+    .index-track { flex-wrap: wrap; }
+    .index-track a, .nav-group-btn { flex: 0 0 auto; }
   }
 
   [id] { scroll-margin-top: 4.2rem; }
