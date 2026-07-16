@@ -2040,11 +2040,16 @@
       if (tr.yt){ playYT(tr); return; }
       hideYT();
       player.src = tr.src;
+      player.load();                       // explicit load helps iOS on src change
       const my = idx;
-      player.play().catch(() => { if (idx === my && active) next(); });
+      const tryPlay = () => player.play().catch(() => { if (idx === my && active) next(); });
+      tryPlay();
       clearTimeout(play._watch);
-      play._watch = setTimeout(() => {
-        // skip only if genuinely dead: no error recovery, never started
+      clearTimeout(play._nudge);
+      play._nudge = setTimeout(() => {     // soft retry: iOS sometimes needs a second ask
+        if (active && idx === my && player.paused && !player.error) tryPlay();
+      }, 3000);
+      play._watch = setTimeout(() => {     // hard skip only when genuinely dead
         if (active && idx === my && player.currentTime < 0.3 &&
             (player.error || player.readyState < 2)){
           next();
@@ -2061,6 +2066,7 @@
 
     player.addEventListener('playing', () => {
       clearTimeout(play._watch);
+      clearTimeout(play._nudge);
       warmNext(idx);
       if ('mediaSession' in navigator && TRACKS[idx]){
         navigator.mediaSession.metadata = new MediaMetadata({
