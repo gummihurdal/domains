@@ -633,6 +633,44 @@
     .work:hover .go .arrow { transform: none; }
   }
 
+  /* ---------------- play all ---------------- */
+  .playall {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.6rem 0 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .pa-btn, .pa-skip, .pa-stop {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--accent, #B8956A);
+    background: none;
+    color: var(--accent, #B8956A);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .pa-btn:hover, .pa-skip:hover, .pa-stop:hover {
+    background: var(--accent, #B8956A);
+    color: var(--surface);
+  }
+
+  .pa-now { display: flex; align-items: center; gap: 0.6rem; }
+  .pa-skip, .pa-stop { padding: 0.65rem 0.8rem; }
+
+  .pa-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
   /* ---------------- daily quote ---------------- */
   .daily-quote-open { max-width: 42rem; }
 
@@ -1256,6 +1294,14 @@
           Some things don't fit in a site or a workbook. They get a melody instead.
           Each one recorded and kept here.
         </p>
+        <div class="playall">
+          <button class="pa-btn" id="pa-btn" type="button">▶ Play all</button>
+          <div class="pa-now" id="pa-now" hidden>
+            <span class="pa-title" id="pa-title"></span>
+            <button class="pa-skip" id="pa-skip" type="button" aria-label="Next">→</button>
+            <button class="pa-stop" id="pa-stop" type="button" aria-label="Stop">■</button>
+          </div>
+        </div>
         <ul class="works">
           <li>
             <a class="work" href="https://grace.azurenexus.com" target="_blank" rel="noopener">
@@ -1845,6 +1891,48 @@
     document.getElementById('standfirst').hidden = true;
     box.hidden = false;
   }).catch(() => {});
+
+  // Play all songs in a row
+  (function(){
+    const btn = document.getElementById('pa-btn');
+    if (!btn) return;
+    const now = document.getElementById('pa-now');
+    const title = document.getElementById('pa-title');
+    const TRACKS = [
+      { t: 'Me\u00F0 \u00FE\u00E9r \u2014 With You', src: 'https://grace.azurenexus.com/song.m4a' },
+      { t: 'My Mont Sainte-Victoire', src: 'songs/my-mont-sainte-victoire.mp4' },
+      { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3' }
+    ];
+    const player = new Audio();
+    player.preload = 'none';
+    let idx = -1, active = false;
+
+    function play(i){
+      if (i >= TRACKS.length){ stop(); return; }
+      idx = i;
+      player.src = TRACKS[i].src;
+      player.play().catch(() => next());
+      title.textContent = (i+1) + ' / ' + TRACKS.length + ' \u00B7 ' + TRACKS[i].t;
+      now.hidden = false;
+      btn.textContent = '\u23F8 Pause';
+      active = true;
+    }
+    function next(){ play(idx + 1); }
+    function stop(){
+      player.pause(); player.removeAttribute('src'); player.load();
+      now.hidden = true; btn.textContent = '\u25B6 Play all';
+      active = false; idx = -1;
+    }
+
+    player.addEventListener('ended', next);
+    btn.addEventListener('click', () => {
+      if (!active){ play(0); return; }
+      if (player.paused){ player.play(); btn.textContent = '\u23F8 Pause'; }
+      else { player.pause(); btn.textContent = '\u25B6 Resume'; }
+    });
+    document.getElementById('pa-skip').addEventListener('click', next);
+    document.getElementById('pa-stop').addEventListener('click', stop);
+  })();
 
   // Wedding countdown — set the date and the line appears
   (function(){
