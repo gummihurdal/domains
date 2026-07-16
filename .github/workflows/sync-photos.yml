@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   sync:
@@ -24,5 +25,13 @@ jobs:
           git config user.name "photo-sync"
           git config user.email "actions@github.com"
           git add photos/
-          git diff --cached --quiet || git commit -m "Sync photos from pCloud"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync photos from pCloud"
+            git push
+            # workflow-made pushes don't trigger other workflows — dispatch the deploy explicitly
+            curl -s -X POST \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy.yml/dispatches" \
+              -d '{"ref":"main"}'
+          fi
