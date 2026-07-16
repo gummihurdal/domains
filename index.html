@@ -637,13 +637,7 @@
   }
 
   /* ---------------- daily quote ---------------- */
-  .daily-quote {
-    margin: 2.8rem 0;
-    padding: 2rem 2.2rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-left: 3px solid #BD5D3A;
-  }
+  .daily-quote-open { max-width: 42rem; }
 
   .dq-kicker {
     font-family: 'IBM Plex Mono', monospace;
@@ -659,8 +653,8 @@
     font-variation-settings: 'opsz' 72;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(1.15rem, 2.8vw, 1.55rem);
-    line-height: 1.4;
+    font-size: clamp(1.2rem, 3vw, 1.65rem);
+    line-height: 1.45;
     color: var(--ink);
   }
 
@@ -679,9 +673,7 @@
 
   .dq-src a:hover { text-decoration: underline; }
 
-  @media (max-width: 640px) {
-    .daily-quote { padding: 1.5rem 1.4rem; margin: 2.2rem 0; }
-  }
+
 
   /* ---------------- photographs ---------------- */
   .photo-grid {
@@ -1003,11 +995,16 @@
 <div class="wrap">
 
   <div class="masthead">
-    <p class="standfirst">
+    <p class="standfirst" id="standfirst">
       Wonders of nature, a daily devotional, a workbook for the middle years,
       the proven method for staying close, the practice that runs on it, a table to play at
       when the work is done — and the songs and photographs kept along the way. Built by hand, one at a time.
     </p>
+    <div class="daily-quote-open" id="daily-quote" hidden>
+      <div class="dq-kicker">Today, from the shelf</div>
+      <div class="dq-text" id="dq-text"></div>
+      <div class="dq-src" id="dq-src"></div>
+    </div>
   </div>
 
 </div>
@@ -1123,12 +1120,6 @@
       </div>
       <div class="go">Read <span class="arrow">→</span></div>
     </a>
-
-    <div class="daily-quote reveal" id="daily-quote" hidden>
-      <div class="dq-kicker">Today, from the relationship shelf</div>
-      <div class="dq-text" id="dq-text"></div>
-      <div class="dq-src" id="dq-src"></div>
-    </div>
 
     <a id="midlife" class="entry reveal" href="https://midlife.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #6C3A5C;">
@@ -1778,8 +1769,8 @@
     document.getElementById('dq-src').innerHTML =
       '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
       (q.who ? ' \u00B7 ' + q.who.replace(/&/g,'&amp;').replace(/</g,'&lt;') : '');
+    document.getElementById('standfirst').hidden = true;
     box.hidden = false;
-    if (box.classList.contains('reveal')) box.classList.add('seen');
   }).catch(() => {});
 
   // Wedding countdown — set the date and the line appears
