@@ -62,13 +62,19 @@ def main():
     if meta.get("result") != 0: sys.exit(f"pCloud error: {meta}")
     md = meta["metadata"]
     files = md.get("contents", []) if md.get("isfolder") else [md]
-    images = [f for f in files if not f.get("isfolder") and f.get("category") == 1
-              and "(2)" not in f["name"]]
-    videos = [f for f in files if not f.get("isfolder") and f.get("category") == 2
-              and "(2)" not in f["name"]
+    names = {f["name"] for f in files if not f.get("isfolder")}
+    def is_redundant_dupe(f):
+        # "IMG (2).jpg" is redundant only while "IMG.jpg" still exists
+        if "(2)" not in f["name"]:
+            return False
+        original = re.sub(r"\s*\(2\)", "", f["name"], count=1)
+        return original in names
+
+    usable = [f for f in files if not f.get("isfolder") and not is_redundant_dupe(f)]
+    images = [f for f in usable if f.get("category") == 1]
+    videos = [f for f in usable if f.get("category") == 2
               and f.get("size", 0) <= 300 * 1024 * 1024]
-    big_videos = [f for f in files if not f.get("isfolder") and f.get("category") == 2
-                  and "(2)" not in f["name"]
+    big_videos = [f for f in usable if f.get("category") == 2
                   and f.get("size", 0) > 300 * 1024 * 1024]   # streamed from pCloud
     print(f"{len(images)} images, {len(videos)} transcodable videos, {len(big_videos)} streamed videos")
 
@@ -91,12 +97,27 @@ def main():
                 pass
         return base
 
+    # index old entries by content hash for rename/dedupe carry-over
+    old_by_hash = {}
+    for e in old.values():
+        h = (e.get("stamp") or "").split(":")[-1]
+        if h: old_by_hash.setdefault(h, e)
+
     photos, keep = [], set()
     for f in sorted(images, key=lambda x: x.get("created", "")):
         fid = str(f["fileid"]); keep.add(fid)
-        stamp = f"{fid}:{f.get('hash','')}"
+        fhash = str(f.get('hash',''))
+        stamp = f"{fid}:{fhash}"
         if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid]["file"])):
             photos.append(old[fid]); continue
+        carried = old_by_hash.get(fhash)
+        if carried and os.path.exists(os.path.join(PHOTOS, carried["file"])):
+            # same content under a new fileid (deleted original, "(2)" copy remains)
+            keep.add(carried["source_id"])
+            e = dict(carried); e["stamp"] = stamp; e["fid"] = fid
+            photos.append(e)
+            print("carried over (same content):", f["name"])
+            continue
         print("processing", f["name"])
         url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
         with urllib.request.urlopen(url, timeout=300) as r:
