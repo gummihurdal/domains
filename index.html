@@ -115,9 +115,7 @@
     --c: var(--ink);
     position: relative;
     flex-shrink: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 0.45rem;
+    display: block;
     padding: 1.05rem 0.95rem;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.68rem;
@@ -130,12 +128,6 @@
   }
 
   .index a:first-child { padding-left: 0; }
-
-  .index a .ix {
-    font-size: 0.58rem;
-    color: var(--muted);
-    transition: color 0.3s ease;
-  }
 
   .index a::after {
     content: '';
@@ -156,10 +148,6 @@
   .index a:focus-visible,
   .index a.current { color: var(--c); }
 
-  .index a:hover .ix,
-  .index a:focus-visible .ix,
-  .index a.current .ix { color: var(--c); }
-
   .index a:hover::after,
   .index a:focus-visible::after,
   .index a.current::after { transform: scaleX(1); }
@@ -169,28 +157,7 @@
     outline-offset: -2px;
   }
 
-  .index-status {
-    flex-shrink: 0;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .index-status .dot {
-    display: inline-block;
-    width: 0.42rem;
-    height: 0.42rem;
-    border-radius: 50%;
-    background: #4A7A4A;
-    margin-right: 0.45rem;
-    vertical-align: 1px;
-  }
-
   @media (max-width: 820px) {
-    .index-status { display: none; }
     .index-inner { padding: 0 1.4rem; }
     .index-track {
       -webkit-mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
@@ -591,16 +558,15 @@
 <nav class="index" aria-label="Sections">
   <div class="index-inner">
     <div class="index-track">
-      <a href="#nature" style="--c:#1C7293"><span class="ix">01</span>Nature</a>
-      <a href="#devotional" style="--c:#8A6E20"><span class="ix">02</span>Devotional</a>
-      <a href="#midlife" style="--c:#6C3A5C"><span class="ix">03</span>Midlife</a>
-      <a href="#foundation" style="--c:#3E5C63"><span class="ix">04</span>Foundation</a>
-      <a href="#bond" style="--c:#BD5D3A"><span class="ix">05</span>Bond</a>
-      <a href="#playvault" style="--c:#B8860B"><span class="ix">06</span>PlayVault</a>
-      <a href="#songs" style="--c:#B8956A"><span class="ix">07</span>Songs</a>
-      <a href="#with-you" style="--c:#B8956A"><span class="ix">♪</span>With You</a>
+      <a href="#nature" style="--c:#1C7293">Nature</a>
+      <a href="#devotional" style="--c:#8A6E20">Devotional</a>
+      <a href="#midlife" style="--c:#6C3A5C">Midlife</a>
+      <a href="#foundation" style="--c:#3E5C63">Foundation</a>
+      <a href="#bond" style="--c:#BD5D3A">Bond</a>
+      <a href="#playvault" style="--c:#B8860B">Games</a>
+      <a href="#songs" style="--c:#B8956A">Songs</a>
+      <a href="#with-you" style="--c:#B8956A">With You</a>
     </div>
-    <div class="index-status"><span class="dot"></span>2026 · All live</div>
   </div>
 </nav>
 
