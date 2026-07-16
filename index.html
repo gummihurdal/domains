@@ -663,6 +663,13 @@
   .pa-now { display: flex; align-items: center; gap: 0.6rem; }
   .pa-skip, .pa-stop { padding: 0.65rem 0.8rem; }
 
+  #pa-yt-wrap iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    outline: 1px solid var(--line);
+  }
+
   .pa-title {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.62rem;
@@ -1369,8 +1376,33 @@
               <div class="go">Listen <span class="arrow">→</span></div>
             </a>
           </li>
+          <li>
+            <a class="work" href="https://www.youtube.com/watch?v=bu7nU9Mhpyo" target="_blank" rel="noopener">
+              <div class="wn">4.</div>
+              <div>
+                <h3>告白氣球 — Love Confession</h3>
+                <p>
+                  Jay Chou. The found song — the one that was already written
+                  about a confession and a balloon.
+                </p>
+                <div class="specs">
+                  <div class="swatches">
+                    <span class="swatch" style="background:#D96A6A"></span>
+                    <span class="swatch" style="background:#F2B3B3"></span>
+                    <span class="swatch" style="background:#F5E6C8"></span>
+                    <span class="swatch" style="background:#B8956A"></span>
+                  </div>
+                  <span class="domain">youtube.com · official</span>
+                </div>
+              </div>
+              <div class="go">Listen <span class="arrow">→</span></div>
+            </a>
+          </li>
         </ul>
-        <div class="forthcoming">4. — to come</div>
+        <div class="forthcoming">5. — to come</div>
+        <div id="pa-yt-wrap" hidden style="margin-top:1.6rem">
+          <div id="pa-yt"></div>
+        </div>
       </div>
     </section>
 
@@ -1901,25 +1933,65 @@
     const TRACKS = [
       { t: 'Me\u00F0 \u00FE\u00E9r \u2014 With You', src: 'https://grace.azurenexus.com/song.m4a' },
       { t: 'My Mont Sainte-Victoire', src: 'songs/my-mont-sainte-victoire.mp4' },
-      { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3' }
+      { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3' },
+      { t: '\u544A\u767D\u6C23\u7403 \u2014 Love Confession \u00B7 Jay Chou', yt: 'bu7nU9Mhpyo' }
     ];
     const player = new Audio();
     player.preload = 'none';
-    let idx = -1, active = false;
+    const ytWrap = document.getElementById('pa-yt-wrap');
+    let idx = -1, active = false, ytPlayer = null, ytReady = false;
+
+    function loadYT(){
+      return new Promise(resolve => {
+        if (window.YT && window.YT.Player) return resolve();
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        window.onYouTubeIframeAPIReady = resolve;
+        document.head.appendChild(tag);
+      });
+    }
+
+    function hideYT(){
+      ytWrap.hidden = true;
+      if (ytPlayer && ytReady){ try{ ytPlayer.stopVideo(); }catch(e){} }
+    }
+
+    async function playYT(track){
+      player.pause();
+      ytWrap.hidden = false;
+      ytWrap.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+      await loadYT();
+      if (!ytPlayer){
+        ytPlayer = new YT.Player('pa-yt', {
+          videoId: track.yt,
+          playerVars: { autoplay: 1, rel: 0 },
+          events: {
+            onReady: e => { ytReady = true; e.target.playVideo(); },
+            onStateChange: e => { if (e.data === YT.PlayerState.ENDED) next(); }
+          }
+        });
+      } else if (ytReady){
+        ytPlayer.loadVideoById(track.yt);
+      }
+    }
 
     function play(i){
       if (i >= TRACKS.length){ stop(); return; }
       idx = i;
-      player.src = TRACKS[i].src;
-      player.play().catch(() => next());
-      title.textContent = (i+1) + ' / ' + TRACKS.length + ' \u00B7 ' + TRACKS[i].t;
+      const tr = TRACKS[i];
+      title.textContent = (i+1) + ' / ' + TRACKS.length + ' \u00B7 ' + tr.t;
       now.hidden = false;
       btn.textContent = '\u23F8 Pause';
       active = true;
+      if (tr.yt){ playYT(tr); return; }
+      hideYT();
+      player.src = tr.src;
+      player.play().catch(() => next());
     }
     function next(){ play(idx + 1); }
     function stop(){
       player.pause(); player.removeAttribute('src'); player.load();
+      hideYT();
       now.hidden = true; btn.textContent = '\u25B6 Play all';
       active = false; idx = -1;
     }
@@ -1927,6 +1999,13 @@
     player.addEventListener('ended', next);
     btn.addEventListener('click', () => {
       if (!active){ play(0); return; }
+      const tr = TRACKS[idx];
+      if (tr && tr.yt && ytPlayer && ytReady){
+        const st = ytPlayer.getPlayerState();
+        if (st === YT.PlayerState.PLAYING){ ytPlayer.pauseVideo(); btn.textContent = '\u25B6 Resume'; }
+        else { ytPlayer.playVideo(); btn.textContent = '\u23F8 Pause'; }
+        return;
+      }
       if (player.paused){ player.play(); btn.textContent = '\u23F8 Pause'; }
       else { player.pause(); btn.textContent = '\u25B6 Resume'; }
     });
