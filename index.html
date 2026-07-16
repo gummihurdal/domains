@@ -63,7 +63,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(14, 18, 26, 0.55) 0%, rgba(14, 18, 26, 0) 28%);
+    background: linear-gradient(to top, rgba(14, 18, 26, 0.72) 0%, rgba(14, 18, 26, 0.38) 22%, rgba(14, 18, 26, 0) 44%);
   }
 
   .hero-text {
@@ -83,17 +83,16 @@
     text-align: center;
     gap: 0.3rem;
     color: var(--paper);
-    text-shadow: 0 1px 14px rgba(14, 18, 26, 0.6);
+    text-shadow: 0 1px 6px rgba(14, 18, 26, 0.55), 0 2px 22px rgba(14, 18, 26, 0.65);
   }
 
   .lk-top {
-    font-family: 'Fraunces', serif;
-    font-variation-settings: 'opsz' 60;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(0.82rem, 1.8vw, 0.95rem);
-    letter-spacing: 0.14em;
-    color: rgba(245, 240, 230, 0.78);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.6rem, 1.4vw, 0.68rem);
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 230, 0.95);
   }
 
   .lk-names {
@@ -112,7 +111,8 @@
     line-height: 0;
     vertical-align: -0.1em;
     padding: 0 0.1em;
-    color: #E9CFA0;
+    color: #F0D9AC;
+    text-shadow: 0 1px 4px rgba(14, 18, 26, 0.7), 0 2px 16px rgba(14, 18, 26, 0.6);
   }
 
   @media (max-width: 640px) {
