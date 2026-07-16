@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Azurenexus — Collected Work</title>
-<meta name="description" content="Six hand-built sites and one song: The Dragonfly Eye, Grace for Every Day, The Midlife Workbook, Solidifying a Relationship, Bond, and PlayVault.">
+<meta name="description" content="Hand-built work: Wonders of Nature, Grace for Every Day, The Midlife Workbook, Solidifying a Relationship, Bond, and PlayVault.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -326,6 +326,114 @@
     .entry:hover .go .arrow { transform: none; }
   }
 
+  /* ---------------- group entry (a series) ---------------- */
+  .group {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 2rem;
+    padding: 2.8rem 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .group > .num { color: var(--accent); }
+
+  .group h2 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 72;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 4vw, 2.05rem);
+    line-height: 1.15;
+    letter-spacing: -0.018em;
+    margin-bottom: 0.35rem;
+  }
+
+  .group .subtitle { margin-bottom: 0.7rem; }
+
+  .group > div > p {
+    color: var(--ink-soft);
+    max-width: 32rem;
+    font-size: 0.95rem;
+  }
+
+  .works {
+    list-style: none;
+    margin-top: 1.5rem;
+    border-left: 2px solid var(--line);
+  }
+
+  .work {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr 5rem;
+    gap: 0 0.9rem;
+    align-items: start;
+    text-decoration: none;
+    color: inherit;
+    padding: 1.1rem 0.9rem 1.1rem 1.3rem;
+    border-bottom: 1px solid var(--line);
+    transition: background-color 0.4s ease;
+  }
+
+  .works li:last-child .work { border-bottom: none; }
+
+  .work:hover { background: var(--surface); }
+  .work:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .work .wn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    padding-top: 0.5rem;
+    transition: color 0.4s ease;
+  }
+
+  .work:hover .wn { color: var(--accent); }
+
+  .work h3 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 40;
+    font-weight: 400;
+    font-size: 1.22rem;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    margin-bottom: 0.2rem;
+    transition: color 0.4s ease;
+  }
+
+  .work:hover h3 { color: var(--accent); }
+
+  .work p {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    max-width: 28rem;
+  }
+
+  .work .go {
+    padding-top: 0.42rem;
+    font-size: 0.6rem;
+  }
+
+  .work:hover .go { color: var(--accent); }
+  .work:hover .go .arrow { transform: translateX(0.3rem); }
+
+  .work .specs { margin-top: 0.9rem; }
+
+  .forthcoming {
+    padding: 1rem 0.9rem 0.2rem 1.3rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 720px) {
+    .group { grid-template-columns: 2rem 1fr; gap: 0 1.1rem; padding: 2.3rem 0; }
+    .work { grid-template-columns: 1.3rem 1fr; padding-right: 0; }
+    .work .go { grid-column: 2; padding-top: 0.8rem; }
+    .work:hover .go .arrow { transform: none; }
+  }
+
   /* ---------------- reveal ---------------- */
   .reveal { opacity: 0; transform: translateY(0.9rem); }
 
@@ -353,14 +461,14 @@
     <div class="eyebrow">Azurenexus</div>
     <h1>Collected <em>Work</em></h1>
     <p class="standfirst">
-      Six sites and one song. A wonder of nature, a daily devotional, a book read together,
+      Wonders of nature, a daily devotional, a workbook for the middle years,
       the proven method for staying close, the practice that runs on it — and a table to play at
       when the work is done. Built by hand, one at a time.
     </p>
   </header>
 
   <div class="metabar">
-    <span>Six projects</span>
+    <span>Six collections</span>
     <span>One song</span>
     <span>2026</span>
     <span>All live</span>
@@ -368,29 +476,43 @@
 
   <main>
 
-    <a class="entry reveal" href="https://dragonfly.azurenexus.com" target="_blank" rel="noopener"
-       style="--accent: #1C7293;">
+    <section class="group reveal" style="--accent: #1C7293;">
       <div class="num">01</div>
-      <div class="body">
-        <h2>The Dragonfly Eye</h2>
-        <div class="subtitle">Six wonders in a creature you could hold on a fingertip</div>
+      <div>
+        <h2>Wonders of Nature</h2>
+        <div class="subtitle">A series — one creature at a time</div>
         <p>
-          Thirty thousand lenses, a fovea made of glass, and colour vision that runs past
-          anything we have words for. A scroll-driven story told against the dark.
+          Small things looked at closely until they stop being small. Each one built as its own
+          site, told against the dark.
         </p>
-        <div class="specs">
-          <div class="swatches">
-            <span class="swatch" style="background:#0A0F0D"></span>
-            <span class="swatch" style="background:#1C7293"></span>
-            <span class="swatch" style="background:#E8B23A"></span>
-            <span class="swatch" style="background:#9BE564"></span>
-            <span class="swatch" style="background:#CFE8E2"></span>
-          </div>
-          <span class="domain">dragonfly.azurenexus.com</span>
-        </div>
+        <ul class="works">
+          <li>
+            <a class="work" href="https://dragonfly.azurenexus.com" target="_blank" rel="noopener">
+              <div class="wn">1.</div>
+              <div>
+                <h3>The Dragonfly Eye</h3>
+                <p>
+                  Thirty thousand lenses, a fovea made of glass, and colour vision that runs past
+                  anything we have words for.
+                </p>
+                <div class="specs">
+                  <div class="swatches">
+                    <span class="swatch" style="background:#0A0F0D"></span>
+                    <span class="swatch" style="background:#1C7293"></span>
+                    <span class="swatch" style="background:#E8B23A"></span>
+                    <span class="swatch" style="background:#9BE564"></span>
+                    <span class="swatch" style="background:#CFE8E2"></span>
+                  </div>
+                  <span class="domain">dragonfly.azurenexus.com</span>
+                </div>
+              </div>
+              <div class="go">Read <span class="arrow">→</span></div>
+            </a>
+          </li>
+        </ul>
+        <div class="forthcoming">2. — in progress</div>
       </div>
-      <div class="go">Read <span class="arrow">→</span></div>
-    </a>
+    </section>
 
     <a class="entry reveal" href="https://graceforevery.day" target="_blank" rel="noopener"
        style="--accent: #8A6E20;">
