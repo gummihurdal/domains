@@ -1194,16 +1194,45 @@
       });
       grid.appendChild(frag);
 
+      const fetchClear = async (file, type) => {
+        const r = await fetch('photos/' + file);
+        const clear = await decrypt(key, await r.arrayBuffer());
+        return URL.createObjectURL(new Blob([clear], {type}));
+      };
+
       const loadOne = async (fig) => {
         const p = m.photos[fig.dataset.i];
         try{
-          const r = await fetch('photos/' + p.file);
-          const clear = await decrypt(key, await r.arrayBuffer());
-          const url = URL.createObjectURL(new Blob([clear], {type:'image/jpeg'}));
           const a = fig.querySelector('a');
-          a.href = url; a.target = '_blank';
-          a.removeAttribute('style');
-          a.innerHTML = `<img src="${url}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>`;
+          if (p.type === 'video'){
+            const posterUrl = await fetchClear(p.poster, 'image/jpeg');
+            a.removeAttribute('style');
+            a.href = '#';
+            a.innerHTML = `<span style="position:relative;display:block">
+              <img src="${posterUrl}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
+              </span>
+            </span>`;
+            a.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const btn = a.querySelector('span span span');
+              if (btn) btn.textContent = 'loading\u2026';
+              try{
+                const vUrl = await fetchClear(p.file, 'video/mp4');
+                const v = document.createElement('video');
+                v.controls = true; v.autoplay = true; v.playsInline = true;
+                v.src = vUrl;
+                v.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
+                a.replaceWith(v);
+              }catch(err){ if (btn) btn.textContent = 'could not load'; }
+            }, {once: true});
+          } else {
+            const url = await fetchClear(p.file, 'image/jpeg');
+            a.href = url; a.target = '_blank';
+            a.removeAttribute('style');
+            a.innerHTML = `<img src="${url}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>`;
+          }
         }catch(e){ fig.remove(); }
       };
 
