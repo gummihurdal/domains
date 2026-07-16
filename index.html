@@ -682,6 +682,8 @@
     cursor: pointer;
   }
 
+  #pa-yt .yt-layer iframe { position:absolute; inset:0; width:100%; height:100%; }
+
   #pa-yt-wrap iframe {
     display: block;
     width: 100%;
@@ -2068,18 +2070,24 @@
       document.head.appendChild(tag);
     })();
 
-    // Called inside the gesture handler — creates all 3 YT players while iOS still trusts us
+    // Called inside the gesture handler — creates all YT players while iOS still trusts us.
+    // They live permanently inside the slot, stacked; switching is CSS-only (moving iframes reloads them).
     function instantiateYTPlayers(){
       if (!ytApiReady || !window.YT || !window.YT.Player) return;
+      const slot = document.getElementById('pa-yt');
       ytTracks.forEach(tr => {
         if (ytPlayers.has(tr.yt)) return;
-        const wrap = document.createElement('div');
-        wrap.id = 'pa-yt-' + tr.yt;
-        wrap.style.cssText = 'position:absolute;left:-9999px;width:320px;height:180px;overflow:hidden';
-        document.body.appendChild(wrap);
-        const state = { player: null, ready: false, playReq: false };
-        state.player = new YT.Player(wrap.id, {
+        const layer = document.createElement('div');
+        layer.className = 'yt-layer';
+        layer.style.cssText = 'position:absolute;inset:0;opacity:0;pointer-events:none';
+        const mount = document.createElement('div');
+        mount.id = 'pa-yt-' + tr.yt;
+        layer.appendChild(mount);
+        slot.appendChild(layer);
+        const state = { layer, player: null, ready: false, playReq: false };
+        state.player = new YT.Player(mount.id, {
           videoId: tr.yt,
+          width: '100%', height: '100%',
           playerVars: { autoplay: 0, rel: 0, playsinline: 1 },
           events: {
             onReady: () => {
@@ -2087,7 +2095,7 @@
               if (state.playReq){ state.player.playVideo(); state.playReq = false; }
             },
             onStateChange: e => {
-              if (e.data === YT.PlayerState.ENDED) next();
+              if (e.data === YT.PlayerState.ENDED && activeYT === state) next();
             }
           }
         });
@@ -2101,9 +2109,8 @@
       ytWrap.hidden = true;
       if (activeYT){
         try{ activeYT.player.pauseVideo(); }catch(e){}
-        // move the iframe back off-screen
-        const el = activeYT.player.getIframe && activeYT.player.getIframe();
-        if (el && el.parentNode) el.parentNode.style.left = '-9999px';
+        activeYT.layer.style.opacity = '0';
+        activeYT.layer.style.pointerEvents = 'none';
         activeYT = null;
       }
     }
@@ -2112,18 +2119,14 @@
       player.pause();
       const state = ytPlayers.get(track.yt);
       if (!state){ next(); return; }
-      // move the live iframe into the on-page slot
+      // switch layers, never move DOM
+      ytPlayers.forEach(st => {
+        const on = st === state;
+        st.layer.style.opacity = on ? '1' : '0';
+        st.layer.style.pointerEvents = on ? 'auto' : 'none';
+        if (!on && st.ready){ try{ st.player.pauseVideo(); }catch(e){} }
+      });
       ytWrap.hidden = false;
-      const slot = document.getElementById('pa-yt');
-      try{
-        const iframe = state.player.getIframe && state.player.getIframe();
-        if (iframe && iframe.parentNode !== slot){
-          const oldWrap = iframe.parentNode;
-          if (oldWrap) oldWrap.style.left = '-9999px';
-          slot.appendChild(iframe);
-          iframe.style.cssText = 'display:block;width:100%;height:100%';
-        }
-      }catch(e){}
       ytWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
       activeYT = state;
       if (state.ready){ state.player.playVideo(); }
