@@ -66,8 +66,11 @@ def main():
               and "(2)" not in f["name"]]
     videos = [f for f in files if not f.get("isfolder") and f.get("category") == 2
               and "(2)" not in f["name"]
-              and f.get("size", 0) <= 300 * 1024 * 1024]   # skip huge originals
-    print(f"{len(images)} images, {len(videos)} usable videos in folder")
+              and f.get("size", 0) <= 300 * 1024 * 1024]
+    big_videos = [f for f in files if not f.get("isfolder") and f.get("category") == 2
+                  and "(2)" not in f["name"]
+                  and f.get("size", 0) > 300 * 1024 * 1024]   # streamed from pCloud
+    print(f"{len(images)} images, {len(videos)} transcodable videos, {len(big_videos)} streamed videos")
 
     from PIL import Image, ImageOps
     try:
@@ -162,6 +165,28 @@ def main():
                            "w": vw, "h": vh, "mb": round(os.path.getsize(mp4)/1048576, 1),
                            "created": f.get("created", "")})
 
+    # ---- oversized videos: encrypted thumbnail poster, streamed from pCloud on tap ----
+    for f in sorted(big_videos, key=lambda x: x.get("created", "")):
+        fid = str(f["fileid"]); keep.add(fid)
+        stamp = f"{fid}:{f.get('hash','')}"
+        if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid].get("poster",""))):
+            photos.append(old[fid]); continue
+        print("stream poster:", f["name"], f.get("size",0)//(1024*1024), "MB")
+        turl = f"https://eapi.pcloud.com/getpubthumb?code={code}&fileid={fid}&size=1200x900&type=jpg&crop=0"
+        try:
+            with urllib.request.urlopen(turl, timeout=120) as r:
+                thumb = r.read()
+        except Exception as e:
+            print("  no thumb, skipping:", e); keep.discard(fid); continue
+        slug = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(f["name"])[0].lower()).strip("-")[:60] or fid
+        pname = f"{slug}-{fid[-5:]}.poster.enc"
+        open(os.path.join(PHOTOS, pname), "wb").write(encrypt(thumb))
+        photos.append({"source_id": fid, "stamp": stamp, "type": "stream",
+                       "fileid": int(fid), "poster": pname,
+                       "caption": caption_for(f["name"]),
+                       "mb": round(f.get("size",0)/1048576),
+                       "created": f.get("created", "")})
+
     # remove deleted
     for fid, p in old.items():
         if fid not in keep:
@@ -170,7 +195,7 @@ def main():
                     fp = os.path.join(PHOTOS, p[k])
                     if os.path.exists(fp): os.remove(fp)
 
-    out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS,
+    out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": b64(encrypt(b"grace-ok")),
            "photos": sorted(photos, key=lambda p: p.get("created",""))}
     json.dump(out, open(MANIFEST, "w"), indent=1, ensure_ascii=False)
