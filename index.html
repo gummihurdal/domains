@@ -1983,7 +1983,14 @@
       { t: '\u9752\u82B1\u74F7 \u2014 Blue and White Porcelain \u00B7 Jay Chou', yt: 'Z8Mqw0b9ADs' }
     ];
     const player = new Audio();
-    player.preload = 'none';
+    player.preload = 'auto';
+    const warmed = new Set();
+    function warmNext(i){
+      const nx = TRACKS[i + 1];
+      if (!nx || !nx.src || warmed.has(nx.src)) return;
+      warmed.add(nx.src);
+      fetch(nx.src, {mode: 'no-cors'}).catch(() => {});
+    }
     const ytWrap = document.getElementById('pa-yt-wrap');
     let idx = -1, active = false, ytPlayer = null, ytReady = false;
 
@@ -2034,12 +2041,15 @@
       hideYT();
       player.src = tr.src;
       const my = idx;
-      player.play().catch(() => { if (idx === my) next(); });
-      setTimeout(() => {
-        if (active && idx === my && (player.paused || player.currentTime === 0) && btn.textContent.includes('Pause')){
+      player.play().catch(() => { if (idx === my && active) next(); });
+      clearTimeout(play._watch);
+      play._watch = setTimeout(() => {
+        // skip only if genuinely dead: no error recovery, never started
+        if (active && idx === my && player.currentTime < 0.3 &&
+            (player.error || player.readyState < 2)){
           next();
         }
-      }, 5000);
+      }, 15000);
     }
     function next(){ play(idx + 1); }
     function stop(){
@@ -2049,8 +2059,26 @@
       active = false; idx = -1;
     }
 
+    player.addEventListener('playing', () => {
+      clearTimeout(play._watch);
+      warmNext(idx);
+      if ('mediaSession' in navigator && TRACKS[idx]){
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: TRACKS[idx].t,
+          artist: 'The Collected Work',
+          album: 'Songs \u2014 Gudmundur & Grace'
+        });
+      }
+    });
     player.addEventListener('ended', next);
     player.addEventListener('error', () => { if (active) next(); });
+
+    if ('mediaSession' in navigator){
+      navigator.mediaSession.setActionHandler('play', () => { player.play(); btn.textContent = '\u23F8 Pause'; });
+      navigator.mediaSession.setActionHandler('pause', () => { player.pause(); btn.textContent = '\u25B6 Resume'; });
+      navigator.mediaSession.setActionHandler('nexttrack', () => next());
+      navigator.mediaSession.setActionHandler('previoustrack', () => { if (idx > 0) play(idx - 1); });
+    }
     btn.addEventListener('click', () => {
       if (!active){ play(0); return; }
       const tr = TRACKS[idx];
