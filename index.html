@@ -17,7 +17,6 @@
     --ink-soft: #5D564C;
     --muted: #938A79;
     --line: #E2D8C4;
-    --song: #B8956A;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -423,89 +422,6 @@
   }
 
   .entry:hover .go .arrow { transform: translateX(0.3rem); }
-
-  /* ---------------- the song ---------------- */
-  .song {
-    display: block;
-    text-decoration: none;
-    background: var(--night);
-    color: var(--paper);
-    margin: 3.5rem 0 0;
-    padding: 2.4rem 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .song::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(120% 140% at 85% 50%, rgba(184, 149, 106, 0.18), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.6s ease;
-  }
-
-  .song:hover::after { opacity: 1; }
-
-  .song:focus-visible { outline: 2px solid var(--song); outline-offset: 3px; }
-
-  .song-inner {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  .song-kicker {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: rgba(245, 240, 230, 0.5);
-    margin-bottom: 0.5rem;
-  }
-
-  .song-title {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(1.7rem, 4.5vw, 2.3rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .song-sub {
-    font-size: 0.92rem;
-    color: rgba(245, 240, 230, 0.62);
-    margin-top: 0.45rem;
-    max-width: 26rem;
-  }
-
-  .song-text { flex-grow: 1; }
-
-  .song-play {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.64rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border: 1px solid rgba(245, 240, 230, 0.3);
-    padding: 0.75rem 1.2rem;
-    white-space: nowrap;
-    color: var(--paper);
-    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
-  }
-
-  .song:hover .song-play {
-    background: var(--song);
-    border-color: var(--song);
-    color: var(--night);
-  }
-
-  @media (max-width: 620px) {
-    .song { padding: 1.8rem 1.4rem; margin-left: -1.4rem; margin-right: -1.4rem; }
-    .song-inner { flex-wrap: wrap; gap: 1.2rem; }
-  }
 
   /* ---------------- footer ---------------- */
   footer { padding: 3.5rem 0 5rem; }
@@ -948,17 +864,6 @@
     </section>
 
   </main>
-
-  <a id="with-you" class="song" href="https://grace.azurenexus.com" target="_blank" rel="noopener">
-    <div class="song-inner">
-      <div class="song-text">
-        <div class="song-kicker">Underneath it all</div>
-        <div class="song-title">With You</div>
-        <div class="song-sub">An Icelandic love song for Grace.</div>
-      </div>
-      <div class="song-play">Listen →</div>
-    </div>
-  </a>
 
   <footer>
     <p class="footer-note">Built between Baden and Basel, one at a time.</p>
