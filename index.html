@@ -1443,8 +1443,13 @@
       lbcList.innerHTML = '';
       try{
         const r = await fetch(`${CSB}?photo_id=eq.${encodeURIComponent(photoId)}&select=author,body,created_at&order=created_at.asc`, {headers: CH});
-        if (r.ok) renderComments(await r.json());
-      }catch(e){}
+        if (r.ok){ renderComments(await r.json()); return; }
+        throw new Error(r.status);
+      }catch(e){
+        lbcList.innerHTML = '<div class="lbc-item"><b>Comments unavailable</b>' +
+          'This browser or network is blocking the comment service. ' +
+          'In Brave: tap the lion icon, turn Shields off for this site, and reload.</div>';
+      }
     }
 
     async function sendComment(){
@@ -1458,7 +1463,12 @@
         const r = await fetch(CSB, {method:'POST', headers: CH,
           body: JSON.stringify({photo_id: photoId, author, body})});
         if (r.ok){ lbcText.value = ''; await loadComments(photoId); }
-      }catch(e){}
+        else throw new Error(r.status);
+      }catch(e){
+        lbcSend.textContent = 'Blocked';
+        setTimeout(() => { lbcSend.textContent = 'Send'; }, 2500);
+        return;
+      }
       lbcSend.textContent = 'Send';
     }
 
