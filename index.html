@@ -1975,9 +1975,9 @@
     const now = document.getElementById('pa-now');
     const title = document.getElementById('pa-title');
     const TRACKS = [
-      { t: 'Me\u00F0 \u00FE\u00E9r \u2014 With You', src: 'https://grace.azurenexus.com/song.m4a' },
-      { t: 'My Mont Sainte-Victoire', src: 'songs/my-mont-sainte-victoire.m4a' },
-      { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3' },
+      { t: 'Me\u00F0 \u00FE\u00E9r \u2014 With You', src: 'songs/med-ther-with-you.m4a', dur: 221 },
+      { t: 'My Mont Sainte-Victoire', src: 'songs/my-mont-sainte-victoire.m4a', dur: 245 },
+      { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3', dur: 168 },
       { t: '\u544A\u767D\u6C23\u7403 \u2014 Love Confession \u00B7 Jay Chou', yt: 'bu7nU9Mhpyo' },
       { t: '\u6674\u5929 \u2014 Sunny Day \u00B7 Jay Chou', yt: 'DYptgVvkVLQ' },
       { t: '\u9752\u82B1\u74F7 \u2014 Blue and White Porcelain \u00B7 Jay Chou', yt: 'Z8Mqw0b9ADs' }
@@ -2077,6 +2077,10 @@
       }
     });
     player.addEventListener('ended', next);
+    player.addEventListener('timeupdate', () => {
+      const tr = TRACKS[idx];
+      if (active && tr && tr.dur && player.currentTime >= tr.dur - 0.25) next();
+    });
     player.addEventListener('error', () => { if (active) next(); });
 
     if ('mediaSession' in navigator){
