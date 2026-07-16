@@ -636,6 +636,53 @@
     .work:hover .go .arrow { transform: none; }
   }
 
+  /* ---------------- daily quote ---------------- */
+  .daily-quote {
+    margin: 2.8rem 0;
+    padding: 2rem 2.2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid #BD5D3A;
+  }
+
+  .dq-kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .dq-text {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 72;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .dq-src {
+    margin-top: 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .dq-src a {
+    color: #BD5D3A;
+    text-decoration: none;
+  }
+
+  .dq-src a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .daily-quote { padding: 1.5rem 1.4rem; margin: 2.2rem 0; }
+  }
+
   /* ---------------- photographs ---------------- */
   .photo-grid {
     display: grid;
@@ -1076,6 +1123,12 @@
       </div>
       <div class="go">Read <span class="arrow">→</span></div>
     </a>
+
+    <div class="daily-quote reveal" id="daily-quote" hidden>
+      <div class="dq-kicker">Today, from the relationship shelf</div>
+      <div class="dq-text" id="dq-text"></div>
+      <div class="dq-src" id="dq-src"></div>
+    </div>
 
     <a id="midlife" class="entry reveal" href="https://midlife.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #6C3A5C;">
@@ -1713,6 +1766,21 @@
       passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryPass(passInput.value, false); });
     }).catch(() => {});
   })();
+
+  // Daily quote from the relationship shelf
+  fetch('quotes.json').then(r => r.json()).then(list => {
+    if (!Array.isArray(list) || !list.length) return;
+    const now = new Date();
+    const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+    const q = list[doy % list.length];
+    const box = document.getElementById('daily-quote');
+    document.getElementById('dq-text').textContent = '\u201C' + q.q + '\u201D';
+    document.getElementById('dq-src').innerHTML =
+      '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
+      (q.who ? ' \u00B7 ' + q.who.replace(/&/g,'&amp;').replace(/</g,'&lt;') : '');
+    box.hidden = false;
+    if (box.classList.contains('reveal')) box.classList.add('seen');
+  }).catch(() => {});
 
   // Wedding countdown — set the date and the line appears
   (function(){
