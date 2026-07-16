@@ -1182,14 +1182,38 @@
 
     async function showGallery(m, key){
       unlockRow.hidden = true; note.hidden = true;
-      for (const p of m.photos){
+      // Placeholders first; decrypt each photo only as it approaches the viewport
+      const frag = document.createDocumentFragment();
+      m.photos.forEach((p, i) => {
+        const fig = document.createElement('figure');
+        const ratio = p.w && p.h ? (p.h / p.w * 100) : 66;
+        fig.innerHTML = `<a href="#" rel="noopener" style="position:relative;display:block;padding-top:${ratio}%;background:var(--surface);outline:1px solid var(--line)"></a>
+          <figcaption>${esc(p.caption)}</figcaption>`;
+        fig.dataset.i = i;
+        frag.appendChild(fig);
+      });
+      grid.appendChild(frag);
+
+      const loadOne = async (fig) => {
+        const p = m.photos[fig.dataset.i];
         try{
           const r = await fetch('photos/' + p.file);
           const clear = await decrypt(key, await r.arrayBuffer());
           const url = URL.createObjectURL(new Blob([clear], {type:'image/jpeg'}));
-          grid.insertAdjacentHTML('beforeend', figure(url, esc(p.caption), p.w, p.h));
-        }catch(e){ /* skip broken file */ }
-      }
+          const a = fig.querySelector('a');
+          a.href = url; a.target = '_blank';
+          a.removeAttribute('style');
+          a.innerHTML = `<img src="${url}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>`;
+        }catch(e){ fig.remove(); }
+      };
+
+      const lazy = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting){ lazy.unobserve(en.target); loadOne(en.target); }
+        });
+      }, { rootMargin: '600px 0px' });
+
+      grid.querySelectorAll('figure[data-i]').forEach(f => lazy.observe(f));
     }
 
     fetch('photos/manifest.json').then(r => r.json()).then(async m => {
