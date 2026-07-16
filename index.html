@@ -180,8 +180,8 @@
   @media (max-width: 820px) {
     .index-inner { padding: 0 1.4rem; }
     .index-track {
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
-      mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent);
+      mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent);
     }
   }
 
@@ -329,7 +329,7 @@
   /* ---------------- entries ---------------- */
   .entry {
     display: grid;
-    grid-template-columns: 3rem 1fr 8rem;
+    grid-template-columns: 1fr 8rem;
     gap: 2rem;
     align-items: start;
     padding: 2.8rem 0;
@@ -364,18 +364,6 @@
 
   .entry:hover::before,
   .entry:focus-visible::before { height: calc(100% - 5.6rem); }
-
-  .num {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--muted);
-    padding-top: 0.7rem;
-    font-variant-numeric: tabular-nums;
-    transition: color 0.4s ease;
-  }
-
-  .entry:hover .num { color: var(--accent); }
 
   .body h2 {
     font-family: 'Fraunces', serif;
@@ -487,8 +475,8 @@
   /* ---------------- responsive ---------------- */
   @media (max-width: 720px) {
     .entry {
-      grid-template-columns: 2rem 1fr;
-      gap: 0 1.1rem;
+      grid-template-columns: 1fr;
+      gap: 0;
       padding: 2.3rem 0;
     }
     .entry:hover, .entry:focus-visible { box-shadow: none; }
@@ -499,15 +487,11 @@
 
   /* ---------------- group entry (a series) ---------------- */
   .group {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: 2rem;
+    display: block;
     padding: 2.8rem 0;
     border-bottom: 1px solid var(--line);
     position: relative;
   }
-
-  .group > .num { color: var(--accent); }
 
   .group h2 {
     font-family: 'Fraunces', serif;
@@ -599,7 +583,7 @@
   }
 
   @media (max-width: 720px) {
-    .group { grid-template-columns: 2rem 1fr; gap: 0 1.1rem; padding: 2.3rem 0; }
+    .group { padding: 2.3rem 0; }
     .work { grid-template-columns: 1.3rem 1fr; padding-right: 0; }
     .work .go { grid-column: 2; padding-top: 0.8rem; }
     .work:hover .go .arrow { transform: none; }
@@ -673,7 +657,6 @@
   <main>
 
     <section id="nature" class="group reveal" style="--accent: #1C7293;">
-      <div class="num">01</div>
       <div>
         <h2>Wonders of Nature</h2>
         <div class="subtitle">A series — one creature at a time</div>
@@ -712,7 +695,6 @@
 
     <a id="devotional" class="entry reveal" href="https://graceforevery.day" target="_blank" rel="noopener"
        style="--accent: #8A6E20;">
-      <div class="num">02</div>
       <div class="body">
         <h2>Grace for Every Day</h2>
         <div class="subtitle">A daily devotional</div>
@@ -737,7 +719,6 @@
 
     <a id="midlife" class="entry reveal" href="https://midlife.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #6C3A5C;">
-      <div class="num">03</div>
       <div class="body">
         <h2>The Midlife Workbook</h2>
         <div class="subtitle">Handling the crisis, together</div>
@@ -763,7 +744,6 @@
 
     <a id="foundation" class="entry reveal" href="https://foundation.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #3E5C63;">
-      <div class="num">04</div>
       <div class="body">
         <h2>Solidifying a Relationship</h2>
         <div class="subtitle">The proven method — ten practices, and the evidence for each</div>
@@ -789,7 +769,6 @@
 
     <a id="bond" class="entry reveal" href="https://bond.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #BD5D3A;">
-      <div class="num">05</div>
       <div class="body">
         <h2>Tend</h2>
         <div class="subtitle">A daily practice for two</div>
@@ -813,7 +792,6 @@
 
     <a id="playvault" class="entry reveal" href="https://games.azurenexus.com" target="_blank" rel="noopener"
        style="--accent: #B8860B;">
-      <div class="num">06</div>
       <div class="body">
         <h2>PlayVault</h2>
         <div class="subtitle">Seven games, played together</div>
@@ -836,7 +814,6 @@
     </a>
 
     <section id="songs" class="group reveal" style="--accent: #B8956A;">
-      <div class="num">07</div>
       <div>
         <h2>Songs</h2>
         <div class="subtitle">A series — written along the way</div>
