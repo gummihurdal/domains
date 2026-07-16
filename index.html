@@ -799,7 +799,7 @@
     text-overflow: ellipsis;
   }
 
-  .photo-grid figure { position: relative; }
+  .fig-media { position: relative; }
 
   .fav-btn {
     position: absolute;
@@ -1631,8 +1631,11 @@
       const a = document.createElement('a');
       a.href = '#'; a.rel = 'noopener';
       a.style.cssText = `position:relative;display:block;padding-top:${ratio}%;background:var(--surface);outline:1px solid var(--line)`;
-      fig.appendChild(a);
-      fig.appendChild(heartBtn(p));
+      const media = document.createElement('div');
+      media.className = 'fig-media';
+      media.appendChild(a);
+      media.appendChild(heartBtn(p));
+      fig.appendChild(media);
       const cap = document.createElement('figcaption');
       cap.textContent = p.caption || '';
       fig.appendChild(cap);
