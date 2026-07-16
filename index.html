@@ -820,26 +820,39 @@
   .fav-btn.on { color: #E36C5B; background: rgba(14, 18, 26, 0.6); }
 
   .fig-comments {
-    margin: 0 0 0.55rem;
+    margin: 0 0 0.6rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--line);
   }
 
   .fig-comments .fc {
     font-family: 'Newsreader', Georgia, serif;
-    font-size: 0.92rem;
-    line-height: 1.45;
+    font-style: italic;
+    font-size: 0.85rem;
+    line-height: 1.5;
     color: var(--ink-soft);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
+
+  .fig-comments .fc:last-child { margin-bottom: 0; }
 
   .fig-comments .fc b {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.56rem;
+    font-style: normal;
+    font-size: 0.54rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     font-weight: 500;
     color: var(--accent, #4E6E8E);
     margin-right: 0.45rem;
   }
+
+  /* strips stay clean — photos only */
+  .photo-strip .fig-comments { display: none; }
 
   .lightbox {
     position: fixed;
