@@ -798,13 +798,14 @@
 
   .lightbox img {
     max-width: 96vw;
-    max-height: 86vh;
+    max-height: 62vh;
     display: block;
+    margin-bottom: 14vh;
   }
 
   .lb-cap {
     position: absolute;
-    left: 0; right: 0; bottom: 1.4rem;
+    left: 0; right: 0; bottom: 0.55rem;
     text-align: center;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.64rem;
@@ -839,6 +840,76 @@
   .lb-prev { left: 0.6rem; }
   .lb-next { right: 0.6rem; }
   @media (max-width: 720px) { .lb-nav { display: none; } }
+
+  .lb-comments {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 3.4rem;
+    width: min(34rem, 92vw);
+    color: rgba(245, 240, 230, 0.9);
+  }
+
+  .lbc-list {
+    max-height: 22vh;
+    overflow-y: auto;
+    margin-bottom: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .lbc-item {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    background: rgba(14, 18, 26, 0.72);
+    padding: 0.5rem 0.8rem;
+  }
+
+  .lbc-item b {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #E9CFA0;
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .lbc-row { display: flex; gap: 0.4rem; }
+
+  .lbc-row input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid rgba(245, 240, 230, 0.25);
+    background: rgba(14, 18, 26, 0.72);
+    color: var(--paper);
+    outline: none;
+    min-width: 0;
+  }
+
+  .lbc-row input:focus { border-color: #E9CFA0; }
+  #lbc-name { flex: 0 0 6.5rem; }
+  #lbc-text { flex: 1; }
+
+  .lbc-row button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #E9CFA0;
+    background: none;
+    color: #E9CFA0;
+    cursor: pointer;
+  }
+
+  .lbc-row button:hover { background: #E9CFA0; color: var(--night); }
+
+  @media (max-height: 640px) { .lbc-list { max-height: 14vh; } }
 
   .countdown {
     margin: 0 0 1.6rem;
@@ -931,6 +1002,14 @@
   <img id="lb-img" alt="">
   <button class="lb-nav lb-next" id="lb-next" aria-label="Next">→</button>
   <div class="lb-cap" id="lb-cap"></div>
+  <div class="lb-comments" id="lb-comments">
+    <div class="lbc-list" id="lbc-list"></div>
+    <div class="lbc-row">
+      <input id="lbc-name" placeholder="name" aria-label="Your name">
+      <input id="lbc-text" placeholder="say something about this one…" aria-label="Comment">
+      <button id="lbc-send" type="button">Send</button>
+    </div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -1342,7 +1421,50 @@
       const p = lbList[lbIdx];
       lbImg.src = await fetchClear(lbKey, p.file, 'image/jpeg');
       lbCap.textContent = p.caption || '';
+      loadComments(idOf(p));
     }
+    /* ---- comments (Supabase) ---- */
+    const CSB = 'https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/photo_comments';
+    const CKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs';
+    const CH = {'apikey': CKEY, 'Authorization': 'Bearer ' + CKEY, 'Content-Type': 'application/json'};
+    const lbcList = document.getElementById('lbc-list');
+    const lbcName = document.getElementById('lbc-name');
+    const lbcText = document.getElementById('lbc-text');
+    const lbcSend = document.getElementById('lbc-send');
+    lbcName.value = localStorage.getItem('cw_name') || '';
+
+    function renderComments(rows){
+      lbcList.innerHTML = rows.map(c =>
+        `<div class="lbc-item"><b>${esc(c.author)}</b>${esc(c.body)}</div>`).join('');
+      lbcList.scrollTop = lbcList.scrollHeight;
+    }
+
+    async function loadComments(photoId){
+      lbcList.innerHTML = '';
+      try{
+        const r = await fetch(`${CSB}?photo_id=eq.${encodeURIComponent(photoId)}&select=author,body,created_at&order=created_at.asc`, {headers: CH});
+        if (r.ok) renderComments(await r.json());
+      }catch(e){}
+    }
+
+    async function sendComment(){
+      const photoId = idOf(lbList[lbIdx]);
+      const author = lbcName.value.trim() || 'Anonymous';
+      const body = lbcText.value.trim();
+      if (!body) return;
+      localStorage.setItem('cw_name', author);
+      lbcSend.textContent = '…';
+      try{
+        const r = await fetch(CSB, {method:'POST', headers: CH,
+          body: JSON.stringify({photo_id: photoId, author, body})});
+        if (r.ok){ lbcText.value = ''; await loadComments(photoId); }
+      }catch(e){}
+      lbcSend.textContent = 'Send';
+    }
+
+    lbcSend.addEventListener('click', sendComment);
+    lbcText.addEventListener('keydown', e => { if (e.key === 'Enter') sendComment(); });
+
     function lbOpen(list, i, key){ lbList = list; lbKey = key; lb.classList.add('open'); document.body.style.overflow='hidden'; lbShow(i); }
     function lbClose(){ lb.classList.remove('open'); document.body.style.overflow=''; lbImg.src=''; }
     document.getElementById('lb-x').addEventListener('click', lbClose);
