@@ -22,6 +22,14 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
+  ::selection { background: #E8DCC2; color: var(--ink); }
+
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+
+  @keyframes pagein { from { opacity: 0; } to { opacity: 1; } }
+  body { animation: pagein 0.5s ease both; }
+
   body {
     background: var(--paper);
     color: var(--ink);
@@ -41,12 +49,22 @@
   }
 
   .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.66rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 2rem;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 2.2rem;
+    height: 1px;
+    background: var(--ink);
   }
 
   .masthead h1 {
@@ -89,7 +107,10 @@
     -webkit-backdrop-filter: blur(10px) saturate(1.2);
     backdrop-filter: blur(10px) saturate(1.2);
     border-bottom: 1px solid var(--line);
+    transition: box-shadow 0.4s ease;
   }
+
+  .index.stuck { box-shadow: 0 0.6rem 1.8rem rgba(42, 37, 32, 0.07); }
 
   .index-inner {
     max-width: 58rem;
@@ -436,6 +457,15 @@
     margin-bottom: 2.5rem;
   }
 
+  .colophon a.totop {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .colophon a.totop:hover,
+  .colophon a.totop:focus-visible { color: var(--ink); }
+
   .colophon {
     display: flex;
     justify-content: space-between;
@@ -572,13 +602,11 @@
   }
 
   /* ---------------- reveal ---------------- */
-  .reveal { opacity: 0; transform: translateY(0.9rem); }
+  .reveal { opacity: 0; }
 
   .reveal.seen {
     opacity: 1;
-    transform: none;
-    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
-                transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -586,11 +614,11 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
-    .reveal { opacity: 1; transform: none; }
+    .reveal { opacity: 1; }
   }
 </style>
 </head>
-<body>
+<body id="top">
 
 <div class="wrap">
 
@@ -891,6 +919,7 @@
     <div class="colophon">
       <span>Azurenexus · 2026</span>
       <span>Set in Fraunces &amp; Newsreader</span>
+      <a class="totop" href="#top">Top ↑</a>
     </div>
   </footer>
 
@@ -917,6 +946,19 @@
   const groupBtn = document.querySelector('.nav-group-btn');
   const groupIds = ['midlife', 'foundation', 'bond'];
 
+  const track = document.querySelector('.index-track');
+
+  // Scroll a nav link into view horizontally WITHIN the track only —
+  // element.scrollIntoView would cancel any in-progress anchor scroll.
+  const revealInTrack = (link) => {
+    const left = link.offsetLeft, width = link.offsetWidth;
+    if (left < track.scrollLeft) {
+      track.scrollTo({ left: left - 12, behavior: 'smooth' });
+    } else if (left + width > track.scrollLeft + track.clientWidth) {
+      track.scrollTo({ left: left + width - track.clientWidth + 12, behavior: 'smooth' });
+    }
+  };
+
   const spy = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const link = navLinks.get(entry.target.id);
@@ -926,7 +968,9 @@
         link.classList.add('current');
         groupBtn.classList.toggle('current', groupIds.includes(entry.target.id));
         if (!groupIds.includes(entry.target.id)) {
-          link.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          revealInTrack(link);
+        } else {
+          revealInTrack(groupBtn);
         }
       }
     });
@@ -937,15 +981,34 @@
     if (target) spy.observe(target);
   });
 
-  // Dropdown: click to toggle, close on link click, outside click, or Esc
+  // Dropdown: hover to expand (with intent delay), click for touch, Esc/outside to close
+  const menu = document.querySelector('.nav-menu');
   const setOpen = (open) => {
     indexNav.classList.toggle('open', open);
     groupBtn.setAttribute('aria-expanded', open);
   };
 
+  const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (hoverCapable) {
+    let closeTimer;
+    const openNow = () => { clearTimeout(closeTimer); setOpen(true); };
+    const closeSoon = () => {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => setOpen(false), 240);
+    };
+    [groupBtn, menu].forEach(el => {
+      el.addEventListener('mouseenter', openNow);
+      el.addEventListener('mouseleave', closeSoon);
+    });
+  }
+
   groupBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    setOpen(!indexNav.classList.contains('open'));
+    // On hover devices the menu is already open when the click lands —
+    // toggling here would snap it shut. Click only ever opens.
+    if (hoverCapable) setOpen(true);
+    else setOpen(!indexNav.classList.contains('open'));
   });
 
   document.querySelectorAll('.nav-menu a').forEach(a =>
@@ -959,6 +1022,13 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(false);
   });
+
+  // Nav shadow once it sticks
+  const sentinel = document.createElement('div');
+  indexNav.parentNode.insertBefore(sentinel, indexNav);
+  new IntersectionObserver(([e]) =>
+    indexNav.classList.toggle('stuck', !e.isIntersecting)
+  ).observe(sentinel);
 </script>
 
 </body>
