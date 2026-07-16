@@ -1398,8 +1398,52 @@
               <div class="go">Listen <span class="arrow">→</span></div>
             </a>
           </li>
+          <li>
+            <a class="work" href="https://www.youtube.com/watch?v=DYptgVvkVLQ" target="_blank" rel="noopener">
+              <div class="wn">5.</div>
+              <div>
+                <h3>晴天 — Sunny Day</h3>
+                <p>
+                  Jay Chou. The one everyone her age carries with them —
+                  first love, remembered in sunlight.
+                </p>
+                <div class="specs">
+                  <div class="swatches">
+                    <span class="swatch" style="background:#7FB2D9"></span>
+                    <span class="swatch" style="background:#C9E0F0"></span>
+                    <span class="swatch" style="background:#F5E6C8"></span>
+                    <span class="swatch" style="background:#B8956A"></span>
+                  </div>
+                  <span class="domain">youtube.com · official</span>
+                </div>
+              </div>
+              <div class="go">Listen <span class="arrow">→</span></div>
+            </a>
+          </li>
+          <li>
+            <a class="work" href="https://www.youtube.com/watch?v=Z8Mqw0b9ADs" target="_blank" rel="noopener">
+              <div class="wn">6.</div>
+              <div>
+                <h3>青花瓷 — Blue and White Porcelain</h3>
+                <p>
+                  Jay Chou. Love written as porcelain — delicate surface,
+                  deep glaze. The most elegant thing he ever made.
+                </p>
+                <div class="specs">
+                  <div class="swatches">
+                    <span class="swatch" style="background:#2A4D69"></span>
+                    <span class="swatch" style="background:#5B84A8"></span>
+                    <span class="swatch" style="background:#E8F1F5"></span>
+                    <span class="swatch" style="background:#FFFDF7"></span>
+                  </div>
+                  <span class="domain">youtube.com · official</span>
+                </div>
+              </div>
+              <div class="go">Listen <span class="arrow">→</span></div>
+            </a>
+          </li>
         </ul>
-        <div class="forthcoming">5. — to come</div>
+        <div class="forthcoming">7. — to come</div>
         <div id="pa-yt-wrap" hidden style="margin-top:1.6rem">
           <div id="pa-yt"></div>
         </div>
@@ -1934,7 +1978,9 @@
       { t: 'Me\u00F0 \u00FE\u00E9r \u2014 With You', src: 'https://grace.azurenexus.com/song.m4a' },
       { t: 'My Mont Sainte-Victoire', src: 'songs/my-mont-sainte-victoire.mp4' },
       { t: 'Moi Non Plus', src: 'songs/moi-non-plus.mp3' },
-      { t: '\u544A\u767D\u6C23\u7403 \u2014 Love Confession \u00B7 Jay Chou', yt: 'bu7nU9Mhpyo' }
+      { t: '\u544A\u767D\u6C23\u7403 \u2014 Love Confession \u00B7 Jay Chou', yt: 'bu7nU9Mhpyo' },
+      { t: '\u6674\u5929 \u2014 Sunny Day \u00B7 Jay Chou', yt: 'DYptgVvkVLQ' },
+      { t: '\u9752\u82B1\u74F7 \u2014 Blue and White Porcelain \u00B7 Jay Chou', yt: 'Z8Mqw0b9ADs' }
     ];
     const player = new Audio();
     player.preload = 'none';
@@ -1972,6 +2018,7 @@
         });
       } else if (ytReady){
         ytPlayer.loadVideoById(track.yt);
+        ytPlayer.playVideo();
       }
     }
 
