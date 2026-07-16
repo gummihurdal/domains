@@ -45,7 +45,7 @@
   /* ---------------- photo hero ---------------- */
   .hero {
     position: relative;
-    height: clamp(22rem, 58vh, 38rem);
+    height: clamp(20rem, 50vh, 32rem);
     overflow: hidden;
     background: var(--night);
   }
@@ -63,17 +63,14 @@
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(58% 62% at 50% 52%, rgba(14, 18, 26, 0.44), rgba(14, 18, 26, 0.08) 68%, rgba(14, 18, 26, 0) 82%),
-      linear-gradient(to top, rgba(14, 18, 26, 0.35) 0%, rgba(14, 18, 26, 0) 30%);
+    background: linear-gradient(to top, rgba(14, 18, 26, 0.55) 0%, rgba(14, 18, 26, 0) 28%);
   }
 
   .hero-text {
     position: absolute;
     left: 0;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 1.6rem;
     z-index: 1;
   }
 
@@ -84,90 +81,38 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 0.3rem;
     color: var(--paper);
-    text-shadow: 0 1px 26px rgba(14, 18, 26, 0.55);
+    text-shadow: 0 1px 14px rgba(14, 18, 26, 0.6);
   }
 
   .lk-top {
     font-family: 'Fraunces', serif;
-    font-variation-settings: 'opsz' 100;
-    font-weight: 300;
-    font-size: clamp(1.35rem, 3.4vw, 2rem);
-    line-height: 1;
-    letter-spacing: 0.04em;
-    color: rgba(245, 240, 230, 0.92);
-    opacity: 0;
-    animation: lkin 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) 0.15s forwards;
-  }
-
-  .lk-top em { font-style: italic; font-weight: 300; }
-
-  .lk-of {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem 0 0.9rem;
-    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 60;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(0.8rem, 1.7vw, 0.95rem);
-    letter-spacing: 0.18em;
-    color: rgba(245, 240, 230, 0.65);
-    opacity: 0;
-    animation: lkin 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) 0.45s forwards;
-  }
-
-  .lk-rule {
-    width: clamp(2rem, 5vw, 3.2rem);
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(227, 199, 154, 0.7));
-  }
-
-  .lk-rule:last-child {
-    background: linear-gradient(to left, transparent, rgba(227, 199, 154, 0.7));
+    font-size: clamp(0.82rem, 1.8vw, 0.95rem);
+    letter-spacing: 0.14em;
+    color: rgba(245, 240, 230, 0.78);
   }
 
   .lk-names {
     font-family: 'Fraunces', serif;
     font-variation-settings: 'opsz' 144;
     font-weight: 300;
-    font-size: clamp(2.2rem, 7.2vw, 4.6rem);
+    font-size: clamp(1.5rem, 4vw, 2.3rem);
     line-height: 1.05;
-    letter-spacing: -0.01em;
-    opacity: 0;
-    animation: lkin 1.3s cubic-bezier(0.2, 0.7, 0.3, 1) 0.75s forwards;
+    letter-spacing: -0.005em;
   }
 
   .lk-amp {
     display: inline-block;
     font-family: 'Pinyon Script', cursive;
-    font-size: 1.28em;
+    font-size: 1.22em;
     line-height: 0;
-    vertical-align: -0.12em;
-    padding: 0 0.12em;
+    vertical-align: -0.1em;
+    padding: 0 0.1em;
     color: #E9CFA0;
-    text-shadow: 0 1px 18px rgba(14, 18, 26, 0.5), 0 0 34px rgba(233, 207, 160, 0.35);
-  }
-
-  .lk-line {
-    margin-top: 1.15rem;
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(0.9rem, 2vw, 1.05rem);
-    letter-spacing: 0.12em;
-    color: rgba(233, 207, 160, 0.9);
-    opacity: 0;
-    animation: lkin 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 1.15s forwards;
-  }
-
-  @keyframes lkin {
-    from { opacity: 0; transform: translateY(0.7rem); }
-    to   { opacity: 1; transform: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lk-top, .lk-of, .lk-names, .lk-line { opacity: 1; animation: none; }
   }
 
   @media (max-width: 640px) {
@@ -726,10 +671,8 @@
   <div class="hero-text">
     <div class="wrap">
       <h1 class="lockup">
-        <span class="lk-top">The Collected <em>Work</em></span>
-        <span class="lk-of"><span class="lk-rule"></span>of<span class="lk-rule"></span></span>
+        <span class="lk-top">The Collected Work of</span>
         <span class="lk-names">Gudmundur <span class="lk-amp">&amp;</span> Grace</span>
-        <span class="lk-line">all of it, with you</span>
       </h1>
     </div>
   </div>
