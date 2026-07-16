@@ -819,6 +819,28 @@
 
   .fav-btn.on { color: #E36C5B; background: rgba(14, 18, 26, 0.6); }
 
+  .fig-comments {
+    margin: 0 0 0.55rem;
+  }
+
+  .fig-comments .fc {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin-bottom: 0.25rem;
+  }
+
+  .fig-comments .fc b {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--accent, #4E6E8E);
+    margin-right: 0.45rem;
+  }
+
   .lightbox {
     position: fixed;
     inset: 0;
@@ -1464,6 +1486,35 @@
       loadComments(idOf(p));
     }
     /* ---- comments (Supabase) ---- */
+    let COMMENTS = new Map();
+
+    async function fetchAllComments(){
+      try{
+        const r = await fetch(CSB.replace('photo_comments','photo_comments') +
+          '?select=photo_id,author,body,created_at&order=created_at.asc', {headers: CH});
+        if (!r.ok) return;
+        const rows = await r.json();
+        COMMENTS = new Map();
+        rows.forEach(c => {
+          if (!COMMENTS.has(c.photo_id)) COMMENTS.set(c.photo_id, []);
+          COMMENTS.get(c.photo_id).push(c);
+        });
+      }catch(e){}
+    }
+
+    function renderFigComments(fig, photoId){
+      let box = fig.querySelector('.fig-comments');
+      const rows = COMMENTS.get(photoId) || [];
+      if (!rows.length){ if (box) box.remove(); return; }
+      if (!box){
+        box = document.createElement('div');
+        box.className = 'fig-comments';
+        fig.insertBefore(box, fig.firstChild);
+      }
+      box.innerHTML = rows.map(c =>
+        `<div class="fc"><b>${esc(c.author)}</b>${esc(c.body)}</div>`).join('');
+    }
+
     const CSB = 'https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/photo_comments';
     const CKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs';
     const CH = {'apikey': CKEY, 'Authorization': 'Bearer ' + CKEY, 'Content-Type': 'application/json'};
@@ -1502,7 +1553,14 @@
       try{
         const r = await fetch(CSB, {method:'POST', headers: CH,
           body: JSON.stringify({photo_id: photoId, author, body})});
-        if (r.ok){ lbcText.value = ''; await loadComments(photoId); }
+        if (r.ok){
+          lbcText.value = '';
+          await loadComments(photoId);
+          if (!COMMENTS.has(photoId)) COMMENTS.set(photoId, []);
+          COMMENTS.get(photoId).push({author, body});
+          document.querySelectorAll(`[data-fav-id="${CSS.escape(photoId)}"]`)
+            .forEach(f => renderFigComments(f, photoId));
+        }
         else throw new Error(r.status);
       }catch(e){
         lbcSend.textContent = 'Blocked';
@@ -1565,6 +1623,7 @@
       const cap = document.createElement('figcaption');
       cap.textContent = p.caption || '';
       fig.appendChild(cap);
+      renderFigComments(fig, idOf(p));
 
       fig._load = async () => {
         try{
@@ -1685,6 +1744,7 @@
     async function showGallery(m, key){
       MANIFEST = m; KEY = key;
       unlockRow.hidden = true; note.hidden = true;
+      await fetchAllComments();
       grid.innerHTML = '';
 
       const withDates = m.photos.map(p => ({p, d: parseDate(p)}));
