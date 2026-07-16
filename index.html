@@ -989,7 +989,7 @@
           The places behind the work. Each one taken where something in this
           collection was made or imagined.
         </p>
-        <div class="photo-grid">
+        <div class="photo-grid" id="photo-grid">
           <figure>
             <a href="lugano.jpg" target="_blank" rel="noopener">
               <img src="lugano.jpg" alt="Lake Lugano and Monte San Salvatore from the balcony, garden below" loading="lazy" width="1800" height="1012">
@@ -997,7 +997,7 @@
             <figcaption>Lake Lugano, from the balcony</figcaption>
           </figure>
         </div>
-        <div class="forthcoming">more — to come</div>
+        <div class="forthcoming" id="photos-note">more — to come</div>
       </div>
     </section>
 
@@ -1094,6 +1094,23 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(false);
   });
+
+  // Photographs: render from photos/manifest.json (synced from pCloud)
+  fetch('photos/manifest.json').then(r => r.json()).then(list => {
+    if (!Array.isArray(list) || !list.length) return;
+    const grid = document.getElementById('photo-grid');
+    grid.innerHTML = list.map(p => {
+      const src = p.file.startsWith('..') ? p.file.slice(3) : 'photos/' + p.file;
+      const dims = p.w && p.h ? ` width="${p.w}" height="${p.h}"` : '';
+      const cap = (p.caption || '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      return `<figure>
+        <a href="${src}" target="_blank" rel="noopener">
+          <img src="${src}" alt="${cap}" loading="lazy"${dims}>
+        </a>
+        <figcaption>${cap}</figcaption>
+      </figure>`;
+    }).join('');
+  }).catch(() => {});
 
   // Nav shadow once it sticks
   const sentinel = document.createElement('div');
