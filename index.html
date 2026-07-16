@@ -2038,7 +2038,8 @@
     if (dirBtn){
       dirBtn.addEventListener('click', () => {
         reversed = !reversed;
-        dirBtn.textContent = reversed ? '6 → 1' : '1 → 6';
+        const n = TRACKS.length;
+        dirBtn.textContent = reversed ? n + ' \u2192 1' : '1 \u2192 ' + n;
       });
     }
 
