@@ -167,6 +167,141 @@
 
   [id] { scroll-margin-top: 4.2rem; }
 
+  /* ---------------- nav group (dropdown) ---------------- */
+  .nav-group-btn {
+    --c: var(--ink);
+    position: relative;
+    flex-shrink: 0;
+    display: block;
+    padding: 1.05rem 0.95rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .nav-group-btn .caret {
+    display: inline-block;
+    font-size: 0.55rem;
+    margin-left: 0.15rem;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-group-btn::after {
+    content: '';
+    position: absolute;
+    left: 0.95rem;
+    right: 0.95rem;
+    bottom: -1px;
+    height: 2px;
+    background: var(--c);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  .nav-group-btn:hover,
+  .nav-group-btn:focus-visible,
+  .nav-group-btn.current,
+  .index.open .nav-group-btn { color: var(--c); }
+
+  .nav-group-btn:hover::after,
+  .nav-group-btn:focus-visible::after,
+  .nav-group-btn.current::after,
+  .index.open .nav-group-btn::after { transform: scaleX(1); }
+
+  .index.open .nav-group-btn .caret { transform: rotate(180deg); }
+
+  .nav-group-btn:focus-visible { outline: 2px solid var(--c); outline-offset: -2px; }
+
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 253, 247, 0.96);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    backdrop-filter: blur(10px) saturate(1.2);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1rem 2.5rem rgba(42, 37, 32, 0.08);
+    opacity: 0;
+    transform: translateY(-0.4rem);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1), visibility 0.3s;
+  }
+
+  .index.open .nav-menu {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+
+  .nav-menu-inner {
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: 0.9rem 2rem 1.1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-menu a {
+    flex: 1;
+    display: block;
+    padding: 0.85rem 0.95rem;
+    text-decoration: none;
+    border-left: 2px solid var(--line);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .nav-menu a:hover,
+  .nav-menu a:focus-visible {
+    border-left-color: var(--c);
+    background: var(--paper);
+  }
+
+  .nav-menu a:focus-visible { outline: 2px solid var(--c); outline-offset: -2px; }
+
+  .nav-menu strong {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+    transition: color 0.3s ease;
+  }
+
+  .nav-menu a:hover strong,
+  .nav-menu a:focus-visible strong,
+  .nav-menu a.current strong { color: var(--c); }
+
+  .nav-menu a.current { border-left-color: var(--c); }
+
+  .nav-menu small {
+    display: block;
+    font-family: 'Newsreader', Georgia, serif;
+    font-style: italic;
+    font-size: 0.84rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 720px) {
+    .nav-menu-inner {
+      flex-direction: column;
+      gap: 0;
+      padding: 0.7rem 1.4rem 0.9rem;
+    }
+  }
+
   /* ---------------- entries ---------------- */
   .entry {
     display: grid;
@@ -560,12 +695,28 @@
     <div class="index-track">
       <a href="#nature" style="--c:#1C7293">Nature</a>
       <a href="#devotional" style="--c:#8A6E20">Devotional</a>
-      <a href="#midlife" style="--c:#6C3A5C">Midlife</a>
-      <a href="#foundation" style="--c:#3E5C63">Foundation</a>
-      <a href="#bond" style="--c:#BD5D3A">Bond</a>
+      <button class="nav-group-btn" style="--c:#BD5D3A" aria-expanded="false" aria-controls="together-menu">
+        Together <span class="caret">▾</span>
+      </button>
       <a href="#playvault" style="--c:#B8860B">Games</a>
       <a href="#songs" style="--c:#B8956A">Songs</a>
       <a href="#with-you" style="--c:#B8956A">With You</a>
+    </div>
+  </div>
+  <div class="nav-menu" id="together-menu">
+    <div class="nav-menu-inner">
+      <a href="#midlife" style="--c:#6C3A5C">
+        <strong>Midlife</strong>
+        <small>The workbook — three paths through the crisis</small>
+      </a>
+      <a href="#foundation" style="--c:#3E5C63">
+        <strong>Foundation</strong>
+        <small>How to solidify a relationship — the method</small>
+      </a>
+      <a href="#bond" style="--c:#BD5D3A">
+        <strong>Bond</strong>
+        <small>The daily practice that strengthens it</small>
+      </a>
     </div>
   </div>
 </nav>
@@ -834,8 +985,12 @@
 
   // Scroll-spy: highlight the section currently in view
   const navLinks = new Map(
-    [...document.querySelectorAll('.index a')].map(a => [a.getAttribute('href').slice(1), a])
+    [...document.querySelectorAll('.index a[href^="#"]')].map(a => [a.getAttribute('href').slice(1), a])
   );
+  const indexNav = document.querySelector('.index');
+  const groupBtn = document.querySelector('.nav-group-btn');
+  const groupIds = ['midlife', 'foundation', 'bond'];
+
   const spy = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const link = navLinks.get(entry.target.id);
@@ -843,7 +998,10 @@
       if (entry.isIntersecting) {
         navLinks.forEach(a => a.classList.remove('current'));
         link.classList.add('current');
-        link.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        groupBtn.classList.toggle('current', groupIds.includes(entry.target.id));
+        if (!groupIds.includes(entry.target.id)) {
+          link.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
       }
     });
   }, { rootMargin: '-15% 0px -70% 0px' });
@@ -851,6 +1009,29 @@
   navLinks.forEach((a, id) => {
     const target = document.getElementById(id);
     if (target) spy.observe(target);
+  });
+
+  // Dropdown: click to toggle, close on link click, outside click, or Esc
+  const setOpen = (open) => {
+    indexNav.classList.toggle('open', open);
+    groupBtn.setAttribute('aria-expanded', open);
+  };
+
+  groupBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(!indexNav.classList.contains('open'));
+  });
+
+  document.querySelectorAll('.nav-menu a').forEach(a =>
+    a.addEventListener('click', () => setOpen(false))
+  );
+
+  document.addEventListener('click', (e) => {
+    if (indexNav.classList.contains('open') && !indexNav.contains(e.target)) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
   });
 </script>
 
