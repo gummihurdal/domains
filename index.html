@@ -2097,8 +2097,7 @@
       ytBuiltIds = key;
       ytOne = new YT.Player(mount.id, {
         width: '100%', height: '100%',
-        videoId: ids[0],
-        playerVars: { rel: 0, playsinline: 1, playlist: ids.slice(1).join(',') },
+        playerVars: { rel: 0, playsinline: 1, listType: 'playlist', playlist: ids.join(',') },
         events: {
           onReady: () => {
             ytOneReady = true;
@@ -2141,12 +2140,12 @@
     }
 
     function startYTRun(){
-      ytOne.playVideo();
+      try{ ytOne.playVideoAt(0); }catch(e){ ytOne.playVideo(); }
       setTimeout(() => {
         if (!ytRun || !ytOneReady) return;
         const st = ytOne.getPlayerState();
         if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
-          try{ ytOne.mute(); ytOne.playVideo(); }catch(e){}
+          try{ ytOne.mute(); ytOne.playVideoAt(0); }catch(e){ try{ ytOne.mute(); ytOne.playVideo(); }catch(e2){} }
           setTimeout(() => {
             if (!ytRun) return;
             const s2 = ytOne.getPlayerState();
