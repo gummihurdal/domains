@@ -2042,6 +2042,7 @@
         reversed = !reversed;
         const n = TRACKS.length;
         dirBtn.textContent = reversed ? n + ' \u2192 1' : '1 \u2192 ' + n;
+        if (!activeYT){ window.__paWanted = true; buildYTPlayer(); }   // rebuild under this gesture
       });
     }
 
@@ -2057,9 +2058,10 @@
     let idx = -1, active = false, ytPlayer = null, ytReady = false;
 
     // Pre-load YT API silently as soon as the module runs
-    const ytPlayers = { one: null, ready: false };   // single blessed player for ALL videos
     let ytApiReady = false;
-    let ytRun = null;   // { ids: [...], startPos: chain position of first playlist item }
+    let ytOne = null, ytOneReady = false, ytBuiltIds = '';
+    let ytRun = null;   // { ids, startPos } while the video run is active
+    let soundChip = null;
 
     (function preloadYTApi(){
       if (window.YT && window.YT.Player){ ytApiReady = true; return; }
@@ -2069,80 +2071,112 @@
       window.onYouTubeIframeAPIReady = () => {
         ytApiReady = true;
         if (prev) prev();
-        if (window.__paWanted) instantiateYTPlayers();
+        if (window.__paWanted) buildYTPlayer();
       };
       document.head.appendChild(tag);
     })();
 
-    function instantiateYTPlayers(){
-      if (!ytApiReady || !window.YT || !window.YT.Player || ytPlayers.one) return;
+    function videoRunIds(){
+      // the consecutive video ids in the CURRENT playback order
+      return order().map(i => TRACKS[i]).filter(t => t.yt).map(t => t.yt);
+    }
+
+    // Create (or recreate) the single player with the whole video playlist preloaded.
+    // Must be called inside a user gesture for iOS to bless it.
+    function buildYTPlayer(){
+      if (!ytApiReady || !window.YT || !window.YT.Player) return;
+      const ids = videoRunIds();
+      const key = ids.join(',');
+      if (ytOne && ytBuiltIds === key) return;
       const slot = document.getElementById('pa-yt');
+      if (ytOne){ try{ ytOne.destroy(); }catch(e){} ytOne = null; ytOneReady = false; }
+      slot.innerHTML = '';
       const mount = document.createElement('div');
       mount.id = 'pa-yt-one';
       slot.appendChild(mount);
-      ytPlayers.one = new YT.Player(mount.id, {
+      ytBuiltIds = key;
+      ytOne = new YT.Player(mount.id, {
         width: '100%', height: '100%',
-        playerVars: { rel: 0, playsinline: 1 },
+        videoId: ids[0],
+        playerVars: { rel: 0, playsinline: 1, playlist: ids.slice(1).join(',') },
         events: {
           onReady: () => {
-            ytPlayers.ready = true;
-            if (ytRun && ytRun.pending){ startRun(); }
+            ytOneReady = true;
+            if (ytRun && ytRun.pending){ ytRun.pending = false; startYTRun(); }
           },
           onStateChange: e => {
             if (!ytRun) return;
-            const p = ytPlayers.one;
             if (e.data === YT.PlayerState.PLAYING){
-              // sync chain position + title to the playlist's own progress
-              const pi = p.getPlaylistIndex();
-              if (pi >= 0){
-                pos = ytRun.startPos + pi;
-                idx = order()[pos];
-                const tr = TRACKS[idx];
-                if (tr) title.textContent = (pos+1) + ' / ' + TRACKS.length + ' \u00B7 ' + tr.t;
-              }
+              const pi = Math.max(0, ytOne.getPlaylistIndex());
+              pos = ytRun.startPos + pi;
+              idx = order()[pos];
+              const tr = TRACKS[idx];
+              if (tr) title.textContent = (pos+1) + ' / ' + TRACKS.length + ' \u00B7 ' + tr.t;
+              if (!ytOne.isMuted() && soundChip){ soundChip.remove(); soundChip = null; }
             }
             if (e.data === YT.PlayerState.ENDED){
-              const pi = p.getPlaylistIndex();
+              const pi = Math.max(0, ytOne.getPlaylistIndex());
               if (pi >= ytRun.ids.length - 1){
-                // playlist finished — continue the chain beyond the video run
                 const after = ytRun.startPos + ytRun.ids.length;
                 ytRun = null;
                 play(after);
               }
-              // otherwise the player advances itself — nothing to do
             }
           }
         }
       });
     }
 
+    function showSoundChip(){
+      if (soundChip) return;
+      soundChip = document.createElement('button');
+      soundChip.className = 'pa-sound';
+      soundChip.type = 'button';
+      soundChip.textContent = '\uD83D\uDD0A Tap for sound';
+      soundChip.addEventListener('click', () => {
+        try{ ytOne.unMute(); ytOne.setVolume(100); ytOne.playVideo(); }catch(e){}
+        if (soundChip){ soundChip.remove(); soundChip = null; }
+      });
+      ytWrap.appendChild(soundChip);
+    }
+
+    function startYTRun(){
+      ytOne.playVideo();
+      setTimeout(() => {
+        if (!ytRun || !ytOneReady) return;
+        const st = ytOne.getPlayerState();
+        if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
+          try{ ytOne.mute(); ytOne.playVideo(); }catch(e){}
+          setTimeout(() => {
+            if (!ytRun) return;
+            const s2 = ytOne.getPlayerState();
+            if ((s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING) && ytOne.isMuted()){
+              showSoundChip();
+            }
+          }, 1500);
+        }
+      }, 2500);
+    }
+
     let activeYT = false;
 
     function hideYT(){
       ytWrap.hidden = true;
-      if (activeYT && ytPlayers.ready){ try{ ytPlayers.one.stopVideo(); }catch(e){} }
+      if (activeYT && ytOneReady){ try{ ytOne.pauseVideo(); }catch(e){} }
       activeYT = false;
       ytRun = null;
     }
 
-    function startRun(){
-      ytRun.pending = false;
-      ytPlayers.one.loadPlaylist(ytRun.ids, 0);
-    }
-
     function playYT(p){
-      // gather the consecutive video run starting at this chain position
       player.pause();
       window.__paWanted = true;
-      instantiateYTPlayers();
-      const seq = order();
-      const ids = [];
-      for (let k = p; k < seq.length && TRACKS[seq[k]].yt; k++) ids.push(TRACKS[seq[k]].yt);
-      ytRun = { ids, startPos: p, pending: !ytPlayers.ready };
+      buildYTPlayer();
+      const ids = videoRunIds();
+      ytRun = { ids, startPos: p, pending: !ytOneReady };
       ytWrap.hidden = false;
       ytWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
       activeYT = true;
-      if (ytPlayers.ready) startRun();
+      if (ytOneReady){ startYTRun(); }
     }
 
     function play(p){
@@ -2209,23 +2243,23 @@
       navigator.mediaSession.setActionHandler('previoustrack', () => { if (pos > 0) play(pos - 1); });
     }
     btn.addEventListener('click', () => {
-      // Instantiate YT players inside the gesture — iOS grants autoplay trust here
+      // Build the playlist player inside the gesture — iOS grants autoplay trust here
       window.__paWanted = true;
-      instantiateYTPlayers();
+      buildYTPlayer();
       if (!active){ play(0); return; }
-      if (activeYT && ytPlayers.ready){
-        const st = ytPlayers.one.getPlayerState();
-        if (st === YT.PlayerState.PLAYING){ ytPlayers.one.pauseVideo(); btn.textContent = '\u25B6 Resume'; }
-        else { ytPlayers.one.playVideo(); btn.textContent = '\u23F8 Pause'; }
+      if (activeYT && ytOneReady){
+        const st = ytOne.getPlayerState();
+        if (st === YT.PlayerState.PLAYING){ ytOne.pauseVideo(); btn.textContent = '\u25B6 Resume'; }
+        else { ytOne.playVideo(); btn.textContent = '\u23F8 Pause'; }
         return;
       }
       if (player.paused){ player.play(); btn.textContent = '\u23F8 Pause'; }
       else { player.pause(); btn.textContent = '\u25B6 Resume'; }
     });
     function skip(){
-      if (activeYT && ytRun && ytPlayers.ready){
-        const pi = ytPlayers.one.getPlaylistIndex();
-        if (pi < ytRun.ids.length - 1){ ytPlayers.one.nextVideo(); return; }
+      if (activeYT && ytRun && ytOneReady){
+        const pi = Math.max(0, ytOne.getPlaylistIndex());
+        if (pi < ytRun.ids.length - 1){ ytOne.nextVideo(); return; }
         const after = ytRun.startPos + ytRun.ids.length;
         ytRun = null;
         play(after);
