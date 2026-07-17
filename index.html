@@ -2066,7 +2066,11 @@
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
       const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { ytApiReady = true; if (prev) prev(); };
+      window.onYouTubeIframeAPIReady = () => {
+        ytApiReady = true;
+        if (prev) prev();
+        if (window.__paWanted) instantiateYTPlayers();
+      };
       document.head.appendChild(tag);
     })();
 
@@ -2092,7 +2096,7 @@
           events: {
             onReady: () => {
               state.ready = true;
-              if (state.playReq){ state.player.playVideo(); state.playReq = false; }
+              if (state.playReq){ state.player.playVideo(); state.playReq = false; verifyYT(state); }
             },
             onStateChange: e => {
               if (e.data === YT.PlayerState.ENDED && activeYT === state) next();
@@ -2115,8 +2119,44 @@
       }
     }
 
+    let soundChip = null;
+    function showSoundChip(state){
+      if (soundChip) return;
+      soundChip = document.createElement('button');
+      soundChip.className = 'pa-sound';
+      soundChip.type = 'button';
+      soundChip.textContent = '\uD83D\uDD0A Tap for sound';
+      soundChip.addEventListener('click', () => {
+        ytPlayers.forEach(st => { try{ st.player.unMute(); st.player.setVolume(100); }catch(e){} });
+        try{ state.player.playVideo(); }catch(e){}
+        soundChip.remove(); soundChip = null;
+      });
+      ytWrap.appendChild(soundChip);
+    }
+
+    function verifyYT(state){
+      setTimeout(() => {
+        if (activeYT !== state || !state.ready) return;
+        const st = state.player.getPlayerState();
+        if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
+          try{ state.player.mute(); state.player.playVideo(); }catch(e){}
+          setTimeout(() => {
+            if (activeYT !== state) return;
+            const s2 = state.player.getPlayerState();
+            if ((s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING) && state.player.isMuted()){
+              showSoundChip(state);
+            }
+          }, 1500);
+        } else if (state.player.isMuted && state.player.isMuted()){
+          showSoundChip(state);
+        }
+      }, 2500);
+    }
+
     function playYT(track){
       player.pause();
+      window.__paWanted = true;
+      if (!ytPlayers.has(track.yt)) instantiateYTPlayers();
       const state = ytPlayers.get(track.yt);
       if (!state){ next(); return; }
       // switch layers, never move DOM
@@ -2129,7 +2169,8 @@
       ytWrap.hidden = false;
       ytWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
       activeYT = state;
-      if (state.ready){ state.player.playVideo(); }
+      if (soundChip && state.player.isMuted && state.ready && !state.player.isMuted()){ soundChip.remove(); soundChip = null; }
+      if (state.ready){ state.player.playVideo(); verifyYT(state); }
       else { state.playReq = true; }
     }
 
@@ -2198,6 +2239,7 @@
     }
     btn.addEventListener('click', () => {
       // Instantiate YT players inside the gesture — iOS grants autoplay trust here
+      window.__paWanted = true;
       instantiateYTPlayers();
       if (!active){ play(0); return; }
       const tr = TRACKS[idx];
