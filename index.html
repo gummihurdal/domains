@@ -721,6 +721,14 @@
     color: var(--ink);
   }
 
+  .dq-why {
+    margin-top: 0.9rem;
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
   .dq-src {
     margin-top: 1rem;
     font-family: 'IBM Plex Mono', monospace;
@@ -1100,6 +1108,7 @@
     <div class="daily-quote-open" id="daily-quote" hidden>
       <div class="dq-kicker">Today, from the shelf</div>
       <div class="dq-text" id="dq-text"></div>
+      <div class="dq-why" id="dq-why"></div>
       <div class="dq-src" id="dq-src"></div>
     </div>
   </div>
@@ -2071,6 +2080,7 @@
     const q = list[doy % list.length];
     const box = document.getElementById('daily-quote');
     document.getElementById('dq-text').textContent = '\u201C' + q.q + '\u201D';
+    document.getElementById('dq-why').textContent = q.why || '';
     document.getElementById('dq-src').innerHTML =
       '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
       (q.who ? ' \u00B7 ' + q.who.replace(/&/g,'&amp;').replace(/</g,'&lt;') : '');
