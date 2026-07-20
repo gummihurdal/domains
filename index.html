@@ -97,6 +97,17 @@
     text-shadow: 0 1px 6px rgba(14, 18, 26, 0.55), 0 2px 22px rgba(14, 18, 26, 0.65);
   }
 
+  .lk-seal {
+    width: 84px;
+    height: 84px;
+    margin-bottom: 0.35rem;
+    filter: drop-shadow(0 1px 6px rgba(14, 18, 26, 0.55));
+  }
+
+  @media (max-width: 720px) {
+    .lk-seal { width: 66px; height: 66px; }
+  }
+
   .lk-top {
     font-family: 'IBM Plex Mono', monospace;
     font-size: clamp(0.6rem, 1.4vw, 0.68rem);
@@ -1091,6 +1102,7 @@
   <div class="hero-text">
     <div class="wrap">
       <h1 class="lockup">
+        <img class="lk-seal" src="monogram.png" alt="G &amp; G monogram" width="320" height="320">
         <span class="lk-top">The Collected Work of</span>
         <span class="lk-names">Gudmundur <span class="lk-amp">&amp;</span> Grace</span>
       </h1>
