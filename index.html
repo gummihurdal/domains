@@ -153,48 +153,6 @@
     padding: 3rem 0 3rem;
   }
 
-  /* ---- editorial layer (monograph styling) ---- */
-  .kicker {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.62rem;
-    font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--accent, #8A6E20);
-    margin-bottom: 0.9rem;
-  }
-
-  .catalog-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 2.6rem 0 0.4rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .catalog-head .kicker { margin-bottom: 0.6rem; color: #8A6E20; }
-  .catalog-head .vol {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-  }
-
-  main { counter-reset: opus; }
-  .entry .body::before {
-    counter-increment: opus;
-    content: counter(opus, decimal-leading-zero);
-    display: block;
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-    font-size: 2.1rem;
-    line-height: 1;
-    color: var(--accent);
-    opacity: 0.4;
-    margin-bottom: 0.55rem;
-  }
-
   @media (max-width: 640px) {
     .masthead { padding: 2.1rem 0 1.5rem; }
   }
@@ -1169,7 +1127,6 @@
 <div class="wrap">
 
   <div class="masthead">
-    <div class="kicker" style="--accent:#8A6E20">Quiet Correspondence</div>
     <p class="standfirst" id="standfirst">
       A daily devotional, a workbook for the middle years,
       the proven method for staying close, the practice that runs on it, a table to play at
@@ -1233,11 +1190,6 @@
 <div class="wrap">
 
   <main>
-
-    <div class="catalog-head reveal">
-      <div class="kicker">Project Index</div>
-      <div class="vol">Portfolio Vol. I</div>
-    </div>
 
     <a id="devotional" class="entry reveal" href="https://graceforevery.day" target="_blank" rel="noopener"
        style="--accent: #8A6E20;">
@@ -1361,8 +1313,7 @@
 
     <section id="songs" class="group reveal" style="--accent: #B8956A;">
       <div>
-        <div class="kicker" style="--accent:#B8956A">Auditory Correspondence</div>
-        <h2>The Soundtrack</h2>
+        <h2>Songs</h2>
         <div class="subtitle">A series — written along the way</div>
         <p>
           Some things don't fit in a site or a workbook. They get a melody instead.
@@ -1608,7 +1559,6 @@
 
     <section id="pictures" class="group reveal" style="--accent: #4E6E8E;">
       <div>
-        <div class="kicker" style="--accent:#4E6E8E">Kept, Not Posted</div>
         <h2>Photographs</h2>
         <div class="subtitle">Moments kept along the way</div>
         <p>
@@ -1638,7 +1588,6 @@
     <p class="footer-note">Built between Baden and Basel, one at a time.</p>
     <div class="colophon">
       <span>2026</span>
-      <span>Privately printed — made slowly, with love</span>
       <span>Set in Fraunces &amp; Newsreader</span>
       <a class="totop" href="#top">Top ↑</a>
     </div>
