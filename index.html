@@ -193,14 +193,6 @@
 
   .story li + li { border-top: 1px solid var(--line); }
 
-  .story li a {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: rgba(138, 110, 32, 0.45);
-    text-underline-offset: 3px;
-  }
-  .story li a:hover { text-decoration-color: #8A6E20; }
-
   .story li::before {
     content: '&';
     position: absolute;
@@ -215,7 +207,7 @@
   .story li a {
     color: inherit;
     text-decoration: none;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(138, 110, 32, 0.5);
     transition: border-color 0.25s, color 0.25s;
   }
 
@@ -2204,12 +2196,16 @@
       .replace(/ ([^ ]+)$/, '\u00A0$1');
     document.getElementById('dq-text').textContent = '\u201C' + qt + '\u201D';
     const whyEl = document.getElementById('dq-why');
-    const norm = s => (s || '').toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
-    const qw = new Set(norm(q.q));
-    const ww = norm(q.why);
-    const overlap = ww.length ? ww.filter(w => qw.has(w)).length / ww.length : 0;
-    whyEl.textContent = overlap > 0.5 ? '' : (q.why || '');
-    whyEl.style.display = overlap > 0.5 ? 'none' : '';
+    const stem = w => w.replace(/(ing|ed|ly|s)$/,'');
+    const norm = s => (s || '').toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(Boolean).map(stem);
+    const qn = ' ' + norm(q.q).join(' ') + ' ';
+    const wn = norm(q.why);
+    let echo = false;
+    for (let i = 0; i + 4 <= wn.length; i++) {
+      if (qn.includes(' ' + wn.slice(i, i + 4).join(' ') + ' ')) { echo = true; break; }
+    }
+    whyEl.textContent = echo ? '' : (q.why || '');
+    whyEl.style.display = echo ? 'none' : '';
     document.getElementById('dq-src').innerHTML =
       '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
       (q.who ? ' \u00B7 ' + q.who.replace(/&/g,'&amp;').replace(/</g,'&lt;') : '');
