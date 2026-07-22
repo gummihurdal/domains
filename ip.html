@@ -96,6 +96,7 @@ async function clearLogs(){
 fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
   document.getElementById('my-ip').textContent=d.ip||'—';
   document.getElementById('my-loc').textContent=[d.city,d.country_name].filter(Boolean).join(', ')||'—';
+  try{if(d.ip)localStorage.setItem('owner-ip',d.ip);}catch(e){}
 }).catch(()=>{});
 load(); setInterval(load,30000);
 </script>
