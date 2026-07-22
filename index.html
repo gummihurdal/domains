@@ -147,9 +147,10 @@
 
   .lk-vow {
     font-family: 'Pinyon Script', cursive;
-    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    font-size: clamp(1.2rem, 2.8vw, 1.6rem);
     line-height: 1.2;
-    color: #E3B65A;
+    color: #EBD9AC;
+    opacity: 0.92;
     margin-top: 0.35rem;
     text-shadow: 0 1px 4px rgba(14, 18, 26, 0.7), 0 2px 16px rgba(14, 18, 26, 0.6);
   }
@@ -2181,7 +2182,10 @@
     const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
     const q = list[doy % list.length];
     const box = document.getElementById('daily-quote');
-    document.getElementById('dq-text').textContent = '\u201C' + q.q + '\u201D';
+    const qt = q.q
+      .replace(/ each other/g, ' each\u00A0other')
+      .replace(/ ([^ ]+)$/, '\u00A0$1');
+    document.getElementById('dq-text').textContent = '\u201C' + qt + '\u201D';
     document.getElementById('dq-why').textContent = q.why || '';
     document.getElementById('dq-src').innerHTML =
       '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
