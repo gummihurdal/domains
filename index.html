@@ -221,6 +221,22 @@
     color: #A8842F;
   }
 
+  .story figure { margin: 0.7rem 0 0.3rem; }
+  .story figure img {
+    width: 100%;
+    display: block;
+    border-radius: 3px;
+    border: 1px solid rgba(192, 154, 62, 0.35);
+  }
+  .story .photo-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    margin: 0.7rem 0 0.3rem;
+  }
+  .story .photo-duo figure { margin: 0; }
+  @media (max-width: 520px) { .story .photo-duo { grid-template-columns: 1fr; } }
+
   /* ---------------- ampersand divider ---------------- */
   .amp-divider {
     display: flex;
@@ -1306,14 +1322,30 @@
       <ol>
         <li>Thirty minutes at Tibits, Basel — just long enough to want more.</li>
         <li>Two hours in Baden — an art gallery, Blume — and time moving too fast.</li>
-        <li>Fondation Beyeler, au Pavillon, a bench on Münsterplatz — <a href="#songs">the evening love was quietly born</a>.</li>
-        <li>The cabrio and a picnic in Alsace — France for an afternoon.</li>
+        <li>Fondation Beyeler, au Pavillon, a bench on Münsterplatz — <a href="#songs">the evening love was quietly born</a>.
+          <figure><img src="story/beyeler-1.jpg" alt="Cézanne, Mont Sainte-Victoire, at Fondation Beyeler" loading="lazy"></figure>
+          <div class="photo-duo">
+            <figure><img src="story/beyeler-2.jpg" alt="Cézanne watercolor sketch of Mont Sainte-Victoire" loading="lazy"></figure>
+            <figure><img src="story/beyeler-3.jpg" alt="Cézanne, unfinished Mont Sainte-Victoire" loading="lazy"></figure>
+          </div>
+        </li>
+        <li>The cabrio and a picnic in Alsace — France for an afternoon.
+          <figure><img src="story/alsace-picnic.jpg" alt="Picnic basket in Alsace" loading="lazy"></figure>
+        </li>
         <li>A Basel restaurant, three at the table — meeting the best friend.</li>
         <li>Oberwil — a walk, a bright moon, a bench — and a first kiss.</li>
         <li>The Merian Gardens — everything in bloom.</li>
         <li>Aquabasilea — water and laughter.</li>
-        <li>Hotel Panorama — Lake Zurich, setting the sky on fire.</li>
-        <li>Lugano — the steps of Morcote, a balcony over the lake — the tenth date felt like a beginning.</li>
+        <li>Hotel Panorama — Lake Zurich, setting the sky on fire.
+          <figure><img src="story/zurich-sunset.jpg" alt="Sunset over Lake Zurich from Hotel Panorama" loading="lazy"></figure>
+        </li>
+        <li>Lugano — the steps of Morcote, a balcony over the lake — the tenth date felt like a beginning.
+          <figure><img src="story/morcote.jpg" alt="Stepped alley in Morcote leading to Lake Lugano" loading="lazy"></figure>
+          <div class="photo-duo">
+            <figure><img src="story/lugano-balcony.jpg" alt="Balcony view over Lake Lugano and Monte San Salvatore" loading="lazy"></figure>
+            <figure><img src="story/lugano-garden.jpg" alt="Palm garden by Lake Lugano" loading="lazy"></figure>
+          </div>
+        </li>
         <li class="story-close">— and the rest is still being written.</li>
       </ol>
     </section>
