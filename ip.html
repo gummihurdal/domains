@@ -58,6 +58,7 @@
 </div>
 <div class="upd" id="upd"></div>
 <script>
+try{localStorage.setItem('owner','1');}catch(e){}
 const SB='https://mjphpctvuxmbjhmcscoj.supabase.co',KEY='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
 let allLogs=[], filterPage='all';
 function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E0-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
