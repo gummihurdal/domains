@@ -148,6 +148,96 @@
     .hero-text { bottom: 1.8rem; }
   }
 
+  .lk-vow {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    line-height: 1.2;
+    color: #E3B65A;
+    margin-top: 0.35rem;
+    text-shadow: 0 1px 4px rgba(14, 18, 26, 0.7), 0 2px 16px rgba(14, 18, 26, 0.6);
+  }
+
+  /* ---------------- the story, so far ---------------- */
+  .story {
+    padding: 2.6rem 0 0.4rem;
+  }
+
+  .story h2 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 144;
+    font-weight: 300;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    letter-spacing: -0.005em;
+  }
+
+  .story .subtitle { margin-bottom: 1.1rem; }
+
+  .story ol {
+    list-style: none;
+    max-width: 40rem;
+  }
+
+  .story li {
+    position: relative;
+    padding: 0.55rem 0 0.55rem 2.1rem;
+    color: var(--ink-soft);
+    font-size: clamp(0.98rem, 2vw, 1.08rem);
+  }
+
+  .story li + li { border-top: 1px solid var(--line); }
+
+  .story li::before {
+    content: '&';
+    position: absolute;
+    left: 0.35em;
+    top: 0.55rem;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: #C09A3E;
+  }
+
+  .story li a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: border-color 0.25s, color 0.25s;
+  }
+
+  .story li a:hover,
+  .story li a:focus-visible { color: var(--ink); border-color: #C09A3E; }
+
+  .story .story-close {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(1.2rem, 2.6vw, 1.45rem);
+    color: #A8842F;
+  }
+
+  /* ---------------- ampersand divider ---------------- */
+  .amp-divider {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0.6rem 0;
+    color: #C09A3E;
+  }
+
+  .amp-divider::before,
+  .amp-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .amp-divider span {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
   /* ---------------- masthead ---------------- */
   .masthead {
     padding: 3rem 0 3rem;
@@ -1119,6 +1209,7 @@
         <img class="lk-seal" src="monogram-vintage-gg.png" alt="Interlocked G G monogram" width="640" height="500">
         <span class="lk-top">The Collected Work of</span>
         <span class="lk-names">Gudmundur <span class="lk-amp">&amp;</span> Grace</span>
+        <span class="lk-vow">written along the way</span>
       </h1>
     </div>
   </div>
@@ -1190,6 +1281,17 @@
 <div class="wrap">
 
   <main>
+
+    <section class="story reveal" aria-label="The story so far">
+      <h2>The Story, So Far</h2>
+      <div class="subtitle">Told the way the work tells it</div>
+      <ol>
+        <li>A third date — <a href="#songs">the evening love was quietly born</a>.</li>
+        <li>An Icelandic sky over July — <a href="#songs">the month everything changed</a>.</li>
+        <li>One honest line a day, <a href="https://bond.azurenexus.com" target="_blank" rel="noopener">written to each other</a>.</li>
+        <li class="story-close">— and the rest is still being written.</li>
+      </ol>
+    </section>
 
     <a id="devotional" class="entry reveal" href="https://graceforevery.day" target="_blank" rel="noopener"
        style="--accent: #8A6E20;">
@@ -1310,6 +1412,8 @@
       </div>
       <div class="go">Play <span class="arrow">→</span></div>
     </a>
+
+    <div class="amp-divider" aria-hidden="true"><span>&amp;</span></div>
 
     <section id="songs" class="group reveal" style="--accent: #B8956A;">
       <div>
@@ -1557,6 +1661,8 @@
       </div>
     </section>
 
+    <div class="amp-divider" aria-hidden="true"><span>&amp;</span></div>
+
     <section id="pictures" class="group reveal" style="--accent: #4E6E8E;">
       <div>
         <h2>Photographs</h2>
@@ -1588,7 +1694,7 @@
     <p class="footer-note">Built between Baden and Basel, one at a time.</p>
     <div class="colophon">
       <span>2026</span>
-      <span>Set in Fraunces &amp; Newsreader</span>
+      <span>Set in Fraunces, Newsreader &amp; Pinyon</span>
       <a class="totop" href="#top">Top ↑</a>
     </div>
   </footer>
