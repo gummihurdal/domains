@@ -74,7 +74,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(14, 18, 26, 0.72) 0%, rgba(14, 18, 26, 0.38) 22%, rgba(14, 18, 26, 0) 44%);
+    background: linear-gradient(to top, rgba(14, 18, 26, 0.8) 0%, rgba(14, 18, 26, 0.46) 26%, rgba(14, 18, 26, 0) 56%);
   }
 
   .hero-text {
@@ -812,7 +812,12 @@
   }
 
   /* ---------------- daily quote ---------------- */
-  .daily-quote-open { max-width: 42rem; }
+  .daily-quote-open {
+    max-width: 42rem;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.6rem 0 0.4rem;
+  }
 
   .dq-kicker {
     font-family: 'IBM Plex Mono', monospace;
@@ -828,8 +833,8 @@
     font-variation-settings: 'opsz' 72;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(1.2rem, 3vw, 1.65rem);
-    line-height: 1.45;
+    font-size: clamp(1.35rem, 3.6vw, 1.85rem);
+    line-height: 1.42;
     color: var(--ink);
   }
 
@@ -839,7 +844,9 @@
     font-size: 0.8rem;
     line-height: 1.65;
     color: var(--muted);
-    max-width: 36rem;
+    max-width: 30rem;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .dq-src {
