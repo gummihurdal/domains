@@ -193,6 +193,14 @@
 
   .story li + li { border-top: 1px solid var(--line); }
 
+  .story li a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(138, 110, 32, 0.45);
+    text-underline-offset: 3px;
+  }
+  .story li a:hover { text-decoration-color: #8A6E20; }
+
   .story li::before {
     content: '&';
     position: absolute;
@@ -1688,6 +1696,7 @@
           The places behind the work. Each one taken where something in this
           collection was made or imagined.
         </p>
+        <p class="photo-hint" style="font-size:0.82rem;color:var(--muted);margin:0.2rem 0 0.5rem;">The rest of the gallery is just for us — it opens with our word.</p>
         <div class="photo-unlock" id="photo-unlock" hidden>
           <input type="password" id="photo-pass" placeholder="password" autocomplete="current-password" aria-label="Photo password">
           <button id="photo-open" type="button">Unlock</button>
@@ -2194,7 +2203,13 @@
       .replace(/ each other/g, ' each\u00A0other')
       .replace(/ ([^ ]+)$/, '\u00A0$1');
     document.getElementById('dq-text').textContent = '\u201C' + qt + '\u201D';
-    document.getElementById('dq-why').textContent = q.why || '';
+    const whyEl = document.getElementById('dq-why');
+    const norm = s => (s || '').toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(w => w.length > 3);
+    const qw = new Set(norm(q.q));
+    const ww = norm(q.why);
+    const overlap = ww.length ? ww.filter(w => qw.has(w)).length / ww.length : 0;
+    whyEl.textContent = overlap > 0.5 ? '' : (q.why || '');
+    whyEl.style.display = overlap > 0.5 ? 'none' : '';
     document.getElementById('dq-src').innerHTML =
       '\u2014 <a href="' + q.url + '" target="_blank" rel="noopener">' + q.src + '</a>' +
       (q.who ? ' \u00B7 ' + q.who.replace(/&/g,'&amp;').replace(/</g,'&lt;') : '');
