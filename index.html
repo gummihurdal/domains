@@ -74,19 +74,25 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 62% 34% at 50% 50%, rgba(14, 18, 26, 0.4), rgba(14, 18, 26, 0) 72%), linear-gradient(to top, rgba(14, 18, 26, 0.62) 0%, rgba(14, 18, 26, 0.3) 22%, rgba(14, 18, 26, 0) 48%);
+    background: linear-gradient(to top, rgba(14, 18, 26, 0.8) 0%, rgba(14, 18, 26, 0.46) 26%, rgba(14, 18, 26, 0) 56%);
   }
 
   .hero-text {
     position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    left: 0;
+    right: 0;
+    bottom: 1.5rem;
     z-index: 1;
   }
 
   .hero-text .wrap { display: block; }
+
+  .lk-crest {
+    width: 64px;
+    height: auto;
+    margin-bottom: 0.55rem;
+    filter: drop-shadow(0 2px 8px rgba(10, 14, 24, 0.75));
+  }
 
   .lockup {
     display: flex;
@@ -123,7 +129,7 @@
     font-family: 'Fraunces', serif;
     font-variation-settings: 'opsz' 144;
     font-weight: 300;
-    font-size: clamp(2.3rem, 8.4vw, 3.6rem);
+    font-size: clamp(1.7rem, 5.6vw, 2.7rem);
     line-height: 1.05;
     letter-spacing: -0.005em;
   }
@@ -1211,15 +1217,13 @@
   <div class="hero-text">
     <div class="wrap">
       <h1 class="lockup">
+        <img class="lk-crest" src="monogram-gg-v4.png" alt="" width="520" height="490">
+        <span class="lk-top">Welcome to the collected work of</span>
         <span class="lk-names">Gudmundur <span class="lk-amp">&amp;</span> Grace</span>
       </h1>
     </div>
   </div>
 </header>
-
-<div class="crest-band">
-  <img src="monogram-gg-v4.png" alt="Interlocked G G monogram" width="520" height="490">
-</div>
 
 <nav class="index" aria-label="Sections">
   <div class="index-inner">
