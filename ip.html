@@ -69,6 +69,8 @@ try{ if(localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner'
 const SB='https://mjphpctvuxmbjhmcscoj.supabase.co',KEY='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
 let allLogs=[], filterPage='all';
 function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E6-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
+const BOT_ORGS=/hosting|datacenter|data center|server|cloud|egihosting|aliansce|amazon|aws|google llc|microsoft|azure|digitalocean|hetzner|ovh|linode|akamai|alibaba|tencent|oracle|vultr|contabo|leaseweb|choopa|colocrossing|m247|scaleway|censys|shodan|stretchoid|palo alto|crawl/i;
+function isBot(r){return BOT_ORGS.test((r.org||'')+' '+(r.isp||''));}
 function timeAgo(ts){const d=(Date.now()-new Date(ts))/1000;if(d<60)return Math.floor(d)+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
 function pgLabel(p){return (p||'').replace('domains:','');}
 function setFilter(f,btn){filterPage=f;document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTable();}
@@ -87,12 +89,14 @@ async function load(){
   try{
     const res=await fetch(SB+'/rest/v1/visitor_logs?select=*&page=like.domains:*&order=visited_at.desc&limit=1000',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
     allLogs=await res.json();
+    const botCount=allLogs.filter(isBot).length;
+    allLogs=allLogs.filter(r=>!isBot(r));
     document.getElementById('s-total').textContent=allLogs.length;
     const today=new Date().toDateString();
     document.getElementById('s-today').textContent=allLogs.filter(r=>new Date(r.visited_at).toDateString()===today).length;
     document.getElementById('s-countries').textContent=new Set(allLogs.map(r=>r.country).filter(Boolean)).size;
     document.getElementById('s-cities').textContent=new Set(allLogs.map(r=>r.city).filter(Boolean)).size;
-    document.getElementById('upd').textContent='Updated '+new Date().toLocaleTimeString();
+    document.getElementById('upd').textContent='Updated '+new Date().toLocaleTimeString()+(botCount?' \u00b7 '+botCount+' bot visit'+(botCount>1?'s':'')+' hidden':'');
     renderTable();
   }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9" class="loading">Error loading.</td></tr>';}
 }
