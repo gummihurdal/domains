@@ -139,23 +139,45 @@
 
 
 <script>
-// visitor logging (silent)
+// visitor logging (silent) — the visit is recorded even if geo lookup is blocked
 (function(){
-  try{
-    fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
-      try{if(localStorage.getItem('owner')==='1')return;if(d.ip&&localStorage.getItem('owner-ip')===d.ip)return;}catch(e){}
-      fetch('https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs',{
-        method:'POST',
-        headers:{'apikey':'sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm','Authorization':'Bearer sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm','Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({
-          ip:d.ip, country:d.country_name, country_code:d.country_code,
-          region:d.region, city:d.city, postal:d.postal, timezone:d.timezone,
-          org:d.org, latitude:d.latitude, longitude:d.longitude,
-          page:'domains:song-moi-non-plus'
-        })
-      }).catch(function(){});
-    }).catch(function(){});
-  }catch(e){}
+  var SB='https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs';
+  var K='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
+  var TAG='domains:song-moi-non-plus';
+  try{ if(localStorage.getItem('owner')==='1') return; }catch(e){}
+
+  function grab(u,map){
+    return fetch(u,{cache:'no-store'}).then(function(r){
+      if(!r.ok) throw 0; return r.json();
+    }).then(function(d){ var o=map(d); if(!o.ip) throw 0; return o; });
+  }
+  function m1(d){ return {ip:d.ip,country:d.country_name,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,timezone:d.timezone,org:d.org,
+    latitude:d.latitude,longitude:d.longitude}; }
+  function m2(d){ return {ip:d.ip,country:d.country,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,
+    timezone:(d.timezone&&d.timezone.id)||null,
+    org:(d.connection&&(d.connection.isp||d.connection.org))||null,
+    latitude:d.latitude,longitude:d.longitude}; }
+
+  var geo = grab('https://ipapi.co/json/',m1)
+    .catch(function(){ return grab('https://ipwho.is/',m2); })
+    .catch(function(){ return null; });
+  var cap = new Promise(function(res){ setTimeout(function(){ res(null); },3000); });
+
+  Promise.race([geo,cap]).then(function(g){
+    var body;
+    if(g){
+      try{ if(g.ip && localStorage.getItem('owner-ip')===g.ip) return; }catch(e){}
+      body = g;
+    } else {
+      body = {org:'(geo unavailable)'};
+    }
+    body.page = TAG;
+    fetch(SB,{method:'POST',headers:{'apikey':K,'Authorization':'Bearer '+K,
+      'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(body)}).catch(function(){});
+  }).catch(function(){});
 })();
 </script>
 </body>

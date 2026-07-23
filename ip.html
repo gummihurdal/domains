@@ -47,9 +47,17 @@
 <div class="controls">
   <button class="btn active" onclick="setFilter('all',this)">All</button>
   <button class="btn" onclick="setFilter('domains:landing',this)">Landing</button>
+  <button class="btn" onclick="setFilter('domains:live',this)">Live</button>
+  <button class="btn" onclick="setFilter('domains:song-moi-non-plus',this)">Moi non plus</button>
+  <button class="btn" onclick="setFilter('domains:song-msv',this)">Mont Sainte-Victoire</button>
   <input id="search" placeholder="Search IP, city, country…" oninput="renderTable()">
   <button class="btn" onclick="if(confirm('Clear ALL domains visitor logs?'))clearLogs()">Clear</button>
 </div>
+<div class="controls">
+  <button class="btn" onclick="selfTest()">Self-test</button>
+  <button class="btn" id="ownerBtn" onclick="toggleOwner()">…</button>
+</div>
+<pre id="diag" hidden style="white-space:pre-wrap;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:12px 14px;margin:0 0 14px;"></pre>
 <div class="table-wrap">
   <table>
     <thead><tr><th>#</th><th>Flag</th><th>IP</th><th>Country</th><th>City</th><th>Region</th><th>ISP</th><th>Page</th><th>Time</th></tr></thead>
@@ -58,7 +66,7 @@
 </div>
 <div class="upd" id="upd"></div>
 <script>
-try{localStorage.setItem('owner','1');}catch(e){}
+try{ if(localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner','1'); }catch(e){}
 const SB='https://mjphpctvuxmbjhmcscoj.supabase.co',KEY='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
 let allLogs=[], filterPage='all';
 function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E0-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
@@ -97,8 +105,53 @@ async function clearLogs(){
 fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
   document.getElementById('my-ip').textContent=d.ip||'—';
   document.getElementById('my-loc').textContent=[d.city,d.country_name].filter(Boolean).join(', ')||'—';
-  try{if(d.ip)localStorage.setItem('owner-ip',d.ip);}catch(e){}
+  try{ if(d.ip&&localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner-ip',d.ip); }catch(e){}
 }).catch(()=>{});
+async function probe(url){
+  try{
+    const r = await fetch(url,{cache:'no-store'});
+    if(!r.ok) return 'HTTP '+r.status;
+    const d = await r.json();
+    return d && d.ip ? 'OK \u2014 '+d.ip : 'reachable, but no IP returned';
+  }catch(e){ return 'BLOCKED / unreachable'; }
+}
+async function selfTest(){
+  const out = document.getElementById('diag');
+  out.hidden = false; out.textContent = 'Running\u2026';
+  const L = [];
+  let own; try{ own = localStorage.getItem('owner')==='1'; }catch(e){ own = null; }
+  L.push('Owner flag here : ' + (own===null ? 'localStorage blocked' : own ? 'ON \u2014 visits from THIS browser are not logged' : 'off \u2014 visits are logged'));
+  L.push('ipapi.co        : ' + await probe('https://ipapi.co/json/'));
+  L.push('ipwho.is (bkup) : ' + await probe('https://ipwho.is/'));
+  try{
+    const r = await fetch(SB+'/rest/v1/visitor_logs',{method:'POST',
+      headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({page:'domains:__selftest',org:'self-test'})});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const rows = await r.json();
+    L.push('Supabase write  : OK (row '+((rows[0]||{}).id||'?')+')');
+    const d = await fetch(SB+'/rest/v1/visitor_logs?page=eq.domains:__selftest',{method:'DELETE',headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
+    L.push('Test row cleanup: ' + (d.ok ? 'OK' : 'HTTP '+d.status));
+  }catch(e){ L.push('Supabase write  : BLOCKED ('+e.message+')'); }
+  L.push('');
+  L.push('Both geo lines blocked = city/ISP unknown, visit still logged as "(geo unavailable)".');
+  L.push('Supabase line blocked  = nothing can be logged from this network.');
+  out.textContent = L.join('\n');
+}
+function paintOwner(){
+  let on=false; try{ on = localStorage.getItem('owner')==='1'; }catch(e){}
+  const b=document.getElementById('ownerBtn');
+  if(b) b.textContent = on ? 'This browser: excluded' : 'This browser: counted';
+}
+function toggleOwner(){
+  let on=false; try{ on = localStorage.getItem('owner')==='1'; }catch(e){}
+  try{
+    if(on){ localStorage.setItem('owner-optout','1'); localStorage.removeItem('owner'); localStorage.removeItem('owner-ip'); }
+    else  { localStorage.removeItem('owner-optout'); localStorage.setItem('owner','1'); }
+  }catch(e){}
+  paintOwner();
+}
+paintOwner();
 load(); setInterval(load,30000);
 </script>
 </body>
