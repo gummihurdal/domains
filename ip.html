@@ -68,7 +68,7 @@
 try{ if(localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner','1'); }catch(e){}
 const SB='https://mjphpctvuxmbjhmcscoj.supabase.co',KEY='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
 let allLogs=[], filterPage='all';
-function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E0-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
+function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E6-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
 function timeAgo(ts){const d=(Date.now()-new Date(ts))/1000;if(d<60)return Math.floor(d)+'s ago';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago';}
 function pgLabel(p){return (p||'').replace('domains:','');}
 function setFilter(f,btn){filterPage=f;document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTable();}
