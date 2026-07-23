@@ -51,7 +51,6 @@
   <button class="btn" onclick="setFilter('domains:song-moi-non-plus',this)">Moi non plus</button>
   <button class="btn" onclick="setFilter('domains:song-msv',this)">Mont Sainte-Victoire</button>
   <input id="search" placeholder="Search IP, city, country…" oninput="renderTable()">
-  <button class="btn" onclick="if(confirm('Clear ALL domains visitor logs?'))clearLogs()">Clear</button>
 </div>
 <div class="controls">
   <button class="btn" onclick="selfTest()">Self-test</button>
@@ -97,11 +96,6 @@ async function load(){
     renderTable();
   }catch(e){document.getElementById('tbody').innerHTML='<tr><td colspan="9" class="loading">Error loading.</td></tr>';}
 }
-async function clearLogs(){
-  await fetch(SB+'/rest/v1/visitor_logs?page=like.domains:*',{method:'DELETE',headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
-  allLogs=[];renderTable();
-  ['s-total','s-today','s-countries','s-cities'].forEach(id=>document.getElementById(id).textContent='0');
-}
 fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
   document.getElementById('my-ip').textContent=d.ip||'—';
   document.getElementById('my-loc').textContent=[d.city,d.country_name].filter(Boolean).join(', ')||'—';
@@ -124,18 +118,13 @@ async function selfTest(){
   L.push('ipapi.co        : ' + await probe('https://ipapi.co/json/'));
   L.push('ipwho.is (bkup) : ' + await probe('https://ipwho.is/'));
   try{
-    const r = await fetch(SB+'/rest/v1/visitor_logs',{method:'POST',
-      headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=representation'},
-      body:JSON.stringify({page:'domains:__selftest',org:'self-test'})});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const rows = await r.json();
-    L.push('Supabase write  : OK (row '+((rows[0]||{}).id||'?')+')');
-    const d = await fetch(SB+'/rest/v1/visitor_logs?page=eq.domains:__selftest',{method:'DELETE',headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
-    L.push('Test row cleanup: ' + (d.ok ? 'OK' : 'HTTP '+d.status));
-  }catch(e){ L.push('Supabase write  : BLOCKED ('+e.message+')'); }
+    const r = await fetch(SB+'/rest/v1/visitor_logs?select=id&limit=1',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
+    L.push('Supabase reach  : ' + (r.ok ? 'OK (endpoint reachable)' : 'HTTP '+r.status));
+  }catch(e){ L.push('Supabase reach  : BLOCKED / unreachable'); }
   L.push('');
   L.push('Both geo lines blocked = city/ISP unknown, visit still logged as "(geo unavailable)".');
   L.push('Supabase line blocked  = nothing can be logged from this network.');
+  L.push('This dashboard is read-only: it never writes or deletes anything.');
   out.textContent = L.join('\n');
 }
 function paintOwner(){
