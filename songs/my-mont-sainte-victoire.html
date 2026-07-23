@@ -142,5 +142,26 @@
   </div>
 </footer>
 
+
+<script>
+// visitor logging (silent)
+(function(){
+  try{
+    fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
+      try{if(localStorage.getItem('owner')==='1')return;if(d.ip&&localStorage.getItem('owner-ip')===d.ip)return;}catch(e){}
+      fetch('https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs',{
+        method:'POST',
+        headers:{'apikey':'sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm','Authorization':'Bearer sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm','Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify({
+          ip:d.ip, country:d.country_name, country_code:d.country_code,
+          region:d.region, city:d.city, postal:d.postal, timezone:d.timezone,
+          org:d.org, latitude:d.latitude, longitude:d.longitude,
+          page:'domains:song-msv'
+        })
+      }).catch(function(){});
+    }).catch(function(){});
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
