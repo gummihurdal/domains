@@ -1,578 +1,578 @@
 [
- {
-  "q": "The supreme happiness of life is the conviction that we are loved.",
-  "src": "Victor Hugo — Les Misérables",
-  "url": "https://en.wikipedia.org/wiki/Les_Mis%C3%A9rables",
-  "why": "Not admired, not needed, not impressive — loved. Beneath everything we build and strive for, this is the ground floor of a happy life: someone knows you entirely, and stays."
- },
- {
-  "q": "All real living is meeting.",
-  "src": "Martin Buber — I and Thou",
-  "url": "https://en.wikipedia.org/wiki/I_and_Thou",
-  "why": "Five words that hold a whole philosophy: life does not happen inside us, it happens between us. Every true meeting of two people is the realest thing in the world."
- },
- {
-  "q": "To love at all is to be vulnerable.",
-  "src": "C.S. Lewis — The Four Loves",
-  "url": "https://en.wikipedia.org/wiki/The_Four_Loves",
-  "why": "Lewis wrote that the only place safe from love's dangers is a coffin. To hand someone your heart is the bravest ordinary thing a person ever does — and you have both done it."
- },
- {
-  "q": "Love consists in this, that two solitudes protect and border and salute each other.",
-  "src": "Rainer Maria Rilke — Letters to a Young Poet",
-  "url": "https://en.wikipedia.org/wiki/Letters_to_a_Young_Poet",
-  "why": "The deepest intimacy is not fusion but reverence — standing guard over another person's inner world as if it were holy ground. Because it is."
- },
- {
-  "q": "Let there be spaces in your togetherness.",
-  "src": "Kahlil Gibran — The Prophet",
-  "url": "https://en.wikipedia.org/wiki/The_Prophet_(book)",
-  "why": "The oak and the cypress do not grow in each other's shadow, Gibran wrote. The room you give each other is not distance — it is the shape trust takes."
- },
- {
-  "q": "Love gives naught but itself and takes naught but from itself.",
-  "src": "Kahlil Gibran — The Prophet",
-  "url": "https://en.wikipedia.org/wiki/The_Prophet_(book)",
-  "why": "Love keeps no accounts. It is not a trade but a spring — it gives because giving is its nature, and it is never emptied by it."
- },
- {
-  "q": "Lovers don't finally meet somewhere. They're in each other all along.",
-  "src": "Rumi (Coleman Barks rendering)",
-  "url": "https://en.wikipedia.org/wiki/Rumi",
-  "why": "Eight centuries ago a Persian mystic said what every couple discovers: you did not find each other so much as recognize each other. Something in you was already waiting."
- },
- {
-  "q": "Wherever you are, and whatever you do, be in love.",
-  "src": "Rumi (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Rumi",
-  "why": "Not a destination but a way of walking. Love as the weather you carry with you into every room, every errand, every ordinary Tuesday."
- },
- {
-  "q": "Attention is the beginning of devotion.",
-  "src": "Mary Oliver — Upstream",
-  "url": "https://en.wikipedia.org/wiki/Mary_Oliver",
-  "why": "Before any vow, any ring, any promise — there is simply this: one person truly looking at another. Every act of love that follows grows from that first quality of attention."
- },
- {
-  "q": "That love is all there is, is all we know of love.",
-  "src": "Emily Dickinson",
-  "url": "https://en.wikisource.org/wiki/That_Love_is_all_there_is",
-  "why": "Dickinson spent a lifetime distilling truths to their smallest possible size. This one cannot be made smaller: love needs no explanation, no justification, no theory. It is the fact beneath the facts."
- },
- {
-  "q": "Forever is composed of nows.",
-  "src": "Emily Dickinson",
-  "url": "https://en.wikipedia.org/wiki/Emily_Dickinson",
-  "why": "There is no such thing as loving someone in general. There is only loving them this morning, this evening, this now — and a lifetime is simply thousands of these, kept."
- },
- {
-  "q": "Love is not love which alters when it alteration finds.",
-  "src": "William Shakespeare — Sonnet 116",
-  "url": "https://en.wikipedia.org/wiki/Sonnet_116",
-  "why": "Bodies change, fortunes change, seasons of the heart change. The love Shakespeare called an ever-fixed mark is the one that watches all of it happen — and does not move."
- },
- {
-  "q": "Many waters cannot quench love; rivers cannot sweep it away.",
-  "src": "Song of Solomon 8:7",
-  "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+8",
-  "why": "Three thousand years old, and still the truest thing written about love's stubbornness. Floods come to every life. Real love is what is still standing, soaked and laughing, afterward."
- },
- {
-  "q": "Arise, my love, my beautiful one, and come away.",
-  "src": "Song of Solomon 2:10",
-  "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+2",
-  "why": "Scripture keeps, at its center, a love song — as if to say the romance between two people is not a distraction from the sacred but a rehearsal of it."
- },
- {
-  "q": "Where you go I will go, and where you stay I will stay.",
-  "src": "Ruth 1:16",
-  "url": "https://www.biblegateway.com/passage/?search=Ruth+1",
-  "why": "The oldest wedding vow was not spoken at a wedding. It was one person choosing another's road, in a hard season, with no guarantee — which is what the promise always really is."
- },
- {
-  "q": "Love bears all things, believes all things, hopes all things, endures all things.",
-  "src": "1 Corinthians 13:7",
-  "url": "https://www.biblegateway.com/passage/?search=1+Corinthians+13",
-  "why": "Four verbs, and not one of them is a feeling. Bearing, believing, hoping, enduring — love as the strongest kind of patience, the kind that outlasts every storm it wasn't consulted about."
- },
- {
-  "q": "If either of them falls, one can help the other up.",
-  "src": "Ecclesiastes 4:10",
-  "url": "https://www.biblegateway.com/passage/?search=Ecclesiastes+4",
-  "why": "The Preacher, who found almost everything under the sun to be vanity, made one exception: two together. Not because life won't knock you down — but because it will."
- },
- {
-  "q": "It is not good for the man to be alone.",
-  "src": "Genesis 2:18",
-  "url": "https://www.biblegateway.com/passage/?search=Genesis+2",
-  "why": "The first thing in all creation that God called 'not good.' Before commandments, before covenants — the simple divine observation that a human heart is built for company."
- },
- {
-  "q": "Love, and do what you will.",
-  "src": "Augustine of Hippo",
-  "url": "https://en.wikipedia.org/wiki/Augustine_of_Hippo",
-  "why": "Augustine's whole ethics in six words: get the love right, and the rest follows. A heart that truly loves cannot help but act gently — the loving is the compass."
- },
- {
-  "q": "There is nothing more truly artistic than to love people.",
-  "src": "Vincent van Gogh, letter to Theo",
-  "url": "https://en.wikipedia.org/wiki/Vincent_van_Gogh",
-  "why": "From a man who gave everything to painting: the confession that the greater art was always the other one. Every kindness you show each other is a small masterpiece no museum will ever hang."
- },
- {
-  "q": "All, everything that I understand, I understand only because I love.",
-  "src": "Leo Tolstoy — War and Peace",
-  "url": "https://en.wikipedia.org/wiki/War_and_Peace",
-  "why": "Tolstoy gave this line to a dying man who finally saw clearly. Love is not blindness, whatever they say — it is the only lens through which another person comes fully into focus."
- },
- {
-  "q": "Seize the moments of happiness, love and be loved!",
-  "src": "Leo Tolstoy",
-  "url": "https://en.wikipedia.org/wiki/Leo_Tolstoy",
-  "why": "From the author who wrote most honestly about unhappy love: the plea to waste none of the happy kind. The moments are not owed to you. They are handed to you. Take them with both hands."
- },
- {
-  "q": "To love someone means to see them as God intended them.",
-  "src": "Fyodor Dostoevsky (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Fyodor_Dostoevsky",
-  "why": "Everyone else sees the tired Tuesday version. Love sees the original design — and by seeing it, slowly calls it forth. You become, over years, the person your beloved always saw."
- },
- {
-  "q": "Whatever our souls are made of, his and mine are the same.",
-  "src": "Emily Brontë — Wuthering Heights",
-  "url": "https://en.wikipedia.org/wiki/Wuthering_Heights",
-  "why": "Written by a woman who rarely left her moor, and yet she named it: the strange recognition at love's core — not that you are alike, but that you are made of the same weather."
- },
- {
-  "q": "You pierce my soul. I am half agony, half hope.",
-  "src": "Jane Austen — Persuasion",
-  "url": "https://en.wikipedia.org/wiki/Persuasion_(novel)",
-  "why": "The most restrained novelist in English lost all restraint exactly once — in a love letter. Even the most composed heart, it turns out, keeps one page that trembles."
- },
- {
-  "q": "I love you without knowing how, or when, or from where.",
-  "src": "Pablo Neruda — Sonnet XVII",
-  "url": "https://en.wikipedia.org/wiki/Pablo_Neruda",
-  "why": "Love that can explain itself is still negotiating. The real thing arrives like weather, without paperwork — and you simply find yourself living in a warmer country."
- },
- {
-  "q": "Love does not consist in gazing at each other, but looking outward together.",
-  "src": "Antoine de Saint-Exupéry",
-  "url": "https://en.wikipedia.org/wiki/Antoine_de_Saint-Exup%C3%A9ry",
-  "why": "The pilot-poet knew: two people facing each other make a moment; two people facing the same horizon make a life. The gazing is the beginning. The shared direction is the marriage."
- },
- {
-  "q": "The bridge is love, the only survival, the only meaning.",
-  "src": "Thornton Wilder — The Bridge of San Luis Rey",
-  "url": "https://en.wikipedia.org/wiki/The_Bridge_of_San_Luis_Rey",
-  "why": "Wilder's novel ends with this: there is a land of the living and a land of the dead, and what spans them is not memory, not monuments — only the love that was actually given."
- },
- {
-  "q": "Love is what is left over when being in love has burned away.",
-  "src": "Louis de Bernières — Captain Corelli's Mandolin",
-  "url": "https://en.wikipedia.org/wiki/Captain_Corelli%27s_Mandolin",
-  "why": "The fireworks are real, but they are not the point. The point is what remains at ground level afterward: two root systems grown so deep toward each other that they hold the same earth."
- },
- {
-  "q": "Love recognizes no barriers. It jumps hurdles, leaps fences, penetrates walls.",
-  "src": "Maya Angelou",
-  "url": "https://en.wikipedia.org/wiki/Maya_Angelou",
-  "why": "Angelou wrote this having seen every wall the world can build. Love, she insisted, arrives at its destination anyway — full of hope. Distance, difference, difficulty: all just terrain."
- },
- {
-  "q": "Love is at the root of everything — love or the lack of it.",
-  "src": "Fred Rogers",
-  "url": "https://www.misterrogers.org",
-  "why": "The gentlest man on television spent his life on one idea: look beneath any human story, kind or cruel, and you find the same thing — love that was given, or love that was missing. You two are giving it."
- },
- {
-  "q": "Mature love says: I need you because I love you.",
-  "src": "Erich Fromm — The Art of Loving",
-  "url": "https://en.wikipedia.org/wiki/The_Art_of_Loving",
-  "why": "Fromm's great reversal: immature love needs first and loves second. The grown kind chooses first — and only then discovers, wonderfully, that it cannot imagine doing without."
- },
- {
-  "q": "Love is an endless mystery, for it has nothing else to explain it.",
-  "src": "Rabindranath Tagore",
-  "url": "https://en.wikipedia.org/wiki/Rabindranath_Tagore",
-  "why": "Everything else in life can be traced to a cause. Love alone explains itself only by pointing at the beloved — which is no explanation at all, and completely sufficient."
- },
- {
-  "q": "I seem to have loved you in numberless forms, numberless times.",
-  "src": "Rabindranath Tagore — Unending Love",
-  "url": "https://en.wikipedia.org/wiki/Rabindranath_Tagore",
-  "why": "Tagore's lovers feel older than one lifetime — as if every story of devotion ever lived was practice for this one. Some loves feel like remembering. Perhaps they are."
- },
- {
-  "q": "Even after all this time, the sun never says to the earth, 'You owe me.'",
-  "src": "Hafiz (Daniel Ladinsky rendering)",
-  "url": "https://en.wikipedia.org/wiki/Hafez",
-  "why": "Look what happens with a love like that, the poem finishes — it lights the whole sky. The most generous love keeps no ledger at all. It just keeps rising."
- },
- {
-  "q": "Your heart and my heart are very, very old friends.",
-  "src": "Hafiz (Daniel Ladinsky rendering)",
-  "url": "https://en.wikipedia.org/wiki/Hafez",
-  "why": "Some meetings feel like introductions. Others feel like reunions. The Persian poets believed hearts recognize each other from a country older than birth — and who, in love, has not felt exactly that?"
- },
- {
-  "q": "Love is composed of a single soul inhabiting two bodies.",
-  "src": "Aristotle (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Aristotle",
-  "why": "Twenty-three centuries old and still the best description of the strange arithmetic: two people, over years, begin to share one weather system — his calm steadies her, her joy lifts him."
- },
- {
-  "q": "If you wish to be loved, love.",
-  "src": "Seneca, quoting Hecato",
-  "url": "https://en.wikipedia.org/wiki/Seneca_the_Younger",
-  "why": "The Stoics, who distrusted almost every feeling, made an exception here — and gave the simplest instruction in the entire literature of the heart. It has never once failed."
- },
- {
-  "q": "Love the people with whom fate brings you together, and do so with all your heart.",
-  "src": "Marcus Aurelius — Meditations",
-  "url": "https://en.wikipedia.org/wiki/Meditations",
-  "why": "An emperor's private note to himself, never meant for us. Amid war and plague, the most powerful man alive reminded himself of the one thing power cannot do: only the heart can hold a person."
- },
- {
-  "q": "You came, and I was longing for you; you cooled my heart which burned.",
-  "src": "Sappho, fragment",
-  "url": "https://en.wikipedia.org/wiki/Sappho",
-  "why": "Twenty-six centuries ago, on an island, a woman wrote down what it feels like when the beloved finally walks in. It has felt exactly like this ever since."
- },
- {
-  "q": "Someone will remember us, I say, even in another time.",
-  "src": "Sappho, fragment",
-  "url": "https://en.wikipedia.org/wiki/Sappho",
-  "why": "She was right — here we are, remembering. Love written into days, songs, and small kept photographs outlasts everything built of stone. Yours will be remembered too."
- },
- {
-  "q": "Love, which moves the sun and the other stars.",
-  "src": "Dante — Paradiso, final line",
-  "url": "https://en.wikipedia.org/wiki/Paradiso_(Dante)",
-  "why": "Dante ends the entire Divine Comedy — one hundred cantos, hell to heaven — on this single claim: the force turning the universe and the force between two people are the same force, at different volumes."
- },
- {
-  "q": "Ever thine, ever mine, ever ours.",
-  "src": "Ludwig van Beethoven — letter to the Immortal Beloved",
-  "url": "https://en.wikipedia.org/wiki/Immortal_Beloved",
-  "why": "The man who heard symphonies no one else could hear wrote, in the end, six words a child could say. When love is total, language gets very simple."
- },
- {
-  "q": "Love is my religion — I could die for that.",
-  "src": "John Keats — letter to Fanny Brawne",
-  "url": "https://en.wikipedia.org/wiki/John_Keats",
-  "why": "Keats, dying at twenty-five, had time for only the essentials — and this is what he kept. Not fame, not poetry: the astonishing fact of loving one particular person."
- },
- {
-  "q": "How do I love thee? Let me count the ways.",
-  "src": "Elizabeth Barrett Browning — Sonnet 43",
-  "url": "https://en.wikipedia.org/wiki/Sonnets_from_the_Portuguese",
-  "why": "She counted, and the count has never ended — every couple continues it. Depth and breadth and height, breath, smiles, tears: love audited in full and found to exceed everything."
- },
- {
-  "q": "Grow old along with me! The best is yet to be.",
-  "src": "Robert Browning",
-  "url": "https://en.wikipedia.org/wiki/Robert_Browning",
-  "why": "He wrote it to Elizabeth, meaning it. The world tells you love's best chapter is the first one. The Brownings — and every long-married couple since — know it is written much later."
- },
- {
-  "q": "To get the full value of joy you must have somebody to divide it with.",
-  "src": "Mark Twain",
-  "url": "https://en.wikipedia.org/wiki/Mark_Twain",
-  "why": "Twain's strange mathematics of the heart: joy divided is joy doubled. Good news barely exists until you've told the one person who will light up. That lighting-up is half the joy itself."
- },
- {
-  "q": "I know what it is to live entirely for what I love best on earth.",
-  "src": "Charlotte Brontë — Jane Eyre",
-  "url": "https://en.wikipedia.org/wiki/Jane_Eyre",
-  "why": "Jane says this after every trial is over — plain words for a plain truth: happiness is not complicated. It is the daily company of the person your soul prefers."
- },
- {
-  "q": "Life is a flower of which love is the honey.",
-  "src": "Victor Hugo",
-  "url": "https://en.wikipedia.org/wiki/Victor_Hugo",
-  "why": "Everything else about life — the work, the errands, the years — is the blossom. Sweet enough. But the honey, the part worth keeping, was always the loving."
- },
- {
-  "q": "There is only one happiness in this life: to love and be loved.",
-  "src": "George Sand — letter",
-  "url": "https://en.wikipedia.org/wiki/George_Sand",
-  "why": "She wrote it in a letter, mid-life, having tried the other candidates — fame, freedom, art. All fine. But when the accounting was done, only one entry remained in the happiness column."
- },
- {
-  "q": "Where there is great love, there are always miracles.",
-  "src": "Willa Cather — Death Comes for the Archbishop",
-  "url": "https://en.wikipedia.org/wiki/Death_Comes_for_the_Archbishop",
-  "why": "Cather's priest explains that miracles are not magic — they are moments when our eyes are opened to what was always there. Great love opens eyes daily. Hence the miracles."
- },
- {
-  "q": "I don't want sunbursts or marble halls. I only want you.",
-  "src": "L.M. Montgomery — Anne of the Island",
-  "url": "https://en.wikipedia.org/wiki/Anne_of_the_Island",
-  "why": "Anne turns down the rich suitor and the grand life for the boy who knows her. Every true love story has this moment: the discovery that the person is the treasure, and everything else is furniture."
- },
- {
-  "q": "If I know what love is, it is because of you.",
-  "src": "Hermann Hesse (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Hermann_Hesse",
-  "why": "Love is not learned from books or watched from a distance — it is taught by one particular person, patiently, in ten thousand small lessons. You are each other's whole curriculum."
- },
- {
-  "q": "There is always something left to love.",
-  "src": "Gabriel García Márquez — One Hundred Years of Solitude",
-  "url": "https://en.wikipedia.org/wiki/One_Hundred_Years_of_Solitude",
-  "why": "Through a century of his imagined family's follies, this is the line that survives. However long the years, however familiar the face across the table — look again. There is always something left."
- },
- {
-  "q": "Love is or it ain't. Thin love ain't love at all.",
-  "src": "Toni Morrison — Beloved",
-  "url": "https://en.wikipedia.org/wiki/Beloved_(novel)",
-  "why": "Morrison had no patience for love served in half-portions. The real thing is thick — it feeds, it covers, it holds weight. Anything thinner is just politeness wearing love's coat."
- },
- {
-  "q": "Love takes off the masks that we fear we cannot live without.",
-  "src": "James Baldwin — The Fire Next Time",
-  "url": "https://en.wikipedia.org/wiki/The_Fire_Next_Time",
-  "why": "Baldwin finishes the thought: masks we know we cannot live within. To be loved is to be finally seen bare-faced — and to discover, astonished, that this was safe all along."
- },
- {
-  "q": "Even between the closest people, infinite distances exist — and a wonderful side-by-side love can grow.",
-  "src": "Rainer Maria Rilke (adapted)",
-  "url": "https://en.wikipedia.org/wiki/Rainer_Maria_Rilke",
-  "why": "Rilke's most freeing idea: you will never fully know each other, and that is not the failure of love but its condition. You are each other's favorite mystery — succeeding at it daily."
- },
- {
-  "q": "Love is the extremely difficult realisation that something other than oneself is real.",
-  "src": "Iris Murdoch",
-  "url": "https://en.wikipedia.org/wiki/Iris_Murdoch",
-  "why": "Philosophy's most unromantic definition of love, and secretly its most romantic: the moment another person becomes as real to you as you are to yourself, the world doubles in size."
- },
- {
-  "q": "All shall be well, and all manner of thing shall be well.",
-  "src": "Julian of Norwich",
-  "url": "https://en.wikipedia.org/wiki/Julian_of_Norwich",
-  "why": "Written by a woman who lived through the plague, in a cell, and still heard love at the bottom of everything. Some days a couple needs exactly this sentence, said quietly, meaning it."
- },
- {
-  "q": "If ever two were one, then surely we.",
-  "src": "Anne Bradstreet — To My Dear and Loving Husband",
-  "url": "https://en.wikipedia.org/wiki/Anne_Bradstreet",
-  "why": "America's first published poet, writing in a log house in 1678, about her husband. Empires have risen and fallen since. The feeling in her first line has not changed by one degree."
- },
- {
-  "q": "More than kisses, letters mingle souls.",
-  "src": "John Donne",
-  "url": "https://en.wikipedia.org/wiki/John_Donne",
-  "why": "Donne knew that words carry a person across any distance. Every message you send each other from a train, an office, another country — that is souls mingling, in transit, mid-week."
- },
- {
-  "q": "The best portion of a good life: little, nameless, unremembered acts of kindness and of love.",
-  "src": "William Wordsworth (adapted)",
-  "url": "https://en.wikipedia.org/wiki/William_Wordsworth",
-  "why": "Not the anniversaries. Not the photographs. The portion that matters most is the part no one recorded — the tea carried upstairs, the coat offered, the light left on. Unremembered by history; remembered by the heart."
- },
- {
-  "q": "There is no remedy for love but to love more.",
-  "src": "Henry David Thoreau — Journal",
-  "url": "https://en.wikipedia.org/wiki/Henry_David_Thoreau",
-  "why": "Whatever ails a love, the cure is never rationing. Distance is not fixed by more distance, nor hurt by holding back. The only medicine ever found for love is a larger dose."
- },
- {
-  "q": "Give all to love; obey thy heart.",
-  "src": "Ralph Waldo Emerson",
-  "url": "https://en.wikipedia.org/wiki/Ralph_Waldo_Emerson",
-  "why": "Emerson, the great preacher of self-reliance, made one exception to holding yourself in reserve: this. Love is the one investment where holding back guarantees the loss."
- },
- {
-  "q": "The heart has its reasons which reason knows nothing of.",
-  "src": "Blaise Pascal — Pensées",
-  "url": "https://en.wikipedia.org/wiki/Pens%C3%A9es",
-  "why": "The mathematician who helped invent probability admitted there is one domain his instruments could not enter. Why this person, of all people? The heart knows. It is not telling. It does not need to."
- },
- {
-  "q": "Nothing in the world is single; all things by a law divine in one spirit meet and mingle.",
-  "src": "Percy Bysshe Shelley — Love's Philosophy",
-  "url": "https://en.wikipedia.org/wiki/Percy_Bysshe_Shelley",
-  "why": "Shelley's argument is the oldest one: the rivers meet the ocean, the winds mix forever, the mountains kiss heaven. Two people finding each other is not the exception in nature — it is the rule."
- },
- {
-  "q": "We were together. I forget the rest.",
-  "src": "Walt Whitman (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Walt_Whitman",
-  "why": "Whole years compress to this. You will not remember most of the errands, the emails, the weather. What memory keeps, with perfect fidelity, is simply who was beside you."
- },
- {
-  "q": "We are shaped and fashioned by what we love.",
-  "src": "Johann Wolfgang von Goethe",
-  "url": "https://en.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe",
-  "why": "Look at a couple after many years and you can see it: her patience has gotten into him, his laugh has gotten into her. We become what we behold daily with love. Choose each other; become each other's best."
- },
- {
-  "q": "My heart is gladder than all these, because my love is come to me.",
-  "src": "Christina Rossetti — A Birthday",
-  "url": "https://en.wikipedia.org/wiki/Christina_Rossetti",
-  "why": "The poem lists every glad thing she can think of — singing birds, rainbow shells, ripened boughs — and dismisses them all in one line. Every homecoming, every airport arrival, every key in the door: this."
- },
- {
-  "q": "Drink to me only with thine eyes, and I will pledge with mine.",
-  "src": "Ben Jonson — Song: to Celia",
-  "url": "https://en.wikipedia.org/wiki/Song_to_Celia",
-  "why": "Four hundred years old, and it still names the private language of every couple: the entire conversations held across a crowded room in half a glance. No one else even saw it. That is the point."
- },
- {
-  "q": "O my Luve is like a red, red rose, that's newly sprung in June.",
-  "src": "Robert Burns",
-  "url": "https://en.wikipedia.org/wiki/A_Red,_Red_Rose",
-  "why": "Burns promises to love till all the seas go dry and the rocks melt with the sun — outrageous, unpayable promises. And yet ordinary people keep them quietly all the time, one faithful decade after another."
- },
- {
-  "q": "I have loved you all my life; it has just taken me time to find you.",
-  "src": "Anonymous — old love letter tradition",
-  "url": "https://en.wikipedia.org/wiki/Love_letter",
-  "why": "A line that has drifted through letters for generations because so many hearts recognize it: the beloved arrives late, and yet somehow was always the destination. Every road before was just the route."
- },
- {
-  "q": "An anam cara — a soul friend — is the one before whom you can be fully yourself.",
-  "src": "After John O'Donohue — Anam Cara",
-  "url": "https://en.wikipedia.org/wiki/John_O%27Donohue",
-  "why": "The old Celts believed that when you find the friend of your soul, you have come home. Home was never a place. It is the person in whose presence your whole self is welcome, unedited."
- },
- {
-  "q": "Good relationships keep us happier and healthier. Period.",
-  "src": "Robert Waldinger — the 85-year Harvard study",
-  "url": "https://www.adultdevelopmentstudy.org",
-  "why": "Science spent 85 years and studied hundreds of lives to find the secret of a good one — and landed where the poets started: warmth with your closest person. You are, quite literally, each other's medicine."
- },
- {
-  "q": "Small things often.",
-  "src": "John Gottman — four decades of research on love",
-  "url": "https://www.gottman.com",
-  "why": "The scientist who watched thousands of couples found no secret in the grand gestures at all. Lasting love is knitted from moments almost too small to see — and therefore available every single day, to everyone, for free."
- },
- {
-  "q": "Happy couples answer each other's smallest reaches — a sigh, a glance, a 'look at this.'",
-  "src": "John Gottman — the research on bids",
-  "url": "https://www.gottman.com/blog/turn-toward-instead-of-away/",
-  "why": "In the lab they could predict which couples would flourish just by watching these three-second moments. Love, it turns out, is mostly the accumulated history of small answers to small calls. Keep answering."
- },
- {
-  "q": "Holding your beloved's hand quiets the brain's alarm centers — measurably, instantly.",
-  "src": "James Coan — the hand-holding studies",
-  "url": "https://en.wikipedia.org/wiki/James_A._Coan",
-  "why": "They put people in scanners, warned them of a coming shock, and watched fear light up the brain — until a spouse's hand reached in. The fear dimmed. A held hand is not a small comfort. It is neurology."
- },
- {
-  "q": "The bodies of long-loving couples fall into rhythm — hearts and breath synchronizing when they sit near.",
-  "src": "Physiological synchrony research, UC Davis",
-  "url": "https://www.ucdavis.edu",
-  "why": "Instruments confirm what you already feel on the sofa: near each other, two nervous systems tune to one station. Years of love compose an actual duet, played below hearing, in pulse and breath."
- },
- {
-  "q": "In warm marriages, even wounds heal faster — kindness changes the body's chemistry.",
-  "src": "Janice Kiecolt-Glaser — Ohio State studies",
-  "url": "https://en.wikipedia.org/wiki/Janice_Kiecolt-Glaser",
-  "why": "Researchers measured actual skin wounds and found they closed sooner in couples who treated each other gently. Tenderness is not soft. It is one of the most powerful medicines ever tested."
- },
- {
-  "q": "Closeness grows from taking turns being truly seen.",
-  "src": "Arthur Aron — the 36 questions studies",
-  "url": "https://en.wikipedia.org/wiki/Arthur_Aron",
-  "why": "The famous experiment that made strangers fall in love had no trick to it: just two people trading honest answers, gradually deeper, while really listening. Intimacy is not found. It is exchanged."
- },
- {
-  "q": "How you celebrate each other's good news matters even more than how you fight.",
-  "src": "Shelly Gable — capitalization research",
-  "url": "https://labs.psych.ucsb.edu/gable/shelly/",
-  "why": "The finding that surprises everyone: love shows its health most in the sunlit moments. When one of you runs in with good news and the other drops everything to be glad — that, the data says, is the heartbeat."
- },
- {
-  "q": "Four minutes of simply looking into each other's eyes draws two hearts closer.",
-  "src": "Arthur Aron — closeness experiments",
-  "url": "https://en.wikipedia.org/wiki/Arthur_Aron",
-  "why": "It feels almost too intimate to try — which is exactly why it works. Behind every busy week, the whole person is still there, waiting to be looked at. Four minutes. It is never just four minutes."
- },
- {
-  "q": "Love is patient, love is kind. It does not envy, it does not boast.",
-  "src": "1 Corinthians 13:4",
-  "url": "https://www.biblegateway.com/passage/?search=1+Corinthians+13",
-  "why": "Read at a thousand weddings and still undefeated. Notice that everything on the list is quiet, daily, and free. Love's job description contains not one impressive thing — only faithful ones."
- },
- {
-  "q": "Set me as a seal upon your heart, for love is strong as death.",
-  "src": "Song of Solomon 8:6",
-  "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+8",
-  "why": "The boldest claim in the ancient world: that love holds rank with the strongest force there is. Every couple that keeps loving through loss and years quietly proves the verse right."
- },
- {
-  "q": "Perfect love casts out fear.",
-  "src": "1 John 4:18",
-  "url": "https://www.biblegateway.com/passage/?search=1+John+4",
-  "why": "Fear asks: am I enough, will I be left, what if they see the real me? Love answers all three at once, not with arguments but with staying. Where one grows, the other cannot live."
- },
- {
-  "q": "Two are better than one, because they have a good reward for their toil.",
-  "src": "Ecclesiastes 4:9",
-  "url": "https://www.biblegateway.com/passage/?search=Ecclesiastes+4",
-  "why": "Not twice as good — better in kind. Work shared is lighter, joy shared is heavier, and the long road that would wear out one traveler somehow carries two. The arithmetic of together has always been generous."
- },
- {
-  "q": "I have found the one whom my soul loves.",
-  "src": "Song of Solomon 3:4",
-  "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+3",
-  "why": "Not 'the one my eyes prefer' or 'the one my plans require' — the one my soul loves. The deepest part of you did the choosing. That is why it holds."
- },
- {
-  "q": "Kindness in another's trouble, courage in your own.",
-  "src": "Adam Lindsay Gordon",
-  "url": "https://en.wikipedia.org/wiki/Adam_Lindsay_Gordon",
-  "why": "An old bush ballad's entire theory of character — and, quietly, of marriage. Two people alternating these two gifts, year after year: kind when the other struggles, brave when it's their own turn."
- },
- {
-  "q": "The giving of love is an education in itself.",
-  "src": "Eleanor Roosevelt",
-  "url": "https://en.wikipedia.org/wiki/Eleanor_Roosevelt",
-  "why": "No one arrives knowing how to love well. It is learned only by doing it — generously, imperfectly, again. Every anniversary is really a diploma."
- },
- {
-  "q": "In dreams and in love there are no impossibilities.",
-  "src": "János Arany",
-  "url": "https://en.wikipedia.org/wiki/J%C3%A1nos_Arany",
-  "why": "The Hungarian poet put love beside dreams as the two places where the ordinary rules are suspended. Everyone who has loved against odds — across countries, languages, histories — knows he was simply reporting facts."
- },
- {
-  "q": "For it was not into my ear you whispered, but into my heart.",
-  "src": "Judy Garland (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Judy_Garland",
-  "why": "The line finishes: it was not my lips you kissed, but my soul. However it is said and whoever first said it — this is what every beloved knows: the words land deeper than hearing."
- },
- {
-  "q": "A happy marriage is a long conversation which always seems too short.",
-  "src": "André Maurois",
-  "url": "https://en.wikipedia.org/wiki/Andr%C3%A9_Maurois",
-  "why": "Decades in, the best couples are still mid-sentence — still interrupting each other with one more thing to tell. The wedding starts the conversation. Nothing ever quite finishes it."
- },
- {
-  "q": "To love and be loved is to feel the sun from both sides.",
-  "src": "David Viscott",
-  "url": "https://en.wikipedia.org/wiki/David_Viscott",
-  "why": "Warmth arriving and warmth leaving, at once — the rarest weather a life can have. Most people stand in one kind of light or the other. You two stand in both."
- },
- {
-  "q": "Love doesn't make the world go round. Love is what makes the ride worthwhile.",
-  "src": "Franklin P. Jones",
-  "url": "https://en.wikiquote.org/wiki/Love",
-  "why": "The world would keep spinning without it — colder, duller, on schedule. Love changes nothing about the orbit and everything about the journey. Same ride, entirely different trip."
- },
- {
-  "q": "Being deeply loved gives you strength; loving deeply gives you courage.",
-  "src": "Lao Tzu (attributed)",
-  "url": "https://en.wikipedia.org/wiki/Tao_Te_Ching",
-  "why": "Twenty-five centuries old and still the best trade ever described: you give courage, you receive strength — and neither of you is ever spent by the giving."
- },
- {
-  "q": "Attention is the rarest and purest form of generosity.",
-  "src": "Simone Weil",
-  "url": "https://en.wikipedia.org/wiki/Simone_Weil",
-  "why": "Written in the darkest decade of the last century, truer now in the age of glowing screens. To attend fully to another person is to say: right now, nothing exists but you."
- }
+  {
+    "q": "An anam cara — a soul friend — is the one before whom you can be fully yourself.",
+    "src": "After John O'Donohue — Anam Cara",
+    "url": "https://en.wikipedia.org/wiki/John_O%27Donohue",
+    "why": "The old Celts believed that when you find the friend of your soul, you have come home. Home was never a place. It is the person in whose presence your whole self is welcome, unedited."
+  },
+  {
+    "q": "In warm marriages, even wounds heal faster — kindness changes the body's chemistry.",
+    "src": "Janice Kiecolt-Glaser — Ohio State studies",
+    "url": "https://en.wikipedia.org/wiki/Janice_Kiecolt-Glaser",
+    "why": "Researchers measured actual skin wounds and found they closed sooner in couples who treated each other gently. Tenderness is not soft. It is one of the most powerful medicines ever tested."
+  },
+  {
+    "q": "I have found the one whom my soul loves.",
+    "src": "Song of Solomon 3:4",
+    "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+3",
+    "why": "Not 'the one my eyes prefer' or 'the one my plans require' — the one my soul loves. The deepest part of you did the choosing. That is why it holds."
+  },
+  {
+    "q": "Small things often.",
+    "src": "John Gottman — four decades of research on love",
+    "url": "https://www.gottman.com",
+    "why": "The scientist who watched thousands of couples found no secret in the grand gestures at all. Lasting love is knitted from moments almost too small to see — and therefore available every single day, to everyone, for free."
+  },
+  {
+    "q": "Love is not love which alters when it alteration finds.",
+    "src": "William Shakespeare — Sonnet 116",
+    "url": "https://en.wikipedia.org/wiki/Sonnet_116",
+    "why": "Bodies change, fortunes change, seasons of the heart change. The love Shakespeare called an ever-fixed mark is the one that watches all of it happen — and does not move."
+  },
+  {
+    "q": "Arise, my love, my beautiful one, and come away.",
+    "src": "Song of Solomon 2:10",
+    "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+2",
+    "why": "Scripture keeps, at its center, a love song — as if to say the romance between two people is not a distraction from the sacred but a rehearsal of it."
+  },
+  {
+    "q": "The heart has its reasons which reason knows nothing of.",
+    "src": "Blaise Pascal — Pensées",
+    "url": "https://en.wikipedia.org/wiki/Pens%C3%A9es",
+    "why": "The mathematician who helped invent probability admitted there is one domain his instruments could not enter. Why this person, of all people? The heart knows. It is not telling. It does not need to."
+  },
+  {
+    "q": "That love is all there is, is all we know of love.",
+    "src": "Emily Dickinson",
+    "url": "https://en.wikisource.org/wiki/That_Love_is_all_there_is",
+    "why": "Dickinson spent a lifetime distilling truths to their smallest possible size. This one cannot be made smaller: love needs no explanation, no justification, no theory. It is the fact beneath the facts."
+  },
+  {
+    "q": "Love, and do what you will.",
+    "src": "Augustine of Hippo",
+    "url": "https://en.wikipedia.org/wiki/Augustine_of_Hippo",
+    "why": "Augustine's whole ethics in six words: get the love right, and the rest follows. A heart that truly loves cannot help but act gently — the loving is the compass."
+  },
+  {
+    "q": "Ever thine, ever mine, ever ours.",
+    "src": "Ludwig van Beethoven — letter to the Immortal Beloved",
+    "url": "https://en.wikipedia.org/wiki/Immortal_Beloved",
+    "why": "The man who heard symphonies no one else could hear wrote, in the end, six words a child could say. When love is total, language gets very simple."
+  },
+  {
+    "q": "Love doesn't make the world go round. Love is what makes the ride worthwhile.",
+    "src": "Franklin P. Jones",
+    "url": "https://en.wikiquote.org/wiki/Love",
+    "why": "The world would keep spinning without it — colder, duller, on schedule. Love changes nothing about the orbit and everything about the journey. Same ride, entirely different trip."
+  },
+  {
+    "q": "Love recognizes no barriers. It jumps hurdles, leaps fences, penetrates walls.",
+    "src": "Maya Angelou",
+    "url": "https://en.wikipedia.org/wiki/Maya_Angelou",
+    "why": "Angelou wrote this having seen every wall the world can build. Love, she insisted, arrives at its destination anyway — full of hope. Distance, difference, difficulty: all just terrain."
+  },
+  {
+    "q": "I don't want sunbursts or marble halls. I only want you.",
+    "src": "L.M. Montgomery — Anne of the Island",
+    "url": "https://en.wikipedia.org/wiki/Anne_of_the_Island",
+    "why": "Anne turns down the rich suitor and the grand life for the boy who knows her. Every true love story has this moment: the discovery that the person is the treasure, and everything else is furniture."
+  },
+  {
+    "q": "The best portion of a good life: little, nameless, unremembered acts of kindness and of love.",
+    "src": "William Wordsworth (adapted)",
+    "url": "https://en.wikipedia.org/wiki/William_Wordsworth",
+    "why": "Not the anniversaries. Not the photographs. The portion that matters most is the part no one recorded — the tea carried upstairs, the coat offered, the light left on. Unremembered by history; remembered by the heart."
+  },
+  {
+    "q": "How you celebrate each other's good news matters even more than how you fight.",
+    "src": "Shelly Gable — capitalization research",
+    "url": "https://labs.psych.ucsb.edu/gable/shelly/",
+    "why": "The finding that surprises everyone: love shows its health most in the sunlit moments. When one of you runs in with good news and the other drops everything to be glad — that, the data says, is the heartbeat."
+  },
+  {
+    "q": "Give all to love; obey thy heart.",
+    "src": "Ralph Waldo Emerson",
+    "url": "https://en.wikipedia.org/wiki/Ralph_Waldo_Emerson",
+    "why": "Emerson, the great preacher of self-reliance, made one exception to holding yourself in reserve: this. Love is the one investment where holding back guarantees the loss."
+  },
+  {
+    "q": "Attention is the rarest and purest form of generosity.",
+    "src": "Simone Weil",
+    "url": "https://en.wikipedia.org/wiki/Simone_Weil",
+    "why": "Written in the darkest decade of the last century, truer now in the age of glowing screens. To attend fully to another person is to say: right now, nothing exists but you."
+  },
+  {
+    "q": "Love does not consist in gazing at each other, but looking outward together.",
+    "src": "Antoine de Saint-Exupéry",
+    "url": "https://en.wikipedia.org/wiki/Antoine_de_Saint-Exup%C3%A9ry",
+    "why": "The pilot-poet knew: two people facing each other make a moment; two people facing the same horizon make a life. The gazing is the beginning. The shared direction is the marriage."
+  },
+  {
+    "q": "Even between the closest people, infinite distances exist — and a wonderful side-by-side love can grow.",
+    "src": "Rainer Maria Rilke (adapted)",
+    "url": "https://en.wikipedia.org/wiki/Rainer_Maria_Rilke",
+    "why": "Rilke's most freeing idea: you will never fully know each other, and that is not the failure of love but its condition. You are each other's favorite mystery — succeeding at it daily."
+  },
+  {
+    "q": "If you wish to be loved, love.",
+    "src": "Seneca, quoting Hecato",
+    "url": "https://en.wikipedia.org/wiki/Seneca_the_Younger",
+    "why": "The Stoics, who distrusted almost every feeling, made an exception here — and gave the simplest instruction in the entire literature of the heart. It has never once failed."
+  },
+  {
+    "q": "Love bears all things, believes all things, hopes all things, endures all things.",
+    "src": "1 Corinthians 13:7",
+    "url": "https://www.biblegateway.com/passage/?search=1+Corinthians+13",
+    "why": "Four verbs, and not one of them is a feeling. Bearing, believing, hoping, enduring — love as the strongest kind of patience, the kind that outlasts every storm it wasn't consulted about."
+  },
+  {
+    "q": "Happy couples answer each other's smallest reaches — a sigh, a glance, a 'look at this.'",
+    "src": "John Gottman — the research on bids",
+    "url": "https://www.gottman.com/blog/turn-toward-instead-of-away/",
+    "why": "In the lab they could predict which couples would flourish just by watching these three-second moments. Love, it turns out, is mostly the accumulated history of small answers to small calls. Keep answering."
+  },
+  {
+    "q": "Someone will remember us, I say, even in another time.",
+    "src": "Sappho, fragment",
+    "url": "https://en.wikipedia.org/wiki/Sappho",
+    "why": "She was right — here we are, remembering. Love written into days, songs, and small kept photographs outlasts everything built of stone. Yours will be remembered too."
+  },
+  {
+    "q": "If either of them falls, one can help the other up.",
+    "src": "Ecclesiastes 4:10",
+    "url": "https://www.biblegateway.com/passage/?search=Ecclesiastes+4",
+    "why": "The Preacher, who found almost everything under the sun to be vanity, made one exception: two together. Not because life won't knock you down — but because it will."
+  },
+  {
+    "q": "Love is at the root of everything — love or the lack of it.",
+    "src": "Fred Rogers",
+    "url": "https://www.misterrogers.org",
+    "why": "The gentlest man on television spent his life on one idea: look beneath any human story, kind or cruel, and you find the same thing — love that was given, or love that was missing. You two are giving it."
+  },
+  {
+    "q": "To love someone means to see them as God intended them.",
+    "src": "Fyodor Dostoevsky (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Fyodor_Dostoevsky",
+    "why": "Everyone else sees the tired Tuesday version. Love sees the original design — and by seeing it, slowly calls it forth. You become, over years, the person your beloved always saw."
+  },
+  {
+    "q": "We are shaped and fashioned by what we love.",
+    "src": "Johann Wolfgang von Goethe",
+    "url": "https://en.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe",
+    "why": "Look at a couple after many years and you can see it: her patience has gotten into him, his laugh has gotten into her. We become what we behold daily with love. Choose each other; become each other's best."
+  },
+  {
+    "q": "If I know what love is, it is because of you.",
+    "src": "Hermann Hesse (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Hermann_Hesse",
+    "why": "Love is not learned from books or watched from a distance — it is taught by one particular person, patiently, in ten thousand small lessons. You are each other's whole curriculum."
+  },
+  {
+    "q": "Four minutes of simply looking into each other's eyes draws two hearts closer.",
+    "src": "Arthur Aron — closeness experiments",
+    "url": "https://en.wikipedia.org/wiki/Arthur_Aron",
+    "why": "It feels almost too intimate to try — which is exactly why it works. Behind every busy week, the whole person is still there, waiting to be looked at. Four minutes. It is never just four minutes."
+  },
+  {
+    "q": "My heart is gladder than all these, because my love is come to me.",
+    "src": "Christina Rossetti — A Birthday",
+    "url": "https://en.wikipedia.org/wiki/Christina_Rossetti",
+    "why": "The poem lists every glad thing she can think of — singing birds, rainbow shells, ripened boughs — and dismisses them all in one line. Every homecoming, every airport arrival, every key in the door: this."
+  },
+  {
+    "q": "More than kisses, letters mingle souls.",
+    "src": "John Donne",
+    "url": "https://en.wikipedia.org/wiki/John_Donne",
+    "why": "Donne knew that words carry a person across any distance. Every message you send each other from a train, an office, another country — that is souls mingling, in transit, mid-week."
+  },
+  {
+    "q": "Attention is the beginning of devotion.",
+    "src": "Mary Oliver — Upstream",
+    "url": "https://en.wikipedia.org/wiki/Mary_Oliver",
+    "why": "Before any vow, any ring, any promise — there is simply this: one person truly looking at another. Every act of love that follows grows from that first quality of attention."
+  },
+  {
+    "q": "All, everything that I understand, I understand only because I love.",
+    "src": "Leo Tolstoy — War and Peace",
+    "url": "https://en.wikipedia.org/wiki/War_and_Peace",
+    "why": "Tolstoy gave this line to a dying man who finally saw clearly. Love is not blindness, whatever they say — it is the only lens through which another person comes fully into focus."
+  },
+  {
+    "q": "All real living is meeting.",
+    "src": "Martin Buber — I and Thou",
+    "url": "https://en.wikipedia.org/wiki/I_and_Thou",
+    "why": "Five words that hold a whole philosophy: life does not happen inside us, it happens between us. Every true meeting of two people is the realest thing in the world."
+  },
+  {
+    "q": "We were together. I forget the rest.",
+    "src": "Walt Whitman (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Walt_Whitman",
+    "why": "Whole years compress to this. You will not remember most of the errands, the emails, the weather. What memory keeps, with perfect fidelity, is simply who was beside you."
+  },
+  {
+    "q": "Good relationships keep us happier and healthier. Period.",
+    "src": "Robert Waldinger — the 85-year Harvard study",
+    "url": "https://www.adultdevelopmentstudy.org",
+    "why": "Science spent 85 years and studied hundreds of lives to find the secret of a good one — and landed where the poets started: warmth with your closest person. You are, quite literally, each other's medicine."
+  },
+  {
+    "q": "For it was not into my ear you whispered, but into my heart.",
+    "src": "Judy Garland (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Judy_Garland",
+    "why": "The line finishes: it was not my lips you kissed, but my soul. However it is said and whoever first said it — this is what every beloved knows: the words land deeper than hearing."
+  },
+  {
+    "q": "The giving of love is an education in itself.",
+    "src": "Eleanor Roosevelt",
+    "url": "https://en.wikipedia.org/wiki/Eleanor_Roosevelt",
+    "why": "No one arrives knowing how to love well. It is learned only by doing it — generously, imperfectly, again. Every anniversary is really a diploma."
+  },
+  {
+    "q": "It is not good for the man to be alone.",
+    "src": "Genesis 2:18",
+    "url": "https://www.biblegateway.com/passage/?search=Genesis+2",
+    "why": "The first thing in all creation that God called 'not good.' Before commandments, before covenants — the simple divine observation that a human heart is built for company."
+  },
+  {
+    "q": "The supreme happiness of life is the conviction that we are loved.",
+    "src": "Victor Hugo — Les Misérables",
+    "url": "https://en.wikipedia.org/wiki/Les_Mis%C3%A9rables",
+    "why": "Not admired, not needed, not impressive — loved. Beneath everything we build and strive for, this is the ground floor of a happy life: someone knows you entirely, and stays."
+  },
+  {
+    "q": "Forever is composed of nows.",
+    "src": "Emily Dickinson",
+    "url": "https://en.wikipedia.org/wiki/Emily_Dickinson",
+    "why": "There is no such thing as loving someone in general. There is only loving them this morning, this evening, this now — and a lifetime is simply thousands of these, kept."
+  },
+  {
+    "q": "I seem to have loved you in numberless forms, numberless times.",
+    "src": "Rabindranath Tagore — Unending Love",
+    "url": "https://en.wikipedia.org/wiki/Rabindranath_Tagore",
+    "why": "Tagore's lovers feel older than one lifetime — as if every story of devotion ever lived was practice for this one. Some loves feel like remembering. Perhaps they are."
+  },
+  {
+    "q": "Where there is great love, there are always miracles.",
+    "src": "Willa Cather — Death Comes for the Archbishop",
+    "url": "https://en.wikipedia.org/wiki/Death_Comes_for_the_Archbishop",
+    "why": "Cather's priest explains that miracles are not magic — they are moments when our eyes are opened to what was always there. Great love opens eyes daily. Hence the miracles."
+  },
+  {
+    "q": "Love, which moves the sun and the other stars.",
+    "src": "Dante — Paradiso, final line",
+    "url": "https://en.wikipedia.org/wiki/Paradiso_(Dante)",
+    "why": "Dante ends the entire Divine Comedy — one hundred cantos, hell to heaven — on this single claim: the force turning the universe and the force between two people are the same force, at different volumes."
+  },
+  {
+    "q": "Being deeply loved gives you strength; loving deeply gives you courage.",
+    "src": "Lao Tzu (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Tao_Te_Ching",
+    "why": "Twenty-five centuries old and still the best trade ever described: you give courage, you receive strength — and neither of you is ever spent by the giving."
+  },
+  {
+    "q": "Set me as a seal upon your heart, for love is strong as death.",
+    "src": "Song of Solomon 8:6",
+    "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+8",
+    "why": "The boldest claim in the ancient world: that love holds rank with the strongest force there is. Every couple that keeps loving through loss and years quietly proves the verse right."
+  },
+  {
+    "q": "There is always something left to love.",
+    "src": "Gabriel García Márquez — One Hundred Years of Solitude",
+    "url": "https://en.wikipedia.org/wiki/One_Hundred_Years_of_Solitude",
+    "why": "Through a century of his imagined family's follies, this is the line that survives. However long the years, however familiar the face across the table — look again. There is always something left."
+  },
+  {
+    "q": "Where you go I will go, and where you stay I will stay.",
+    "src": "Ruth 1:16",
+    "url": "https://www.biblegateway.com/passage/?search=Ruth+1",
+    "why": "The oldest wedding vow was not spoken at a wedding. It was one person choosing another's road, in a hard season, with no guarantee — which is what the promise always really is."
+  },
+  {
+    "q": "Mature love says: I need you because I love you.",
+    "src": "Erich Fromm — The Art of Loving",
+    "url": "https://en.wikipedia.org/wiki/The_Art_of_Loving",
+    "why": "Fromm's great reversal: immature love needs first and loves second. The grown kind chooses first — and only then discovers, wonderfully, that it cannot imagine doing without."
+  },
+  {
+    "q": "Wherever you are, and whatever you do, be in love.",
+    "src": "Rumi (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Rumi",
+    "why": "Not a destination but a way of walking. Love as the weather you carry with you into every room, every errand, every ordinary Tuesday."
+  },
+  {
+    "q": "Lovers don't finally meet somewhere. They're in each other all along.",
+    "src": "Rumi (Coleman Barks rendering)",
+    "url": "https://en.wikipedia.org/wiki/Rumi",
+    "why": "Eight centuries ago a Persian mystic said what every couple discovers: you did not find each other so much as recognize each other. Something in you was already waiting."
+  },
+  {
+    "q": "Love is composed of a single soul inhabiting two bodies.",
+    "src": "Aristotle (attributed)",
+    "url": "https://en.wikipedia.org/wiki/Aristotle",
+    "why": "Twenty-three centuries old and still the best description of the strange arithmetic: two people, over years, begin to share one weather system — his calm steadies her, her joy lifts him."
+  },
+  {
+    "q": "There is no remedy for love but to love more.",
+    "src": "Henry David Thoreau — Journal",
+    "url": "https://en.wikipedia.org/wiki/Henry_David_Thoreau",
+    "why": "Whatever ails a love, the cure is never rationing. Distance is not fixed by more distance, nor hurt by holding back. The only medicine ever found for love is a larger dose."
+  },
+  {
+    "q": "A happy marriage is a long conversation which always seems too short.",
+    "src": "André Maurois",
+    "url": "https://en.wikipedia.org/wiki/Andr%C3%A9_Maurois",
+    "why": "Decades in, the best couples are still mid-sentence — still interrupting each other with one more thing to tell. The wedding starts the conversation. Nothing ever quite finishes it."
+  },
+  {
+    "q": "Love is an endless mystery, for it has nothing else to explain it.",
+    "src": "Rabindranath Tagore",
+    "url": "https://en.wikipedia.org/wiki/Rabindranath_Tagore",
+    "why": "Everything else in life can be traced to a cause. Love alone explains itself only by pointing at the beloved — which is no explanation at all, and completely sufficient."
+  },
+  {
+    "q": "In dreams and in love there are no impossibilities.",
+    "src": "János Arany",
+    "url": "https://en.wikipedia.org/wiki/J%C3%A1nos_Arany",
+    "why": "The Hungarian poet put love beside dreams as the two places where the ordinary rules are suspended. Everyone who has loved against odds — across countries, languages, histories — knows he was simply reporting facts."
+  },
+  {
+    "q": "Let there be spaces in your togetherness.",
+    "src": "Kahlil Gibran — The Prophet",
+    "url": "https://en.wikipedia.org/wiki/The_Prophet_(book)",
+    "why": "The oak and the cypress do not grow in each other's shadow, Gibran wrote. The room you give each other is not distance — it is the shape trust takes."
+  },
+  {
+    "q": "The bodies of long-loving couples fall into rhythm — hearts and breath synchronizing when they sit near.",
+    "src": "Physiological synchrony research, UC Davis",
+    "url": "https://www.ucdavis.edu",
+    "why": "Instruments confirm what you already feel on the sofa: near each other, two nervous systems tune to one station. Years of love compose an actual duet, played below hearing, in pulse and breath."
+  },
+  {
+    "q": "To get the full value of joy you must have somebody to divide it with.",
+    "src": "Mark Twain",
+    "url": "https://en.wikipedia.org/wiki/Mark_Twain",
+    "why": "Twain's strange mathematics of the heart: joy divided is joy doubled. Good news barely exists until you've told the one person who will light up. That lighting-up is half the joy itself."
+  },
+  {
+    "q": "Grow old along with me! The best is yet to be.",
+    "src": "Robert Browning",
+    "url": "https://en.wikipedia.org/wiki/Robert_Browning",
+    "why": "He wrote it to Elizabeth, meaning it. The world tells you love's best chapter is the first one. The Brownings — and every long-married couple since — know it is written much later."
+  },
+  {
+    "q": "Perfect love casts out fear.",
+    "src": "1 John 4:18",
+    "url": "https://www.biblegateway.com/passage/?search=1+John+4",
+    "why": "Fear asks: am I enough, will I be left, what if they see the real me? Love answers all three at once, not with arguments but with staying. Where one grows, the other cannot live."
+  },
+  {
+    "q": "There is only one happiness in this life: to love and be loved.",
+    "src": "George Sand — letter",
+    "url": "https://en.wikipedia.org/wiki/George_Sand",
+    "why": "She wrote it in a letter, mid-life, having tried the other candidates — fame, freedom, art. All fine. But when the accounting was done, only one entry remained in the happiness column."
+  },
+  {
+    "q": "I love you without knowing how, or when, or from where.",
+    "src": "Pablo Neruda — Sonnet XVII",
+    "url": "https://en.wikipedia.org/wiki/Pablo_Neruda",
+    "why": "Love that can explain itself is still negotiating. The real thing arrives like weather, without paperwork — and you simply find yourself living in a warmer country."
+  },
+  {
+    "q": "Love is the extremely difficult realisation that something other than oneself is real.",
+    "src": "Iris Murdoch",
+    "url": "https://en.wikipedia.org/wiki/Iris_Murdoch",
+    "why": "Philosophy's most unromantic definition of love, and secretly its most romantic: the moment another person becomes as real to you as you are to yourself, the world doubles in size."
+  },
+  {
+    "q": "Love the people with whom fate brings you together, and do so with all your heart.",
+    "src": "Marcus Aurelius — Meditations",
+    "url": "https://en.wikipedia.org/wiki/Meditations",
+    "why": "An emperor's private note to himself, never meant for us. Amid war and plague, the most powerful man alive reminded himself of the one thing power cannot do: only the heart can hold a person."
+  },
+  {
+    "q": "Even after all this time, the sun never says to the earth, 'You owe me.'",
+    "src": "Hafiz (Daniel Ladinsky rendering)",
+    "url": "https://en.wikipedia.org/wiki/Hafez",
+    "why": "Look what happens with a love like that, the poem finishes — it lights the whole sky. The most generous love keeps no ledger at all. It just keeps rising."
+  },
+  {
+    "q": "Love gives naught but itself and takes naught but from itself.",
+    "src": "Kahlil Gibran — The Prophet",
+    "url": "https://en.wikipedia.org/wiki/The_Prophet_(book)",
+    "why": "Love keeps no accounts. It is not a trade but a spring — it gives because giving is its nature, and it is never emptied by it."
+  },
+  {
+    "q": "Nothing in the world is single; all things by a law divine in one spirit meet and mingle.",
+    "src": "Percy Bysshe Shelley — Love's Philosophy",
+    "url": "https://en.wikipedia.org/wiki/Percy_Bysshe_Shelley",
+    "why": "Shelley's argument is the oldest one: the rivers meet the ocean, the winds mix forever, the mountains kiss heaven. Two people finding each other is not the exception in nature — it is the rule."
+  },
+  {
+    "q": "Many waters cannot quench love; rivers cannot sweep it away.",
+    "src": "Song of Solomon 8:7",
+    "url": "https://www.biblegateway.com/passage/?search=Song+of+Solomon+8",
+    "why": "Three thousand years old, and still the truest thing written about love's stubbornness. Floods come to every life. Real love is what is still standing, soaked and laughing, afterward."
+  },
+  {
+    "q": "Holding your beloved's hand quiets the brain's alarm centers — measurably, instantly.",
+    "src": "James Coan — the hand-holding studies",
+    "url": "https://en.wikipedia.org/wiki/James_A._Coan",
+    "why": "They put people in scanners, warned them of a coming shock, and watched fear light up the brain — until a spouse's hand reached in. The fear dimmed. A held hand is not a small comfort. It is neurology."
+  },
+  {
+    "q": "To love and be loved is to feel the sun from both sides.",
+    "src": "David Viscott",
+    "url": "https://en.wikipedia.org/wiki/David_Viscott",
+    "why": "Warmth arriving and warmth leaving, at once — the rarest weather a life can have. Most people stand in one kind of light or the other. You two stand in both."
+  },
+  {
+    "q": "There is nothing more truly artistic than to love people.",
+    "src": "Vincent van Gogh, letter to Theo",
+    "url": "https://en.wikipedia.org/wiki/Vincent_van_Gogh",
+    "why": "From a man who gave everything to painting: the confession that the greater art was always the other one. Every kindness you show each other is a small masterpiece no museum will ever hang."
+  },
+  {
+    "q": "Drink to me only with thine eyes, and I will pledge with mine.",
+    "src": "Ben Jonson — Song: to Celia",
+    "url": "https://en.wikipedia.org/wiki/Song_to_Celia",
+    "why": "Four hundred years old, and it still names the private language of every couple: the entire conversations held across a crowded room in half a glance. No one else even saw it. That is the point."
+  },
+  {
+    "q": "Your heart and my heart are very, very old friends.",
+    "src": "Hafiz (Daniel Ladinsky rendering)",
+    "url": "https://en.wikipedia.org/wiki/Hafez",
+    "why": "Some meetings feel like introductions. Others feel like reunions. The Persian poets believed hearts recognize each other from a country older than birth — and who, in love, has not felt exactly that?"
+  },
+  {
+    "q": "Love is or it ain't. Thin love ain't love at all.",
+    "src": "Toni Morrison — Beloved",
+    "url": "https://en.wikipedia.org/wiki/Beloved_(novel)",
+    "why": "Morrison had no patience for love served in half-portions. The real thing is thick — it feeds, it covers, it holds weight. Anything thinner is just politeness wearing love's coat."
+  },
+  {
+    "q": "Kindness in another's trouble, courage in your own.",
+    "src": "Adam Lindsay Gordon",
+    "url": "https://en.wikipedia.org/wiki/Adam_Lindsay_Gordon",
+    "why": "An old bush ballad's entire theory of character — and, quietly, of marriage. Two people alternating these two gifts, year after year: kind when the other struggles, brave when it's their own turn."
+  },
+  {
+    "q": "Seize the moments of happiness, love and be loved!",
+    "src": "Leo Tolstoy",
+    "url": "https://en.wikipedia.org/wiki/Leo_Tolstoy",
+    "why": "From the author who wrote most honestly about unhappy love: the plea to waste none of the happy kind. The moments are not owed to you. They are handed to you. Take them with both hands."
+  },
+  {
+    "q": "I know what it is to live entirely for what I love best on earth.",
+    "src": "Charlotte Brontë — Jane Eyre",
+    "url": "https://en.wikipedia.org/wiki/Jane_Eyre",
+    "why": "Jane says this after every trial is over — plain words for a plain truth: happiness is not complicated. It is the daily company of the person your soul prefers."
+  },
+  {
+    "q": "You pierce my soul. I am half agony, half hope.",
+    "src": "Jane Austen — Persuasion",
+    "url": "https://en.wikipedia.org/wiki/Persuasion_(novel)",
+    "why": "The most restrained novelist in English lost all restraint exactly once — in a love letter. Even the most composed heart, it turns out, keeps one page that trembles."
+  },
+  {
+    "q": "Love is my religion — I could die for that.",
+    "src": "John Keats — letter to Fanny Brawne",
+    "url": "https://en.wikipedia.org/wiki/John_Keats",
+    "why": "Keats, dying at twenty-five, had time for only the essentials — and this is what he kept. Not fame, not poetry: the astonishing fact of loving one particular person."
+  },
+  {
+    "q": "How do I love thee? Let me count the ways.",
+    "src": "Elizabeth Barrett Browning — Sonnet 43",
+    "url": "https://en.wikipedia.org/wiki/Sonnets_from_the_Portuguese",
+    "why": "She counted, and the count has never ended — every couple continues it. Depth and breadth and height, breath, smiles, tears: love audited in full and found to exceed everything."
+  },
+  {
+    "q": "Love is patient, love is kind. It does not envy, it does not boast.",
+    "src": "1 Corinthians 13:4",
+    "url": "https://www.biblegateway.com/passage/?search=1+Corinthians+13",
+    "why": "Read at a thousand weddings and still undefeated. Notice that everything on the list is quiet, daily, and free. Love's job description contains not one impressive thing — only faithful ones."
+  },
+  {
+    "q": "Closeness grows from taking turns being truly seen.",
+    "src": "Arthur Aron — the 36 questions studies",
+    "url": "https://en.wikipedia.org/wiki/Arthur_Aron",
+    "why": "The famous experiment that made strangers fall in love had no trick to it: just two people trading honest answers, gradually deeper, while really listening. Intimacy is not found. It is exchanged."
+  },
+  {
+    "q": "The bridge is love, the only survival, the only meaning.",
+    "src": "Thornton Wilder — The Bridge of San Luis Rey",
+    "url": "https://en.wikipedia.org/wiki/The_Bridge_of_San_Luis_Rey",
+    "why": "Wilder's novel ends with this: there is a land of the living and a land of the dead, and what spans them is not memory, not monuments — only the love that was actually given."
+  },
+  {
+    "q": "Love consists in this, that two solitudes protect and border and salute each other.",
+    "src": "Rainer Maria Rilke — Letters to a Young Poet",
+    "url": "https://en.wikipedia.org/wiki/Letters_to_a_Young_Poet",
+    "why": "The deepest intimacy is not fusion but reverence — standing guard over another person's inner world as if it were holy ground. Because it is."
+  },
+  {
+    "q": "You came, and I was longing for you; you cooled my heart which burned.",
+    "src": "Sappho, fragment",
+    "url": "https://en.wikipedia.org/wiki/Sappho",
+    "why": "Twenty-six centuries ago, on an island, a woman wrote down what it feels like when the beloved finally walks in. It has felt exactly like this ever since."
+  },
+  {
+    "q": "I have loved you all my life; it has just taken me time to find you.",
+    "src": "Anonymous — old love letter tradition",
+    "url": "https://en.wikipedia.org/wiki/Love_letter",
+    "why": "A line that has drifted through letters for generations because so many hearts recognize it: the beloved arrives late, and yet somehow was always the destination. Every road before was just the route."
+  },
+  {
+    "q": "Love is what is left over when being in love has burned away.",
+    "src": "Louis de Bernières — Captain Corelli's Mandolin",
+    "url": "https://en.wikipedia.org/wiki/Captain_Corelli%27s_Mandolin",
+    "why": "The fireworks are real, but they are not the point. The point is what remains at ground level afterward: two root systems grown so deep toward each other that they hold the same earth."
+  },
+  {
+    "q": "If ever two were one, then surely we.",
+    "src": "Anne Bradstreet — To My Dear and Loving Husband",
+    "url": "https://en.wikipedia.org/wiki/Anne_Bradstreet",
+    "why": "America's first published poet, writing in a log house in 1678, about her husband. Empires have risen and fallen since. The feeling in her first line has not changed by one degree."
+  },
+  {
+    "q": "Whatever our souls are made of, his and mine are the same.",
+    "src": "Emily Brontë — Wuthering Heights",
+    "url": "https://en.wikipedia.org/wiki/Wuthering_Heights",
+    "why": "Written by a woman who rarely left her moor, and yet she named it: the strange recognition at love's core — not that you are alike, but that you are made of the same weather."
+  },
+  {
+    "q": "Love takes off the masks that we fear we cannot live without.",
+    "src": "James Baldwin — The Fire Next Time",
+    "url": "https://en.wikipedia.org/wiki/The_Fire_Next_Time",
+    "why": "Baldwin finishes the thought: masks we know we cannot live within. To be loved is to be finally seen bare-faced — and to discover, astonished, that this was safe all along."
+  },
+  {
+    "q": "Life is a flower of which love is the honey.",
+    "src": "Victor Hugo",
+    "url": "https://en.wikipedia.org/wiki/Victor_Hugo",
+    "why": "Everything else about life — the work, the errands, the years — is the blossom. Sweet enough. But the honey, the part worth keeping, was always the loving."
+  },
+  {
+    "q": "Two are better than one, because they have a good reward for their toil.",
+    "src": "Ecclesiastes 4:9",
+    "url": "https://www.biblegateway.com/passage/?search=Ecclesiastes+4",
+    "why": "Not twice as good — better in kind. Work shared is lighter, joy shared is heavier, and the long road that would wear out one traveler somehow carries two. The arithmetic of together has always been generous."
+  },
+  {
+    "q": "To love at all is to be vulnerable.",
+    "src": "C.S. Lewis — The Four Loves",
+    "url": "https://en.wikipedia.org/wiki/The_Four_Loves",
+    "why": "Lewis wrote that the only place safe from love's dangers is a coffin. To hand someone your heart is the bravest ordinary thing a person ever does — and you have both done it."
+  },
+  {
+    "q": "O my Luve is like a red, red rose, that's newly sprung in June.",
+    "src": "Robert Burns",
+    "url": "https://en.wikipedia.org/wiki/A_Red,_Red_Rose",
+    "why": "Burns promises to love till all the seas go dry and the rocks melt with the sun — outrageous, unpayable promises. And yet ordinary people keep them quietly all the time, one faithful decade after another."
+  },
+  {
+    "q": "All shall be well, and all manner of thing shall be well.",
+    "src": "Julian of Norwich",
+    "url": "https://en.wikipedia.org/wiki/Julian_of_Norwich",
+    "why": "Written by a woman who lived through the plague, in a cell, and still heard love at the bottom of everything. Some days a couple needs exactly this sentence, said quietly, meaning it."
+  }
 ]
