@@ -1,11 +1,5 @@
 [
   {
-    "q": "An anam cara — a soul friend — is the one before whom you can be fully yourself.",
-    "src": "After John O'Donohue — Anam Cara",
-    "url": "https://en.wikipedia.org/wiki/John_O%27Donohue",
-    "why": "The old Celts believed that when you find the friend of your soul, you have come home. Home was never a place. It is the person in whose presence your whole self is welcome, unedited."
-  },
-  {
     "q": "In warm marriages, even wounds heal faster — kindness changes the body's chemistry.",
     "src": "Janice Kiecolt-Glaser — Ohio State studies",
     "url": "https://en.wikipedia.org/wiki/Janice_Kiecolt-Glaser",
@@ -574,5 +568,11 @@
     "src": "Julian of Norwich",
     "url": "https://en.wikipedia.org/wiki/Julian_of_Norwich",
     "why": "Written by a woman who lived through the plague, in a cell, and still heard love at the bottom of everything. Some days a couple needs exactly this sentence, said quietly, meaning it."
+  },
+  {
+    "q": "An anam cara — a soul friend — is the one before whom you can be fully yourself.",
+    "src": "After John O'Donohue — Anam Cara",
+    "url": "https://en.wikipedia.org/wiki/John_O%27Donohue",
+    "why": "The old Celts believed that when you find the friend of your soul, you have come home. Home was never a place. It is the person in whose presence your whole self is welcome, unedited."
   }
 ]
