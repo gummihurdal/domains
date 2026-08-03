@@ -1413,8 +1413,8 @@
       <div class="dq-question" id="dq-question" hidden>
         <div class="dq-q-kicker">Our question today</div>
         <div class="dq-q-text" id="dq-q-text"></div>
-        <button class="dq-q-toggle" id="dq-q-toggle" type="button" aria-expanded="false" aria-controls="dq-q-eg">for example</button>
-        <div class="dq-q-eg" id="dq-q-eg" hidden>
+        <button class="dq-q-toggle" id="dq-q-toggle" type="button" aria-expanded="true" aria-controls="dq-q-eg">hide example</button>
+        <div class="dq-q-eg" id="dq-q-eg">
           <span class="dq-eg-tag">Not a real one — just the size of answer</span>
           <em id="dq-q-eg-text"></em>
         </div>
@@ -2438,11 +2438,14 @@
     var toggle = document.getElementById('dq-q-toggle');
     if (egText && egBox && toggle && EXAMPLES[day]) {
       egText.textContent = '\u201C' + EXAMPLES[day] + '\u201D';
+      egBox.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.textContent = 'hide example';
       toggle.addEventListener('click', function () {
-        var open = egBox.hidden;
-        egBox.hidden = !open;
-        toggle.setAttribute('aria-expanded', String(open));
-        toggle.textContent = open ? 'hide example' : 'for example';
+        var willOpen = egBox.hidden;
+        egBox.hidden = !willOpen;
+        toggle.setAttribute('aria-expanded', String(willOpen));
+        toggle.textContent = willOpen ? 'hide example' : 'show example';
       });
     } else if (toggle) {
       toggle.hidden = true;
