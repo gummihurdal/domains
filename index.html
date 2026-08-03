@@ -934,6 +934,46 @@
     opacity: 0.82;
   }
 
+  .dq-q-toggle {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.55;
+    background: none;
+    border: 0;
+    border-bottom: 1px dotted currentColor;
+    padding: 0 0 1px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .dq-q-toggle:hover { opacity: 0.85; }
+
+  .dq-q-eg {
+    margin-top: 0.7rem;
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--muted);
+    opacity: 0.75;
+  }
+
+  .dq-q-eg .dq-eg-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.53rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .dq-q-eg em { font-style: italic; }
+
   .dq-src a:hover { text-decoration: underline; }
 
 
@@ -1373,6 +1413,11 @@
       <div class="dq-question" id="dq-question" hidden>
         <div class="dq-q-kicker">Our question today</div>
         <div class="dq-q-text" id="dq-q-text"></div>
+        <button class="dq-q-toggle" id="dq-q-toggle" type="button" aria-expanded="false" aria-controls="dq-q-eg">for example</button>
+        <div class="dq-q-eg" id="dq-q-eg" hidden>
+          <span class="dq-eg-tag">Not a real one — just the size of answer</span>
+          <em id="dq-q-eg-text"></em>
+        </div>
       </div>
     </div>
   </div>
@@ -2375,9 +2420,33 @@
     var el = document.getElementById('dq-q-text');
     var wrap = document.getElementById('dq-question');
     if (!el || !wrap) return;
-    var q = QUESTIONS[new Date().getDay()];
+    var EXAMPLES = [
+      null,
+      'I noticed something was off with you on Sunday and decided not to ask.',
+      'When you asked if a plan suited me, I said yes and it didn\u2019t quite.',
+      'Something I said on Tuesday came out sharper than I meant.',
+      'If I had arrived a day earlier, your week would have been easier.',
+      'You called for no reason on your lunch break. That was the best part of my week.',
+      null
+    ];
+    var day = new Date().getDay();
+    var q = QUESTIONS[day];
     if (!q) return;
     el.textContent = q;
+    var egText = document.getElementById('dq-q-eg-text');
+    var egBox = document.getElementById('dq-q-eg');
+    var toggle = document.getElementById('dq-q-toggle');
+    if (egText && egBox && toggle && EXAMPLES[day]) {
+      egText.textContent = '\u201C' + EXAMPLES[day] + '\u201D';
+      toggle.addEventListener('click', function () {
+        var open = egBox.hidden;
+        egBox.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.textContent = open ? 'hide example' : 'for example';
+      });
+    } else if (toggle) {
+      toggle.hidden = true;
+    }
     wrap.hidden = false;
   })();
 
