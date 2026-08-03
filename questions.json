@@ -1,0 +1,376 @@
+{
+  "note": "Weekday slots. Mon=withheld, Tue=the false yes, Wed=residue, Thu=load and the practical future, Fri=closeness. Rotates by week; edit freely.",
+  "start": "2026-08-03",
+  "slots": {
+    "1": [
+      {
+        "q": "Is there anything one of us decided not to trouble the other with this weekend?",
+        "eg": "I noticed something was off with you on Sunday and decided not to ask."
+      },
+      {
+        "q": "Was there a moment this weekend when one of us almost said something and didn't?",
+        "eg": "I nearly said I was tired on Saturday and then let it go."
+      },
+      {
+        "q": "Did either of us notice something and choose not to ask about it?",
+        "eg": "You were quiet after a phone call and I didn't ask who it was."
+      },
+      {
+        "q": "Was there a small thing this weekend that bothered one of us and stayed unsaid?",
+        "eg": "The kitchen was left in a state and I decided it wasn't worth mentioning."
+      },
+      {
+        "q": "Did one of us want something this weekend and not ask for it?",
+        "eg": "I wanted a slow morning and didn't say so, and we went out early."
+      },
+      {
+        "q": "Was there a worry one of us carried through the weekend alone?",
+        "eg": "I was thinking about a deadline the whole of Sunday and never said it."
+      },
+      {
+        "q": "Did either of us hold back a question this weekend to keep things easy?",
+        "eg": "I wondered about something you said on Friday and never came back to it."
+      },
+      {
+        "q": "Was there something one of us wanted to talk about, but the moment never felt right?",
+        "eg": "I meant to raise something on Sunday evening and the evening was too nice."
+      },
+      {
+        "q": "Did one of us feel something shift this weekend and let it pass?",
+        "eg": "Something changed in the room on Saturday and neither of us named it."
+      },
+      {
+        "q": "Was there anything one of us left out when telling the other about the week?",
+        "eg": "I made my week sound easier than it was."
+      },
+      {
+        "q": "Did either of us keep a disappointment to ourselves this weekend?",
+        "eg": "I had hoped we would go for a walk and said nothing when we didn't."
+      },
+      {
+        "q": "Was there a moment one of us needed something and decided it could wait?",
+        "eg": "I needed to talk on Saturday night and thought it could wait until later."
+      },
+      {
+        "q": "Did one of us protect the other from something this weekend?",
+        "eg": "I kept a piece of bad news to myself so the weekend would stay light."
+      },
+      {
+        "q": "Was there anything one of us was afraid would sound ungrateful, so it stayed unsaid?",
+        "eg": "I wanted a quieter day and worried that saying so would sound unkind."
+      },
+      {
+        "q": "Did either of us have a second thought this weekend that never made it into words?",
+        "eg": "I wondered afterwards whether I had been short with you."
+      },
+      {
+        "q": "Was there something one of us noticed about the other and kept private?",
+        "eg": "You seemed tired in a way that wasn't just sleep, and I said nothing."
+      },
+      {
+        "q": "Did one of us decide a feeling was too small to mention this weekend?",
+        "eg": "A small thing stung on Sunday and I told myself it was nothing."
+      },
+      {
+        "q": "Is there anything from this weekend one of us is still deciding whether to say?",
+        "eg": "There's something I've started to write twice and deleted."
+      }
+    ],
+    "2": [
+      {
+        "q": "Where did one of us say yes this week when the honest answer was “not quite”?",
+        "eg": "When you asked if a plan suited me, I said yes and it didn't quite."
+      },
+      {
+        "q": "Did either of us agree to something this week mainly to make things easy?",
+        "eg": "I said the timing was fine because disagreeing felt like more effort."
+      },
+      {
+        "q": "Was there a plan this week one of us went along with without really wanting to?",
+        "eg": "I joined something I would rather have skipped."
+      },
+      {
+        "q": "Did one of us say “it's fine” this week when it wasn't quite fine?",
+        "eg": "I said it was no problem and it was a small problem."
+      },
+      {
+        "q": "Where did one of us push past being tired this week instead of saying so?",
+        "eg": "I kept going on Wednesday evening when I should have stopped."
+      },
+      {
+        "q": "Did either of us keep going with something when stopping would have been kinder to ourselves?",
+        "eg": "I finished the task at midnight instead of leaving it for the morning."
+      },
+      {
+        "q": "Was there a moment this week one of us wanted to say no and didn't?",
+        "eg": "I was asked for a favour and agreed before I had thought about it."
+      },
+      {
+        "q": "Did one of us take on something this week that wasn't ours to carry?",
+        "eg": "I sorted out something that wasn't mine to sort out."
+      },
+      {
+        "q": "Where did one of us choose the other's comfort over our own this week?",
+        "eg": "I picked the option that was easier for you, not for me."
+      },
+      {
+        "q": "Did either of us pretend to be less tired than we were?",
+        "eg": "I said I had slept well and I hadn't."
+      },
+      {
+        "q": "Was there something this week one of us did out of duty rather than wanting to?",
+        "eg": "I went because I felt I should, not because I wanted to."
+      },
+      {
+        "q": "Did one of us agree to a time or a place that didn't really suit?",
+        "eg": "I agreed to the later train and then spent the evening rushing."
+      },
+      {
+        "q": "Where did one of us stay quiet this week to avoid being difficult?",
+        "eg": "I disagreed with something and decided not to make a point of it."
+      },
+      {
+        "q": "Did either of us ignore what our body was telling us this week?",
+        "eg": "I trained through something that was clearly sore."
+      },
+      {
+        "q": "Was there a moment one of us said “no problem” and there was a small problem?",
+        "eg": "I said it was easy to change my plans and it wasn't."
+      },
+      {
+        "q": "Did one of us make ourselves smaller this week so the other had room?",
+        "eg": "I didn't mention my own week because yours sounded harder."
+      },
+      {
+        "q": "Where did one of us give an answer we thought was wanted rather than true?",
+        "eg": "I gave the answer I thought would please rather than the real one."
+      },
+      {
+        "q": "Did either of us say yes before actually checking with ourselves?",
+        "eg": "I agreed straight away and only later noticed I didn't want to."
+      }
+    ],
+    "3": [
+      {
+        "q": "Is anything from this week still sitting with one of us?",
+        "eg": "Something said on Tuesday is still there when I think about it."
+      },
+      {
+        "q": "Did either of us say something this week that came out sharper than intended?",
+        "eg": "Something I said on Tuesday came out sharper than I meant."
+      },
+      {
+        "q": "Is there a moment from this week one of us has replayed since?",
+        "eg": "I've gone back over a short exchange several times."
+      },
+      {
+        "q": "Did something land wrong this week that we never came back to?",
+        "eg": "A remark landed badly and we moved on before it was settled."
+      },
+      {
+        "q": "Is there a conversation from this week that feels unfinished?",
+        "eg": "We stopped talking about something because it got late."
+      },
+      {
+        "q": "Did either of us go quiet this week in a way the other noticed?",
+        "eg": "I went quiet for an evening and didn't explain why."
+      },
+      {
+        "q": "Is there anything one of us would say differently if we could say it again?",
+        "eg": "I would take back how I phrased one message."
+      },
+      {
+        "q": "Did a message this week read colder than it was meant?",
+        "eg": "A short reply came across as cold and wasn't meant that way."
+      },
+      {
+        "q": "Is there something one of us is still a little hurt by?",
+        "eg": "A small thing from midweek still stings slightly."
+      },
+      {
+        "q": "Did either of us let something go this week that hasn't actually gone?",
+        "eg": "I said it was fine at the time and it has stayed with me."
+      },
+      {
+        "q": "Is there a moment this week where one of us wanted a repair and didn't ask for one?",
+        "eg": "I wanted to be reassured and didn't want to have to ask."
+      },
+      {
+        "q": "Did either of us feel unseen at any point this week?",
+        "eg": "I mentioned something important and it passed without notice."
+      },
+      {
+        "q": "Is there something small from this week that would feel better once said out loud?",
+        "eg": "There's a small thing I keep almost mentioning."
+      },
+      {
+        "q": "Did one of us apologise this week without really feeling settled afterwards?",
+        "eg": "I said sorry quickly and didn't feel finished with it."
+      },
+      {
+        "q": "Is there anything from this week we should close before the weekend?",
+        "eg": "There's one thing I'd rather not bring with us into Saturday."
+      },
+      {
+        "q": "Did either of us assume something about the other this week that might not be true?",
+        "eg": "I decided what you meant instead of asking."
+      },
+      {
+        "q": "Was there a silence this week that meant more than it looked like?",
+        "eg": "A gap between messages felt longer than it probably was."
+      },
+      {
+        "q": "Is there anything one of us has been waiting for the other to bring up?",
+        "eg": "I've been waiting to see whether you would mention it first."
+      }
+    ],
+    "4": [
+      {
+        "q": "What would have made this week lighter for one of us?",
+        "eg": "An earlier arrival would have made the week easier for you."
+      },
+      {
+        "q": "What did one of us carry alone this week that could have been shared?",
+        "eg": "I dealt with a household problem without mentioning it."
+      },
+      {
+        "q": "Is there something in the coming weeks one of us is quietly dreading?",
+        "eg": "There's a date in the calendar I keep not thinking about."
+      },
+      {
+        "q": "What is the heaviest thing on one of us right now?",
+        "eg": "Work is the heaviest thing and I've been talking around it."
+      },
+      {
+        "q": "Is there something practical about our future neither of us has said out loud yet?",
+        "eg": "We have never actually said who would move, or when."
+      },
+      {
+        "q": "What would one of us like help with that we haven't asked for?",
+        "eg": "I could use help with something and haven't wanted to ask."
+      },
+      {
+        "q": "Is there a decision waiting on us that we keep postponing?",
+        "eg": "There's a decision we both mention and neither of us makes."
+      },
+      {
+        "q": "What does the other not know about how this week actually went?",
+        "eg": "My week was harder than the version you heard."
+      },
+      {
+        "q": "Is there something about how we spend our time that isn't working for one of us?",
+        "eg": "The way our weeks are arranged leaves one of us more tired."
+      },
+      {
+        "q": "What would one of us change about how our weeks are arranged?",
+        "eg": "I would rather swap which of us travels."
+      },
+      {
+        "q": "Is there something about the children, or the years ahead, one of us is thinking about but not saying?",
+        "eg": "I've been thinking about what the next school years look like."
+      },
+      {
+        "q": "What does one of us need more of right now — rest, time, help, or company?",
+        "eg": "What I actually need this month is rest, not more plans."
+      },
+      {
+        "q": "Is there a worry about money, work or time that one of us keeps private?",
+        "eg": "There's a work worry I haven't wanted to put into words."
+      },
+      {
+        "q": "What would make the coming weekend easier for whichever of us is more tired?",
+        "eg": "A later start on Saturday would change the whole weekend."
+      },
+      {
+        "q": "Is there something one of us believes about our future that we have never checked with the other?",
+        "eg": "I've been assuming something about next year without ever asking."
+      },
+      {
+        "q": "What has one of us been putting off because it feels too big to start?",
+        "eg": "There's something I keep moving to next week."
+      },
+      {
+        "q": "Is there something in the past of one of us that the other has never asked about?",
+        "eg": "There are years of my life you know almost nothing about."
+      },
+      {
+        "q": "What would one of us want the other to understand better?",
+        "eg": "There's one thing about me I don't think has come across yet."
+      }
+    ],
+    "5": [
+      {
+        "q": "What did one of us do this week that made the other feel close?",
+        "eg": "You called for no reason on your lunch break. That was the best part of my week."
+      },
+      {
+        "q": "When did one of us feel most wanted this week?",
+        "eg": "A short message in the middle of the day landed better than anything else."
+      },
+      {
+        "q": "What small thing from this week is worth keeping?",
+        "eg": "One ordinary evening this week was better than anything planned."
+      },
+      {
+        "q": "When did one of us feel safest this week?",
+        "eg": "There was a moment this week where nothing had to be explained."
+      },
+      {
+        "q": "What did the other do this week that we haven't thanked them for?",
+        "eg": "You handled something quietly and I never said thank you."
+      },
+      {
+        "q": "What are we each looking forward to about this weekend?",
+        "eg": "I'm looking forward to the part where there's nothing to organise."
+      },
+      {
+        "q": "When did one of us feel most seen this week?",
+        "eg": "You remembered something I only mentioned once."
+      },
+      {
+        "q": "What is one thing we would each like a little more of from the other?",
+        "eg": "A little more of the ordinary talk, not only the plans."
+      },
+      {
+        "q": "What made one of us laugh this week?",
+        "eg": "Something small on Wednesday that wouldn't be funny to anyone else."
+      },
+      {
+        "q": "What did the other say this week that stayed with us?",
+        "eg": "One line from Monday has been with me all week."
+      },
+      {
+        "q": "When did the distance feel smallest this week?",
+        "eg": "One evening this week it didn't feel like two cities."
+      },
+      {
+        "q": "What are we each proud of the other for this week?",
+        "eg": "You got through a hard week without letting it show to anyone else."
+      },
+      {
+        "q": "What is one small thing that always works between us?",
+        "eg": "We are good at the first ten minutes of seeing each other."
+      },
+      {
+        "q": "What do we want this weekend to feel like?",
+        "eg": "Slow, with one good meal and no schedule."
+      },
+      {
+        "q": "What did one of us notice about the other this week and never mention?",
+        "eg": "You have seemed lighter this week and I didn't say so."
+      },
+      {
+        "q": "When did one of us feel most loved this week?",
+        "eg": "A small gesture midweek that probably went unnoticed by the one who did it."
+      },
+      {
+        "q": "What are we grateful for this week that has nothing to do with either of us?",
+        "eg": "The weather, honestly. It changed the whole week."
+      },
+      {
+        "q": "What would make this weekend feel like a real rest?",
+        "eg": "Fewer plans and one long walk."
+      }
+    ]
+  }
+}
