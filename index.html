@@ -2410,38 +2410,30 @@
     box.hidden = false;
   }).catch(() => {});
 
-  // Our question of the day — one a day, Monday to Friday
-  (function () {
-    var QUESTIONS = [
-      null,
-      'Is there anything one of us decided not to trouble the other with this weekend?',
-      'Where did we say yes this week when we meant \u201Cnot quite\u201D?',
-      'Is anything from this week still sitting with us?',
-      'What would have made this week lighter for us?',
-      'What did we do this week that made the other feel close?',
-      null
-    ];
+  // Our question of the day — one a day, Monday to Friday, from questions.json
+  fetch('questions.json').then(function (r) { return r.json(); }).then(function (data) {
+    var day = new Date().getDay();
+    if (day === 0 || day === 6) return;
+    var slot = data.slots[String(day)];
+    if (!slot || !slot.length) return;
+
+    var start = new Date(data.start + 'T00:00:00');
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var week = Math.floor((today - start) / 604800000);
+    if (week < 0) week = 0;
+    var item = slot[week % slot.length];
+
     var el = document.getElementById('dq-q-text');
     var wrap = document.getElementById('dq-question');
     if (!el || !wrap) return;
-    var EXAMPLES = [
-      null,
-      'I noticed something was off with you on Sunday and decided not to ask.',
-      'When you asked if a plan suited me, I said yes and it didn\u2019t quite.',
-      'Something I said on Tuesday came out sharper than I meant.',
-      'If I had arrived a day earlier, your week would have been easier.',
-      'You called for no reason on your lunch break. That was the best part of my week.',
-      null
-    ];
-    var day = new Date().getDay();
-    var q = QUESTIONS[day];
-    if (!q) return;
-    el.textContent = q;
+    el.textContent = item.q;
+
     var egText = document.getElementById('dq-q-eg-text');
     var egBox = document.getElementById('dq-q-eg');
     var toggle = document.getElementById('dq-q-toggle');
-    if (egText && egBox && toggle && EXAMPLES[day]) {
-      egText.textContent = '\u201C' + EXAMPLES[day] + '\u201D';
+    if (egText && egBox && toggle && item.eg) {
+      egText.textContent = '\u201C' + item.eg + '\u201D';
       egBox.hidden = false;
       toggle.setAttribute('aria-expanded', 'true');
       toggle.textContent = 'hide example';
@@ -2453,9 +2445,10 @@
       });
     } else if (toggle) {
       toggle.hidden = true;
+      if (egBox) egBox.hidden = true;
     }
     wrap.hidden = false;
-  })();
+  }).catch(function () {});
 
   // Play all songs in a row
   (function(){
