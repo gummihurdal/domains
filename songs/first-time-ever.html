@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The First Time Ever I Saw Your Face — Azurenexus</title>
+<meta name="description" content="Ewan MacColl, 1957 — Roberta Flack, 1972. A song sung from inside something that lasted.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0E1628;
+    --paper: #F5F0E6;
+    --song: #B8956A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--night);
+    color: var(--paper);
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrap {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) { .wrap { padding: 0 1.4rem; } }
+
+  header { padding: 3.5rem 0 2.2rem; }
+
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 230, 0.5);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 144;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(2.1rem, 6.5vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .sub {
+    font-size: 0.98rem;
+    color: rgba(245, 240, 230, 0.62);
+    margin-top: 0.9rem;
+    max-width: 30rem;
+  }
+
+  .player {
+    margin: 0 0 2.6rem;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    box-shadow: 0 1.4rem 3.5rem rgba(0, 0, 0, 0.5);
+    outline: 1px solid rgba(184, 149, 106, 0.25);
+  }
+
+  .player iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  .note {
+    max-width: 34rem;
+    margin: 0 0 2.4rem;
+  }
+
+  .note p { margin-bottom: 1.05rem; }
+
+  .note p:last-child { margin-bottom: 0; }
+
+  .dedication {
+    font-style: italic;
+    color: rgba(245, 240, 230, 0.55);
+    font-size: 0.95rem;
+  }
+
+  .links {
+    display: flex;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .links a {
+    color: rgba(245, 240, 230, 0.5);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184, 149, 106, 0.4);
+    padding-bottom: 3px;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .links a:hover {
+    color: var(--song);
+    border-color: var(--song);
+  }
+
+  footer {
+    padding: 1.6rem 0 2.4rem;
+  }
+
+  footer .inner {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(245, 240, 230, 0.14);
+    padding-top: 1.2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 230, 0.45);
+  }
+
+  footer a {
+    color: rgba(245, 240, 230, 0.45);
+    text-decoration: none;
+    transition: color 0.4s ease;
+  }
+
+  footer a:hover { color: var(--song); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Songs · 11</div>
+    <h1>The First Time Ever I Saw Your Face</h1>
+    <p class="sub">Ewan MacColl, 1957 — Roberta Flack, 1972.</p>
+  </header>
+
+  <div class="player">
+    <iframe
+      src="https://www.youtube-nocookie.com/embed/d8_fLu2yrP4"
+      title="The First Time Ever I Saw Your Face"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+      loading="lazy"></iframe>
+  </div>
+
+  <div class="note">
+    <p>
+      MacColl wrote this for Peggy Seeger while they were an ocean apart — he taught
+      it to her down a telephone line so she could sing it in a play. They were both
+      married to other people at the time. It took years before their life together
+      was actually theirs.
+    </p>
+    <p>
+      Flack slowed it to half MacColl's tempo. He hated that; Seeger disliked it too
+      at first, and later came round to loving it. The slowness is why it lands —
+      three verses, in order: the face, the kiss, lying together, and then back to
+      the face. It isn't a song about a beginning. It's a song sung from inside
+      something that lasted, looking back at how it started.
+    </p>
+    <p class="dedication">Sent 4 August 2026, the morning after.</p>
+  </div>
+
+  <div class="links">
+    <a href="https://www.songfacts.com/lyrics/roberta-flack/first-time-ever-i-saw-your-face" target="_blank" rel="noopener noreferrer">Lyrics ↗</a>
+    <a href="https://open.spotify.com/track/0SxFyA4FqmEQqZVuAlg8lf" target="_blank" rel="noopener noreferrer">Spotify ↗</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="inner">
+    <a href="https://domains.azurenexus.com">← Collected Work</a>
+    <span>Azurenexus · 2026</span>
+  </div>
+</footer>
+
+
+<script>
+// visitor logging (silent) — the visit is recorded even if geo lookup is blocked
+(function(){
+  var SB='https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs';
+  var K='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
+  var TAG='domains:song-first-time-ever';
+  try{ if(localStorage.getItem('owner')==='1') return; }catch(e){}
+
+  function grab(u,map){
+    return fetch(u,{cache:'no-store'}).then(function(r){
+      if(!r.ok) throw 0; return r.json();
+    }).then(function(d){ var o=map(d); if(!o.ip) throw 0; return o; });
+  }
+  function m1(d){ return {ip:d.ip,country:d.country_name,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,timezone:d.timezone,org:d.org,
+    latitude:d.latitude,longitude:d.longitude}; }
+  function m2(d){ return {ip:d.ip,country:d.country,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,
+    timezone:(d.timezone&&d.timezone.id)||null,
+    org:(d.connection&&(d.connection.isp||d.connection.org))||null,
+    latitude:d.latitude,longitude:d.longitude}; }
+
+  var geo = grab('https://ipapi.co/json/',m1)
+    .catch(function(){ return grab('https://ipwho.is/',m2); })
+    .catch(function(){ return null; });
+  var cap = new Promise(function(res){ setTimeout(function(){ res(null); },3000); });
+
+  Promise.race([geo,cap]).then(function(g){
+    var body;
+    if(g){
+      try{ if(g.ip && localStorage.getItem('owner-ip')===g.ip) return; }catch(e){}
+      body = g;
+    } else {
+      body = {org:'(geo unavailable)'};
+    }
+    body.page = TAG;
+    fetch(SB,{method:'POST',headers:{'apikey':K,'Authorization':'Bearer '+K,
+      'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(body)}).catch(function(){});
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
