@@ -149,7 +149,14 @@
   var SB='https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs';
   var K='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
   var TAG='domains:song-msv';
-  try{ if(localStorage.getItem('owner')==='1') return; }catch(e){}
+  try{
+    // self-heal: old ip.html silently set owner=1 on any browser that opened it.
+    // Only the deliberate toggle sets owner-manual, so clear anything else.
+    if(localStorage.getItem('owner')==='1' && localStorage.getItem('owner-manual')!=='1'){
+      localStorage.removeItem('owner'); localStorage.removeItem('owner-ip');
+    }
+    if(localStorage.getItem('owner')==='1') return;
+  }catch(e){}
 
   function grab(u,map){
     return fetch(u,{cache:'no-store'}).then(function(r){
