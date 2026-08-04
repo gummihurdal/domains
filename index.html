@@ -2595,7 +2595,12 @@ And last 'til the end of time, my love
       window.onYouTubeIframeAPIReady = () => {
         ytApiReady = true;
         if (prev) prev();
-        if (window.__paWanted) buildYTPlayer();
+        // Build it straight away rather than waiting for a gesture. The iframe
+        // is hidden until something plays, and having it ready means a click on
+        // Listen can start playback synchronously inside its own gesture —
+        // which is the only way the browser will allow sound. Starting from
+        // onReady instead lands outside the gesture and gets muted or refused.
+        buildYTPlayer();
       };
       document.head.appendChild(tag);
     })();
@@ -2622,7 +2627,10 @@ And last 'til the end of time, my love
       ytOne = new YT.Player(mount.id, {
         width: '100%', height: '100%',
         videoId: ids[0],
-        playerVars: { rel: 0, playsinline: 1, playlist: ids.join(',') },
+        // No `playlist` playerVar: combined with videoId it makes the first
+        // video appear twice, which shifts every playlist index by one. The
+        // real list is supplied by loadPlaylist() in startYTRun() instead.
+        playerVars: { rel: 0, playsinline: 1 },
         events: {
           onReady: () => {
             ytOneReady = true;
@@ -2665,28 +2673,38 @@ And last 'til the end of time, my love
       ytWrap.appendChild(soundChip);
     }
 
+    // Start (or restart) the video run at ytRun.startAt.
+    // loadPlaylist() both sets the list and says where to start, and it begins
+    // playing immediately — unlike playVideoAt(), which relies on the playlist
+    // already being loaded and indexed the way we expect.
     function startYTRun(){
       const at = (ytRun && ytRun.startAt) || 0;
-      try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
-      try{ ytOne.playVideoAt(at); }catch(e){ ytOne.playVideo(); }
+      const load = muted => {
+        try{
+          if (muted) ytOne.mute(); else { ytOne.unMute(); ytOne.setVolume(100); }
+          ytOne.loadPlaylist(ytRun.ids, at);
+        }catch(e){}
+      };
+      load(false);                       // ask for sound first
       setTimeout(() => {
         if (!ytRun || !ytOneReady) return;
         const st = ytOne.getPlayerState();
-        if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
-          try{ ytOne.mute(); ytOne.playVideoAt(at); }catch(e){ try{ ytOne.mute(); ytOne.playVideo(); }catch(e2){} }
-          setTimeout(() => {
-            if (!ytRun) return;
-            const s2 = ytOne.getPlayerState();
-            if ((s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING) && ytOne.isMuted()){
-              try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
-              setTimeout(() => {
-                if (!ytRun || !ytOneReady) return;
-                if (ytOne.isMuted()) showSoundChip();
-              }, 600);
-            }
-          }, 1500);
-        }
-      }, 2500);
+        if (st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING) return;
+        // Refused with sound. Muted playback is always allowed, so start that
+        // way and lift the mute once it is actually rolling.
+        load(true);
+        setTimeout(() => {
+          if (!ytRun || !ytOneReady) return;
+          const s2 = ytOne.getPlayerState();
+          if ((s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING) && ytOne.isMuted()){
+            try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
+            setTimeout(() => {
+              if (!ytRun || !ytOneReady) return;
+              if (ytOne.isMuted()) showSoundChip();
+            }, 600);
+          }
+        }, 1200);
+      }, 1200);
     }
 
     let activeYT = false;
