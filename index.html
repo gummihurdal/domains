@@ -1907,7 +1907,7 @@ In the spring becomes the rose
             </a>
           </li>
           <li>
-            <a class="work" href="/songs/first-time-ever.html" target="_blank" rel="noopener">
+            <a class="work" href="/songs/first-time-ever.html" target="_blank" rel="noopener" data-yt="d8_fLu2yrP4">
               <div class="wn">11.</div>
               <div>
                 <h3>The First Time Ever I Saw Your Face</h3>
@@ -2837,9 +2837,14 @@ And last 'til the end of time, my love
         const a = e.target.closest('a.work');
         if (!a || !works.contains(a)) return;
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;  // let "open in new tab" work
+        // Either a straight youtube.com link, or one of our own song pages
+        // tagged with data-yt because it also exists as a video in the list.
+        // The href stays intact either way, so modifier-clicks and no-JS still
+        // reach the page or the YouTube watch URL.
         const m = (a.getAttribute('href') || '').match(/[?&]v=([\w-]{11})/);
-        if (!m) return;
-        const t = TRACKS.findIndex(tr => tr.yt === m[1]);
+        const id = a.dataset.yt || (m && m[1]);
+        if (!id) return;
+        const t = TRACKS.findIndex(tr => tr.yt === id);
         if (t < 0) return;
         const p = order().indexOf(t);
         if (p < 0) return;
