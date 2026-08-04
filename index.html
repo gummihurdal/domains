@@ -760,6 +760,19 @@
     max-width: 28rem;
   }
 
+  /* Lyric blocks: keep the line breaks and blank lines exactly as written
+     in the source, instead of letting HTML collapse them into one run-on
+     paragraph. Blank lines in the markup become the gaps between verses. */
+  .work p.lyrics {
+    white-space: pre-line;
+    margin-top: 0.9rem;
+    padding-left: 0.9rem;
+    border-left: 1px solid rgba(184, 149, 106, 0.35);
+    font-size: 0.86rem;
+    line-height: 1.62;
+    color: var(--ink-soft);
+  }
+
   .work .go {
     padding-top: 0.42rem;
     font-size: 0.6rem;
@@ -1874,20 +1887,20 @@
                   Ewan MacColl wrote it down a telephone line for Peggy Seeger;
                   Roberta Flack slowed it to half speed. Not a song about a
                   beginning — a song sung from inside something that lasted.
-                  <br>
-
+                </p>
+                <p class="lyrics">
                   [Verse 1]
 The first time ever I saw your face
 I thought the sun rose in your eyes
 And the moon and the stars were the gifts you gave
 To the dark and the endless skies
-<br>
+
 [Verse 2]
 And the first time ever I kissed your mouth
 I felt the earth move in my hand
 Like the trembling heart of a captive bird
 That was there at my command, my love
-<br>
+
 [Verse 3]
 And the first time ever I lay with you
 I felt your heart so close to mine

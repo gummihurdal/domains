@@ -98,6 +98,16 @@
 
   .note p:last-child { margin-bottom: 0; }
 
+  /* Lyric block: keep the line breaks and blank lines exactly as written in
+     the source. Without this, HTML collapses every newline into a space and
+     the verses run together as one paragraph. */
+  .note p.lyrics {
+    white-space: pre-line;
+    padding-left: 1.1rem;
+    border-left: 1px solid rgba(184, 149, 106, 0.35);
+    color: rgba(245, 240, 230, 0.86);
+  }
+
   .dedication {
     font-style: italic;
     color: rgba(245, 240, 230, 0.55);
@@ -185,7 +195,7 @@
       married to other people at the time but seperated. It took years before their life together
       was actually theirs.
     </p>
-    <p>
+    <p class="lyrics">
       [Verse 1]
 The first time ever I saw your face
 I thought the sun rose in your eyes
