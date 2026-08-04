@@ -127,6 +127,8 @@ async function selfTest(){
   L.push('Owner flag here : ' + (own===null ? 'localStorage blocked' : own ? 'ON \u2014 visits from THIS browser are NOT logged (toggle below to fix)' : 'off \u2014 visits from this browser ARE logged'));
   let oip; try{ oip = localStorage.getItem('owner-ip'); }catch(e){ oip = null; }
   L.push('Excluded IP     : ' + (oip || 'none'));
+  let man; try{ man = localStorage.getItem('owner-manual')==='1'; }catch(e){ man=false; }
+  L.push('Deliberate      : ' + (man ? 'yes' : 'no \u2014 legacy flag, will self-clear on next site visit'));
   L.push('ipapi.co        : ' + await probe('https://ipapi.co/json/'));
   L.push('ipwho.is (bkup) : ' + await probe('https://ipwho.is/'));
   try{
@@ -147,8 +149,8 @@ function paintOwner(){
 function toggleOwner(){
   let on=false; try{ on = localStorage.getItem('owner')==='1'; }catch(e){}
   try{
-    if(on){ localStorage.setItem('owner-optout','1'); localStorage.removeItem('owner'); localStorage.removeItem('owner-ip'); }
-    else  { localStorage.removeItem('owner-optout'); localStorage.setItem('owner','1'); if(myIp) localStorage.setItem('owner-ip',myIp); }
+    if(on){ localStorage.setItem('owner-optout','1'); localStorage.removeItem('owner'); localStorage.removeItem('owner-ip'); localStorage.removeItem('owner-manual'); }
+    else  { localStorage.removeItem('owner-optout'); localStorage.setItem('owner','1'); localStorage.setItem('owner-manual','1'); if(myIp) localStorage.setItem('owner-ip',myIp); }
   }catch(e){}
   paintOwner();
 }
