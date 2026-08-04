@@ -2571,6 +2571,7 @@
           onStateChange: e => {
             if (!ytRun) return;
             if (e.data === YT.PlayerState.PLAYING){
+              if (ytOne.isMuted()){ try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e2){} }
               const pi = Math.max(0, ytOne.getPlaylistIndex());
               pos = ytRun.startPos + pi;
               idx = order()[pos];
@@ -2605,6 +2606,7 @@
     }
 
     function startYTRun(){
+      try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
       try{ ytOne.playVideoAt(0); }catch(e){ ytOne.playVideo(); }
       setTimeout(() => {
         if (!ytRun || !ytOneReady) return;
@@ -2615,7 +2617,11 @@
             if (!ytRun) return;
             const s2 = ytOne.getPlayerState();
             if ((s2 === YT.PlayerState.PLAYING || s2 === YT.PlayerState.BUFFERING) && ytOne.isMuted()){
-              showSoundChip();
+              try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
+              setTimeout(() => {
+                if (!ytRun || !ytOneReady) return;
+                if (ytOne.isMuted()) showSoundChip();
+              }, 600);
             }
           }, 1500);
         }
