@@ -2666,13 +2666,14 @@ And last 'til the end of time, my love
     }
 
     function startYTRun(){
+      const at = (ytRun && ytRun.startAt) || 0;
       try{ ytOne.unMute(); ytOne.setVolume(100); }catch(e){}
-      try{ ytOne.playVideoAt(0); }catch(e){ ytOne.playVideo(); }
+      try{ ytOne.playVideoAt(at); }catch(e){ ytOne.playVideo(); }
       setTimeout(() => {
         if (!ytRun || !ytOneReady) return;
         const st = ytOne.getPlayerState();
         if (st !== YT.PlayerState.PLAYING && st !== YT.PlayerState.BUFFERING){
-          try{ ytOne.mute(); ytOne.playVideoAt(0); }catch(e){ try{ ytOne.mute(); ytOne.playVideo(); }catch(e2){} }
+          try{ ytOne.mute(); ytOne.playVideoAt(at); }catch(e){ try{ ytOne.mute(); ytOne.playVideo(); }catch(e2){} }
           setTimeout(() => {
             if (!ytRun) return;
             const s2 = ytOne.getPlayerState();
@@ -2702,7 +2703,15 @@ And last 'til the end of time, my love
       window.__paWanted = true;
       buildYTPlayer();
       const ids = videoRunIds();
-      ytRun = { ids, startPos: p, pending: !ytOneReady };
+      // The video tracks are one contiguous run, so the whole run is loaded as a
+      // single playlist and `startPos` is always the run's first position — that
+      // keeps `startPos + playlistIndex` a valid position. `startAt` is which
+      // video inside the run to begin on, so we can enter partway through
+      // (clicking Listen on a single card) as well as at the top (Play all).
+      const seq = order();
+      const runStart = seq.findIndex(i => TRACKS[i].yt);
+      const startAt = Math.max(0, p - runStart);
+      ytRun = { ids, startPos: runStart, startAt, pending: !ytOneReady };
       ytWrap.hidden = false;
       ytWrap.scrollIntoView({behavior:'smooth', block:'nearest'});
       activeYT = true;
@@ -2799,6 +2808,29 @@ And last 'til the end of time, my love
     }
     document.getElementById('pa-skip').addEventListener('click', skip);
     document.getElementById('pa-stop').addEventListener('click', stop);
+
+    // "Listen" on a video card plays it in the page player rather than leaving
+    // for youtube.com. Delegated from the list so it covers every card, and it
+    // runs inside the click gesture — that is what buys iOS autoplay trust.
+    // Cards pointing at our own /songs/ pages are left alone and still open.
+    const works = document.querySelector('#songs .works');
+    if (works){
+      works.addEventListener('click', e => {
+        const a = e.target.closest('a.work');
+        if (!a || !works.contains(a)) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;  // let "open in new tab" work
+        const m = (a.getAttribute('href') || '').match(/[?&]v=([\w-]{11})/);
+        if (!m) return;
+        const t = TRACKS.findIndex(tr => tr.yt === m[1]);
+        if (t < 0) return;
+        const p = order().indexOf(t);
+        if (p < 0) return;
+        e.preventDefault();
+        window.__paWanted = true;
+        buildYTPlayer();
+        play(p);
+      });
+    }
   })();
 
   // Wedding countdown — set the date and the line appears
