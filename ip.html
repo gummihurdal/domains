@@ -46,6 +46,9 @@
 </div>
 <div class="controls">
   <button class="btn active" onclick="setFilter('all',this)">All</button>
+  <button class="btn" onclick="setFilter('domains:*',this)">Domains</button>
+  <button class="btn" onclick="setFilter('midlife:*',this)">Midlife</button>
+  <button class="btn" onclick="setFilter('devotion.html',this)">Devotion</button>
   <button class="btn" onclick="setFilter('domains:landing',this)">Landing</button>
   <button class="btn" onclick="setFilter('domains:live',this)">Live</button>
   <button class="btn" onclick="setFilter('domains:song-moi-non-plus',this)">Moi non plus</button>
@@ -65,9 +68,10 @@
 </div>
 <div class="upd" id="upd"></div>
 <script>
-try{ if(localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner','1'); }catch(e){}
+// NOTE: opening this dashboard must NEVER flag the browser as owner.
+// Exclusion is opt-in only, via the "This browser" toggle below.
 const SB='https://mjphpctvuxmbjhmcscoj.supabase.co',KEY='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
-let allLogs=[], filterPage='all';
+let allLogs=[], filterPage='all', myIp=null;
 function flag(code){ if(!code)return '\uD83C\uDF10'; try{return String.fromCodePoint(...[...code.toUpperCase()].map(c=>0x1F1E6-65+c.charCodeAt(0)));}catch(e){return '\uD83C\uDF10';} }
 const BOT_ORGS=/hosting|datacenter|data center|server|cloud|egihosting|aliansce|amazon|aws|google llc|microsoft|azure|digitalocean|hetzner|ovh|linode|akamai|alibaba|tencent|oracle|vultr|contabo|leaseweb|choopa|colocrossing|m247|scaleway|censys|shodan|stretchoid|palo alto|crawl/i;
 function isBot(r){return BOT_ORGS.test((r.org||'')+' '+(r.isp||''));}
@@ -77,7 +81,9 @@ function setFilter(f,btn){filterPage=f;document.querySelectorAll('.btn').forEach
 function renderTable(){
   const q=document.getElementById('search').value.toLowerCase();
   let rows=allLogs.filter(r=>{
-    const mp=filterPage==='all'||r.page===filterPage;
+    const mp=filterPage==='all'||(filterPage.endsWith('*')
+      ? (r.page||'').startsWith(filterPage.slice(0,-1))
+      : r.page===filterPage);
     const mq=!q||[r.ip,r.country,r.city,r.region,r.org].join(' ').toLowerCase().includes(q);
     return mp&&mq;
   });
@@ -87,7 +93,7 @@ function renderTable(){
 }
 async function load(){
   try{
-    const res=await fetch(SB+'/rest/v1/visitor_logs?select=*&page=like.domains:*&order=visited_at.desc&limit=1000',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
+    const res=await fetch(SB+'/rest/v1/visitor_logs?select=*&order=visited_at.desc&limit=1000',{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}});
     allLogs=await res.json();
     const botCount=allLogs.filter(isBot).length;
     allLogs=allLogs.filter(r=>!isBot(r));
@@ -103,7 +109,7 @@ async function load(){
 fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{
   document.getElementById('my-ip').textContent=d.ip||'—';
   document.getElementById('my-loc').textContent=[d.city,d.country_name].filter(Boolean).join(', ')||'—';
-  try{ if(d.ip&&localStorage.getItem('owner-optout')!=='1') localStorage.setItem('owner-ip',d.ip); }catch(e){}
+  try{ myIp=d.ip||null; if(d.ip&&localStorage.getItem('owner')==='1') localStorage.setItem('owner-ip',d.ip); }catch(e){}
 }).catch(()=>{});
 async function probe(url){
   try{
@@ -118,7 +124,9 @@ async function selfTest(){
   out.hidden = false; out.textContent = 'Running\u2026';
   const L = [];
   let own; try{ own = localStorage.getItem('owner')==='1'; }catch(e){ own = null; }
-  L.push('Owner flag here : ' + (own===null ? 'localStorage blocked' : own ? 'ON \u2014 visits from THIS browser are not logged' : 'off \u2014 visits are logged'));
+  L.push('Owner flag here : ' + (own===null ? 'localStorage blocked' : own ? 'ON \u2014 visits from THIS browser are NOT logged (toggle below to fix)' : 'off \u2014 visits from this browser ARE logged'));
+  let oip; try{ oip = localStorage.getItem('owner-ip'); }catch(e){ oip = null; }
+  L.push('Excluded IP     : ' + (oip || 'none'));
   L.push('ipapi.co        : ' + await probe('https://ipapi.co/json/'));
   L.push('ipwho.is (bkup) : ' + await probe('https://ipwho.is/'));
   try{
@@ -140,7 +148,7 @@ function toggleOwner(){
   let on=false; try{ on = localStorage.getItem('owner')==='1'; }catch(e){}
   try{
     if(on){ localStorage.setItem('owner-optout','1'); localStorage.removeItem('owner'); localStorage.removeItem('owner-ip'); }
-    else  { localStorage.removeItem('owner-optout'); localStorage.setItem('owner','1'); }
+    else  { localStorage.removeItem('owner-optout'); localStorage.setItem('owner','1'); if(myIp) localStorage.setItem('owner-ip',myIp); }
   }catch(e){}
   paintOwner();
 }
