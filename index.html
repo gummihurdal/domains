@@ -2899,14 +2899,7 @@ And last 'til the end of time, my love
   var SB='https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs';
   var K='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
   var TAG='domains:landing';
-  try{
-    // self-heal: old ip.html silently set owner=1 on any browser that opened it.
-    // Only the deliberate toggle sets owner-manual, so clear anything else.
-    if(localStorage.getItem('owner')==='1' && localStorage.getItem('owner-manual')!=='1'){
-      localStorage.removeItem('owner'); localStorage.removeItem('owner-ip');
-    }
-    if(localStorage.getItem('owner')==='1') return;
-  }catch(e){}
+  // no exclusions: every visit is logged
 
   function grab(u,map){
     return fetch(u,{cache:'no-store'}).then(function(r){
@@ -2930,7 +2923,6 @@ And last 'til the end of time, my love
   Promise.race([geo,cap]).then(function(g){
     var body;
     if(g){
-      try{ if(g.ip && localStorage.getItem('owner-ip')===g.ip) return; }catch(e){}
       body = g;
     } else {
       body = {org:'(geo unavailable)'};
