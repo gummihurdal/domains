@@ -136,5 +136,37 @@ async function selfTest(){
 }
 load(); setInterval(load,30000);
 </script>
+<script>
+// visitor logging (silent) — recorded even if geo lookup is blocked. No exclusions.
+(function(){
+  var SB='https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/visitor_logs';
+  var K='sb_publishable_MDPfXyMjG0eadmvp7uoqdg_EHwj4Alm';
+  var TAG='domains:ip';
+  function grab(u,map){
+    return fetch(u,{cache:'no-store'}).then(function(r){
+      if(!r.ok) throw 0; return r.json();
+    }).then(function(d){ var o=map(d); if(!o.ip) throw 0; return o; });
+  }
+  function m1(d){ return {ip:d.ip,country:d.country_name,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,timezone:d.timezone,org:d.org,
+    latitude:d.latitude,longitude:d.longitude}; }
+  function m2(d){ return {ip:d.ip,country:d.country,country_code:d.country_code,
+    region:d.region,city:d.city,postal:d.postal,
+    timezone:(d.timezone&&d.timezone.id)||null,
+    org:(d.connection&&(d.connection.isp||d.connection.org))||null,
+    latitude:d.latitude,longitude:d.longitude}; }
+  var geo = grab('https://ipapi.co/json/',m1)
+    .catch(function(){ return grab('https://ipwho.is/',m2); })
+    .catch(function(){ return null; });
+  var cap = new Promise(function(res){ setTimeout(function(){ res(null); },3000); });
+  Promise.race([geo,cap]).then(function(g){
+    var body = g || {org:'(geo unavailable)'};
+    body.page = TAG;
+    fetch(SB,{method:'POST',headers:{'apikey':K,'Authorization':'Bearer '+K,
+      'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify(body)}).catch(function(){});
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>
