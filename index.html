@@ -1073,6 +1073,46 @@
 
   .photo-note.err { color: #A23B2E; }
 
+  /* uploads (shown after unlock) */
+  .photo-upload { margin-top: 1.4rem; }
+  .photo-drop {
+    border: 1px dashed var(--accent);
+    padding: 1.3rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    background: var(--surface);
+    transition: background-color 0.3s ease;
+  }
+  .photo-drop:hover, .photo-drop.over, .photo-drop:focus-visible { background: rgba(78, 110, 142, 0.08); outline: none; }
+  .photo-drop.busy { opacity: 0.6; pointer-events: none; }
+  .photo-drop-main {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .photo-drop-sub { display: block; margin-top: 0.4rem; font-size: 0.82rem; color: var(--muted); }
+  .up-list { margin-top: 0.6rem; display: grid; gap: 0.35rem; }
+  .up-row {
+    display: grid;
+    grid-template-columns: 1fr minmax(60px, 120px) 64px;
+    gap: 0.6rem;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .up-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .up-bar { height: 4px; background: var(--line); overflow: hidden; }
+  .up-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s linear; }
+  .up-state { text-align: right; }
+  .up-row.ok .up-state { color: var(--accent); }
+  .up-row.err .up-state { color: #A23B2E; }
+  #photo-up-grid { margin-top: 0.9rem; }
+
   .photo-strip-head, .photo-month {
     margin: 2.2rem 0 0.9rem;
     font-family: 'IBM Plex Mono', monospace;
@@ -2002,6 +2042,17 @@ And last 'til the end of time, my love
           <button id="photo-open" type="button">Unlock</button>
         </div>
         <div class="photo-note" id="photo-note" hidden></div>
+        <div class="photo-upload" id="photo-upload" hidden>
+          <div class="photo-strip-head">Add photographs</div>
+          <div class="photo-drop" id="photo-drop" role="button" tabindex="0" aria-label="Choose photos or videos to upload">
+            <span class="photo-drop-main">Tap to choose photos or videos</span>
+            <span class="photo-drop-sub">several at once is fine &middot; or drop them here</span>
+          </div>
+          <input type="file" id="photo-files" multiple accept="image/*,video/*" hidden>
+          <div class="up-list" id="photo-up-list"></div>
+          <div class="photo-note" id="photo-up-done" hidden></div>
+          <div class="photo-grid" id="photo-up-grid" hidden></div>
+        </div>
         <div class="forthcoming" id="photos-note">more — to come</div>
       </div>
     </section>
@@ -2410,9 +2461,108 @@ And last 'til the end of time, my love
       });
     }
 
+    /* ---------- uploads: straight into the pCloud folder the sync reads from ----------
+       The upload-link code sits in the manifest encrypted with the photo key, so only someone who unlocked the
+       gallery can upload. Files are named "YYYY-MM-DD HH-MM-SS <original>" so the sync dates them; they appear in
+       the gallery after the next hourly sync. */
+    const upBox = document.getElementById('photo-upload');
+    const upInput = document.getElementById('photo-files');
+    const upDrop = document.getElementById('photo-drop');
+    const upList = document.getElementById('photo-up-list');
+    const upDone = document.getElementById('photo-up-done');
+    const upGrid = document.getElementById('photo-up-grid');
+    let UPLOAD_CODE = null, upBusy = false;
+    const pad2 = n => String(n).padStart(2, '0');
+    const isVideoFile = f => /^video\//.test(f.type) || /\.(mov|mp4|m4v|webm)$/i.test(f.name);
+    const isMediaFile = f => isVideoFile(f) || /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|gif|webp)$/i.test(f.name);
+
+    function uploadName(file){
+      if (/^\d{4}-\d{2}-\d{2}[ _]\d{2}-\d{2}-\d{2}/.test(file.name)) return file.name;
+      const d = new Date(file.lastModified || Date.now());
+      const stamp = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())} ${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}`;
+      return `${stamp} ${file.name.replace(/[\\/:*?"<>|]+/g, '-')}`;
+    }
+
+    function uploadOne(file){
+      return new Promise(resolve => {
+        const row = document.createElement('div');
+        row.className = 'up-row';
+        row.innerHTML = `<span class="up-name">${esc(file.name)}</span><span class="up-bar"><i></i></span><span class="up-state">0%</span>`;
+        upList.appendChild(row);
+        const bar = row.querySelector('i'), st = row.querySelector('.up-state');
+        const fd = new FormData();
+        fd.append('file', file, uploadName(file));
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://eapi.pcloud.com/uploadtolink?code=' + encodeURIComponent(UPLOAD_CODE));
+        xhr.upload.onprogress = e => {
+          if (!e.lengthComputable) return;
+          const p = Math.round(e.loaded / e.total * 100);
+          bar.style.width = p + '%'; st.textContent = p + '%';
+        };
+        xhr.onload = () => {
+          let ok = false, msg = '';
+          try{ const j = JSON.parse(xhr.responseText); ok = j.result === 0; msg = j.error || ''; }catch(e){ msg = 'bad reply'; }
+          row.classList.add(ok ? 'ok' : 'err');
+          st.textContent = ok ? 'done' : (msg || 'error ' + xhr.status);
+          if (ok) bar.style.width = '100%';
+          resolve(ok);
+        };
+        xhr.onerror = () => { row.classList.add('err'); st.textContent = 'network error'; resolve(false); };
+        xhr.send(fd);
+      });
+    }
+
+    function addPreview(file){
+      const fig = document.createElement('figure');
+      const url = URL.createObjectURL(file);
+      const media = document.createElement(isVideoFile(file) ? 'video' : 'img');
+      if (isVideoFile(file)){ media.controls = true; media.muted = true; media.playsInline = true; }
+      else media.alt = '';
+      media.src = url;
+      media.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
+      fig.appendChild(media);
+      const cap = document.createElement('figcaption');
+      cap.textContent = 'just added';
+      fig.appendChild(cap);
+      upGrid.hidden = false;
+      upGrid.appendChild(fig);
+    }
+
+    async function uploadFiles(files){
+      const list = [...files].filter(isMediaFile);
+      if (!list.length || upBusy) return;
+      upBusy = true; upDrop.classList.add('busy'); upDone.hidden = true;
+      let ok = 0;
+      for (const f of list){
+        if (await uploadOne(f)){ ok++; addPreview(f); }
+      }
+      upBusy = false; upDrop.classList.remove('busy'); upInput.value = '';
+      upDone.hidden = false;
+      upDone.className = 'photo-note' + (ok === list.length ? '' : ' err');
+      upDone.textContent = ok
+        ? `${ok} of ${list.length} uploaded — they join the gallery within about an hour`
+        : 'nothing uploaded — check the connection and try again';
+    }
+
+    async function setupUpload(m, key){
+      if (!m.upload || UPLOAD_CODE) return;
+      try{
+        const clear = await decrypt(key, Uint8Array.from(atob(m.upload), c => c.charCodeAt(0)).buffer);
+        UPLOAD_CODE = new TextDecoder().decode(clear);
+      }catch(e){ return; }
+      upBox.hidden = false;
+      upDrop.addEventListener('click', () => upInput.click());
+      upDrop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); upInput.click(); } });
+      upInput.addEventListener('change', () => uploadFiles(upInput.files));
+      ['dragenter', 'dragover'].forEach(ev => upDrop.addEventListener(ev, e => { e.preventDefault(); upDrop.classList.add('over'); }));
+      ['dragleave', 'drop'].forEach(ev => upDrop.addEventListener(ev, e => { e.preventDefault(); upDrop.classList.remove('over'); }));
+      upDrop.addEventListener('drop', e => uploadFiles(e.dataTransfer.files));
+    }
+
     async function showGallery(m, key){
       MANIFEST = m; KEY = key;
       unlockRow.hidden = true; note.hidden = true;
+      setupUpload(m, key);
       await fetchAllComments();
       grid.innerHTML = '';
 

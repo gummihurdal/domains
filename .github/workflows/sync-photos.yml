@@ -1,7 +1,7 @@
 name: Sync photos from pCloud
 on:
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '17 * * * *'   # hourly, so photos uploaded from the site show up within the hour
   workflow_dispatch:
 
 permissions:
@@ -21,6 +21,7 @@ jobs:
       - run: python sync/sync_photos.py
         env:
           PHOTOS_PASSWORD: ${{ secrets.PHOTOS_PASSWORD }}
+          PHOTOS_UPLOAD_CODE: ${{ secrets.PHOTOS_UPLOAD_CODE }}   # code of the pCloud upload link into the same folder
       - name: Commit changes
         run: |
           git config user.name "photo-sync"

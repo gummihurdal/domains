@@ -5,6 +5,10 @@
 - Each image: compressed, then AES-256-GCM encrypted -> photos/<name>.enc
 - photos/manifest.json: {salt, check, photos:[...]}
 Filenames become captions.
+- Uploads from the site: env PHOTOS_UPLOAD_CODE (GitHub Actions secret) is the code of a pCloud *upload link* into the
+  same folder. It is stored in the manifest encrypted with the photo key ("upload"), so only someone who unlocked the
+  gallery can upload. The page names uploaded files "YYYY-MM-DD HH-MM-SS <original>"; that date becomes the
+  photo's date in the timeline (new files only — entries already in the manifest keep their dates).
 """
 import json, os, re, io, sys, zipfile, base64, urllib.request
 
@@ -86,6 +90,27 @@ def main():
         pass
 
     import datetime
+    def created_for(f, im=None):
+        """When the picture was taken: EXIF DateTimeOriginal, else a 'YYYY-MM-DD HH-MM-SS' name prefix (site uploads,
+        phone exports), else pCloud's created time (= when it was put in the folder)."""
+        if im is not None:
+            try:
+                ex = im.getexif()
+                raw = ex.get_ifd(0x8769).get(36867) or ex.get(306)      # DateTimeOriginal, else DateTime
+                if raw:
+                    d = datetime.datetime.strptime(str(raw)[:19], "%Y:%m:%d %H:%M:%S").replace(tzinfo=datetime.timezone.utc)
+                    return d.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            except Exception:
+                pass
+        m = re.match(r"^(\d{4})-(\d{2})-(\d{2})[ _](\d{2})-(\d{2})-(\d{2})", f["name"])
+        if m:
+            try:
+                d = datetime.datetime(*(int(x) for x in m.groups()), tzinfo=datetime.timezone.utc)
+                return d.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            except ValueError:
+                pass
+        return f.get("created", "")
+
     def caption_for(name):
         base = os.path.splitext(name)[0].strip()
         m = re.match(r"^(\d{4})-(\d{2})-(\d{2})[ _]", base)
@@ -122,8 +147,8 @@ def main():
         url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
         with urllib.request.urlopen(url, timeout=300) as r:
             z = zipfile.ZipFile(io.BytesIO(r.read()))
-        im = Image.open(io.BytesIO(z.read(z.namelist()[0])))
-        im = ImageOps.exif_transpose(im).convert("RGB")
+        raw = Image.open(io.BytesIO(z.read(z.namelist()[0])))
+        im = ImageOps.exif_transpose(raw).convert("RGB")
         if im.width > MAX_W:
             im = im.resize((MAX_W, round(im.height * MAX_W / im.width)), Image.LANCZOS)
         buf = io.BytesIO(); im.save(buf, "JPEG", quality=QUALITY, optimize=True, progressive=True)
@@ -132,7 +157,7 @@ def main():
         open(os.path.join(PHOTOS, fname), "wb").write(encrypt(buf.getvalue()))
         photos.append({"source_id": fid, "stamp": stamp, "file": fname,
                        "caption": caption_for(f["name"]),
-                       "w": im.width, "h": im.height, "created": f.get("created","")})
+                       "w": im.width, "h": im.height, "created": created_for(f, raw)})
 
     # ---- videos: transcode to 720p mp4, poster frame, encrypt both ----
     import subprocess, tempfile
@@ -184,7 +209,7 @@ def main():
                            "file": vname, "poster": pname,
                            "caption": caption_for(f["name"]),
                            "w": vw, "h": vh, "mb": round(os.path.getsize(mp4)/1048576, 1),
-                           "created": f.get("created", "")})
+                           "created": created_for(f)})
 
     # ---- oversized videos: encrypted thumbnail poster, streamed from pCloud on tap ----
     for f in sorted(big_videos, key=lambda x: x.get("created", "")):
@@ -206,7 +231,7 @@ def main():
                        "fileid": int(fid), "poster": pname,
                        "caption": caption_for(f["name"]),
                        "mb": round(f.get("size",0)/1048576),
-                       "created": f.get("created", "")})
+                       "created": created_for(f)})
 
     # remove deleted
     for fid, p in old.items():
@@ -219,6 +244,12 @@ def main():
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": b64(encrypt(b"grace-ok")),
            "photos": sorted(photos, key=lambda p: p.get("created",""))}
+    upload_code = os.environ.get("PHOTOS_UPLOAD_CODE", "").strip()
+    if upload_code:
+        m = re.search(r"code=([A-Za-z0-9]+)", upload_code)
+        out["upload"] = b64(encrypt((m.group(1) if m else upload_code).encode()))
+    else:
+        print("PHOTOS_UPLOAD_CODE not set - the site shows no upload box")
     json.dump(out, open(MANIFEST, "w"), indent=1, ensure_ascii=False)
     print(f"manifest: {len(photos)} encrypted photos")
 
