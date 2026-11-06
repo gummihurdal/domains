@@ -2050,6 +2050,9 @@ And last 'til the end of time, my love
             <span class="photo-drop-sub">several at once is fine &middot; or drop them here</span>
           </div>
           <input type="file" id="photo-files" multiple accept="image/*,video/*" hidden>
+          <div class="photo-unlock" style="margin-top:0.7rem">
+            <input type="text" id="photo-up-name" placeholder="your name" maxlength="40" autocomplete="name" aria-label="Your name, kept with the upload">
+          </div>
           <div class="up-list" id="photo-up-list"></div>
           <div class="photo-note" id="photo-up-done" hidden></div>
           <div class="photo-grid" id="photo-up-grid" hidden></div>
@@ -2472,7 +2475,14 @@ And last 'til the end of time, my love
     const upList = document.getElementById('photo-up-list');
     const upDone = document.getElementById('photo-up-done');
     const upGrid = document.getElementById('photo-up-grid');
+    const upName = document.getElementById('photo-up-name');
     let UPLOAD_CODE = null, upBusy = false;
+    upName.value = localStorage.getItem('cw_name') || '';
+    const uploaderName = () => {
+      const n = upName.value.trim();
+      if (n) localStorage.setItem('cw_name', n);
+      return n || 'Website';
+    };
     const pad2 = n => String(n).padStart(2, '0');
     const isVideoFile = f => /^video\//.test(f.type) || /\.(mov|mp4|m4v|webm)$/i.test(f.name);
     const isMediaFile = f => isVideoFile(f) || /^image\//.test(f.type) || /\.(heic|heif|jpe?g|png|gif|webp)$/i.test(f.name);
@@ -2494,7 +2504,9 @@ And last 'til the end of time, my love
         const fd = new FormData();
         fd.append('file', file, uploadName(file));
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://eapi.pcloud.com/uploadtolink?code=' + encodeURIComponent(UPLOAD_CODE));
+        // pCloud requires `names` (who is uploading) next to the link code
+        xhr.open('POST', 'https://eapi.pcloud.com/uploadtolink?code=' + encodeURIComponent(UPLOAD_CODE)
+          + '&names=' + encodeURIComponent(uploaderName()));
         xhr.upload.onprogress = e => {
           if (!e.lengthComputable) return;
           const p = Math.round(e.loaded / e.total * 100);
