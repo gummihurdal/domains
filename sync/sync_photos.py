@@ -11,6 +11,7 @@ Filenames become captions.
   photo's date in the timeline (new files only — entries already in the manifest keep their dates).
 """
 import json, os, re, io, sys, zipfile, base64, urllib.request
+from email.utils import parsedate_to_datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PHOTOS = os.path.join(ROOT, "photos")
@@ -20,6 +21,10 @@ MAX_W, QUALITY = 1600, 70
 PBKDF2_ITERS = 250_000
 
 def b64(b): return base64.b64encode(b).decode()
+def when(x):
+    """pCloud/manifest RFC-2822 date -> sortable; missing or odd -> epoch."""
+    try: return parsedate_to_datetime(x.get("created", "")).timestamp()
+    except Exception: return 0.0
 def unb64(s): return base64.b64decode(s)
 
 def get_code():
@@ -46,11 +51,12 @@ def main():
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
     os.makedirs(PHOTOS, exist_ok=True)
-    old = {}
+    old = {}; old_m = {}
     salt = os.urandom(16)
     if os.path.exists(MANIFEST):
         m = json.load(open(MANIFEST))
         if isinstance(m, dict):
+            old_m = m
             old = {p["source_id"]: p for p in m.get("photos", []) if "source_id" in p}
             if m.get("salt"): salt = unb64(m["salt"])
 
@@ -65,7 +71,14 @@ def main():
     meta = api(f"https://eapi.pcloud.com/showpublink?code={code}")
     if meta.get("result") != 0: sys.exit(f"pCloud error: {meta}")
     md = meta["metadata"]
-    files = md.get("contents", []) if md.get("isfolder") else [md]
+    def walk(items, depth=0):
+        for f in items:
+            if f.get("isfolder"):
+                if depth < 3:          # pCloud upload links create "Files from <name> on <date>/" per upload
+                    yield from walk(f.get("contents", []), depth + 1)
+            else:
+                yield f
+    files = list(walk(md.get("contents", []))) if md.get("isfolder") else [md]
     names = {f["name"] for f in files if not f.get("isfolder")}
     def is_redundant_dupe(f):
         # "IMG (2).jpg" is redundant only while "IMG.jpg" still exists
@@ -74,7 +87,15 @@ def main():
         original = re.sub(r"\s*\(2\)", "", f["name"], count=1)
         return original in names
 
-    usable = [f for f in files if not f.get("isfolder") and not is_redundant_dupe(f)]
+    usable, seen_hash = [], {}
+    for f in sorted(files, key=when):
+        if f.get("isfolder") or is_redundant_dupe(f):
+            continue
+        h = str(f.get("hash") or "")
+        if h and h in seen_hash:
+            print("same content as", seen_hash[h]["name"], "- skipping", f["name"]); continue
+        if h: seen_hash[h] = f
+        usable.append(f)
     images = [f for f in usable if f.get("category") == 1]
     videos = [f for f in usable if f.get("category") == 2
               and f.get("size", 0) <= 300 * 1024 * 1024]
@@ -129,7 +150,7 @@ def main():
         if h: old_by_hash.setdefault(h, e)
 
     photos, keep = [], set()
-    for f in sorted(images, key=lambda x: x.get("created", "")):
+    for f in sorted(images, key=when):
         fid = str(f["fileid"]); keep.add(fid)
         fhash = str(f.get('hash',''))
         stamp = f"{fid}:{fhash}"
@@ -145,9 +166,13 @@ def main():
             continue
         print("processing", f["name"])
         url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
-        with urllib.request.urlopen(url, timeout=300) as r:
-            z = zipfile.ZipFile(io.BytesIO(r.read()))
-        raw = Image.open(io.BytesIO(z.read(z.namelist()[0])))
+        try:
+            with urllib.request.urlopen(url, timeout=300) as r:
+                z = zipfile.ZipFile(io.BytesIO(r.read()))
+            raw = Image.open(io.BytesIO(z.read(z.namelist()[0])))
+            raw.load()
+        except Exception as e:
+            print("  cannot read, skipping:", type(e).__name__, e); keep.discard(fid); continue
         im = ImageOps.exif_transpose(raw).convert("RGB")
         if im.width > MAX_W:
             im = im.resize((MAX_W, round(im.height * MAX_W / im.width)), Image.LANCZOS)
@@ -161,7 +186,7 @@ def main():
 
     # ---- videos: transcode to 720p mp4, poster frame, encrypt both ----
     import subprocess, tempfile
-    for f in sorted(videos, key=lambda x: x.get("created", "")):
+    for f in sorted(videos, key=when):
         fid = str(f["fileid"]); keep.add(fid)
         stamp = f"{fid}:{f.get('hash','')}"
         if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid]["file"])):
@@ -212,7 +237,7 @@ def main():
                            "created": created_for(f)})
 
     # ---- oversized videos: encrypted thumbnail poster, streamed from pCloud on tap ----
-    for f in sorted(big_videos, key=lambda x: x.get("created", "")):
+    for f in sorted(big_videos, key=when):
         fid = str(f["fileid"]); keep.add(fid)
         stamp = f"{fid}:{f.get('hash','')}"
         if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid].get("poster",""))):
@@ -241,13 +266,23 @@ def main():
                     fp = os.path.join(PHOTOS, p[k])
                     if os.path.exists(fp): os.remove(fp)
 
+    def stable(old_b64, plain):
+        """Re-use the previous ciphertext if it still decrypts to `plain` (random IVs would otherwise change the
+        manifest every hour and trigger a commit + deploy for nothing)."""
+        try:
+            raw = unb64(old_b64 or "")
+            if aes.decrypt(raw[:12], raw[12:], None) == plain: return old_b64
+        except Exception:
+            pass
+        return b64(encrypt(plain))
+
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
-           "check": b64(encrypt(b"grace-ok")),
-           "photos": sorted(photos, key=lambda p: p.get("created",""))}
+           "check": stable(old_m.get("check"), b"grace-ok"),
+           "photos": sorted(photos, key=when)}
     upload_code = os.environ.get("PHOTOS_UPLOAD_CODE", "").strip()
     if upload_code:
         m = re.search(r"code=([A-Za-z0-9]+)", upload_code)
-        out["upload"] = b64(encrypt((m.group(1) if m else upload_code).encode()))
+        out["upload"] = stable(old_m.get("upload"), (m.group(1) if m else upload_code).encode())
     else:
         print("PHOTOS_UPLOAD_CODE not set - the site shows no upload box")
     json.dump(out, open(MANIFEST, "w"), indent=1, ensure_ascii=False)
