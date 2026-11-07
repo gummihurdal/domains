@@ -2468,7 +2468,8 @@ And last 'til the end of time, my love
     /* ---------- uploads: straight into the pCloud folder the sync reads from ----------
        The upload-link code sits in the manifest encrypted with the photo key, so only someone who unlocked the
        gallery can upload. Files are named "YYYY-MM-DD HH-MM-SS <original>" so the sync dates them; they appear in
-       the gallery after the next hourly sync. */
+       the gallery once the sync has run: the page asks for a run right after each upload (photo-sync-trigger
+       Supabase function -> GitHub workflow_dispatch), then watches the manifest and redraws when they arrive. */
     const upBox = document.getElementById('photo-upload');
     const upInput = document.getElementById('photo-files');
     const upDrop = document.getElementById('photo-drop');
@@ -2553,8 +2554,43 @@ And last 'til the end of time, my love
       upDone.hidden = false;
       upDone.className = 'photo-note' + (ok === list.length ? '' : ' err');
       upDone.textContent = ok
-        ? `${ok} of ${list.length} uploaded — they join the gallery within about an hour`
+        ? `${ok} of ${list.length} uploaded — publishing to the gallery…`
         : 'nothing uploaded — check the connection and try again';
+      if (ok) requestSync(ok);
+    }
+
+    /* publish now: run the pCloud -> gallery sync immediately, then watch for the new manifest */
+    const SYNC_URL = 'https://mjphpctvuxmbjhmcscoj.supabase.co/functions/v1/photo-sync-trigger';
+    let syncPoll = null;
+    async function requestSync(n){
+      let started = false;
+      try{
+        const r = await fetch(SYNC_URL, {method: 'POST', headers: {'content-type': 'application/json'}, body: '{}'});
+        started = r.ok && (await r.json()).ok === true;
+      }catch(e){}
+      upDone.textContent = started
+        ? `${n} uploaded — publishing now, usually in the gallery within 2–4 minutes`
+        : `${n} uploaded — they join the gallery with the next sync (every few minutes)`;
+      watchManifest();
+    }
+    function watchManifest(){
+      if (syncPoll) clearInterval(syncPoll);
+      const known = new Set(MANIFEST.photos.map(p => p.source_id));
+      const t0 = Date.now();
+      syncPoll = setInterval(async () => {
+        if (Date.now() - t0 > 20 * 60 * 1000){ clearInterval(syncPoll); syncPoll = null; return; }
+        try{
+          const m = await fetch('photos/manifest.json?t=' + Date.now(), {cache: 'no-store'}).then(r => r.json());
+          if (!m || !m.photos) return;
+          const fresh = m.photos.filter(p => !known.has(p.source_id));
+          if (!fresh.length) return;
+          clearInterval(syncPoll); syncPoll = null;
+          upGrid.innerHTML = ''; upGrid.hidden = true; upList.innerHTML = '';
+          await showGallery(m, KEY);
+          upDone.hidden = false; upDone.className = 'photo-note';
+          upDone.textContent = `${fresh.length} new in the gallery`;
+        }catch(e){}
+      }, 15000);
     }
 
     async function setupUpload(m, key){
@@ -2575,6 +2611,7 @@ And last 'til the end of time, my love
     async function showGallery(m, key){
       MANIFEST = m; KEY = key;
       unlockRow.hidden = true; note.hidden = true;
+      if (otdWrap){ otdWrap.remove(); otdWrap = null; }
       setupUpload(m, key);
       await fetchAllComments();
       grid.innerHTML = '';

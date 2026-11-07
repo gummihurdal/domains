@@ -1,8 +1,12 @@
 name: Sync photos from pCloud
 on:
   schedule:
-    - cron: '17 * * * *'   # hourly, so photos uploaded from the site show up within the hour
+    - cron: '*/5 * * * *'  # safety net only: the site triggers this workflow right after each upload
   workflow_dispatch:
+
+concurrency:
+  group: photo-sync
+  cancel-in-progress: false   # one run at a time; a second request waits and picks up everything new
 
 permissions:
   contents: write
@@ -16,8 +20,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-      - run: pip install pillow pillow-heif cryptography
+          cache: pip
+          cache-dependency-path: sync/requirements.txt
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg
+      - run: pip install -q -r sync/requirements.txt
       - run: python sync/sync_photos.py
         env:
           PHOTOS_PASSWORD: ${{ secrets.PHOTOS_PASSWORD }}
@@ -29,6 +35,7 @@ jobs:
           git add photos/
           if ! git diff --cached --quiet; then
             git commit -m "Sync photos from pCloud"
+            git pull --rebase -q origin main || true
             git push
             # workflow-made pushes don't trigger other workflows — dispatch the deploy explicitly
             curl -s -X POST \
