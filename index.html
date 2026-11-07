@@ -2642,9 +2642,19 @@ And last 'til the end of time, my love
       });
       const monthName = d => d.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'});
       const keys = [...groups.keys()].sort().reverse();
-      const allPhotosOnly = m.photos.filter(p => !p.type);
+      // Newly added (uploaded since ADDED_FROM): left out of the months above and shown last, in upload order,
+      // so every new upload lands at the end of the gallery.
+      const ADDED_FROM = new Date('2026-11-06T00:00:00+01:00');
+      const addedAt = p => { const d = new Date(p.added || 0); return isNaN(d) ? null : d; };
+      const recent = m.photos.filter(p => { const a = addedAt(p); return a && a >= ADDED_FROM; })
+        .sort((a, b) => addedAt(a) - addedAt(b));
+      const isRecent = new Set(recent);
+      groups.forEach(g => { g.list = g.list.filter(p => !isRecent.has(p)); });
+      // lightbox order = the order on the page
+      const allPhotosOnly = [...keys.flatMap(k => groups.get(k).list), ...recent].filter(p => !p.type);
       keys.forEach(k => {
         const g = groups.get(k);
+        if (!g.list.length) return;
         const head = document.createElement('div');
         head.className = 'photo-month';
         head.textContent = g.d ? monthName(g.d) : 'Undated';
@@ -2656,6 +2666,18 @@ And last 'til the end of time, my love
           lazy.observe(fig);
         });
       });
+      if (recent.length){
+        const head = document.createElement('div');
+        head.className = 'photo-month';
+        head.textContent = 'Newly added';
+        head.style.gridColumn = '1 / -1';
+        grid.appendChild(head);
+        recent.forEach(p => {
+          const fig = makeFigure(p, key, allPhotosOnly);
+          grid.appendChild(fig);
+          lazy.observe(fig);
+        });
+      }
     }
 
     fetch('photos/manifest.json').then(r => r.json()).then(async m => {

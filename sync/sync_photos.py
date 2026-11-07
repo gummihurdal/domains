@@ -9,6 +9,7 @@ Filenames become captions.
   same folder. It is stored in the manifest encrypted with the photo key ("upload"), so only someone who unlocked the
   gallery can upload. The page names uploaded files "YYYY-MM-DD HH-MM-SS <original>"; that date becomes the
   photo's date in the timeline (new files only — entries already in the manifest keep their dates).
+- Each entry also gets "added" (pCloud upload time); the page lists uploads since its ADDED_FROM date last, in upload order.
 """
 import json, os, re, io, sys, zipfile, base64, urllib.request
 from email.utils import parsedate_to_datetime
@@ -275,6 +276,14 @@ def main():
         except Exception:
             pass
         return b64(encrypt(plain))
+
+    # "added" = when the file reached pCloud (upload time). The page shows everything added since ADDED_FROM at the
+    # end of the gallery, in upload order, so new uploads always come last. First seen value is kept.
+    uploaded = {str(f["fileid"]): f.get("created", "") for f in files}
+    for p in photos:
+        if not p.get("added"):
+            a = uploaded.get(str(p.get("fid") or p.get("source_id")))
+            if a: p["added"] = a
 
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": stable(old_m.get("check"), b"grace-ok"),
