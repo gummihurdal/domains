@@ -10,8 +10,12 @@ Filenames become captions.
   gallery can upload. The page names uploaded files "YYYY-MM-DD HH-MM-SS <original>"; that date becomes the
   photo's date in the timeline (new files only — entries already in the manifest keep their dates).
 - Each entry also gets "added" (pCloud upload time); the page lists uploads since its ADDED_FROM date last, in upload order.
+- Edits from the page (Supabase table photo_edits: delete / restore / purge / rotate / caption / fav / unfav) are signed
+  with an HMAC key derived from the password; only rows that verify count. Applied here: "deleted" marks an entry for the
+  Trash, after PURGE_DAYS (or "purge") its files are removed and it is tombstoned in "removed" so the pCloud original never
+  comes back; "rotate" re-encodes the photo turned; "caption" and "fav" are stored on the entry.
 """
-import json, os, re, io, sys, zipfile, base64, urllib.request
+import json, os, re, io, sys, time, hmac, hashlib, zipfile, base64, urllib.request
 from email.utils import parsedate_to_datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,6 +24,51 @@ MANIFEST = os.path.join(PHOTOS, "manifest.json")
 SOURCE = os.path.join(PHOTOS, "source.txt")
 MAX_W, QUALITY = 1600, 70
 PBKDF2_ITERS = 250_000
+PURGE_DAYS = 30
+EDITS_URL = "https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/photo_edits?select=photo_id,action,value,ts,sig&order=ts.asc&limit=100000"
+# public anon key (the same one the page ships); the table is append-only and every row must carry a valid signature
+ANON_KEY = os.environ.get("SUPABASE_ANON_KEY") or ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29q"
+            "Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs")
+
+
+def fold_edits(rows):
+    """Signed edit log (oldest first) -> {photo_id: state}. Same rules as the page's fold()."""
+    out = {}
+    for e in sorted(rows, key=lambda e: (int(e["ts"]), e["sig"])):
+        s = out.setdefault(e["photo_id"], {"deleted": None, "purged": False, "rot": 0, "caption": None, "fav": None})
+        a = e["action"]
+        if s["purged"]:
+            continue
+        if a == "delete": s["deleted"] = int(e["ts"])
+        elif a == "restore": s["deleted"] = None
+        elif a == "purge" and s["deleted"]: s["purged"] = True
+        elif a == "rotate":
+            try: s["rot"] = (s["rot"] + int(e["value"])) % 360
+            except ValueError: pass
+        elif a == "caption": s["caption"] = e["value"][:300]
+        elif a == "fav": s["fav"] = True
+        elif a == "unfav": s["fav"] = False
+    return out
+
+
+def load_edits(password, salt):
+    """Verified edit state, or None when the log cannot be read (then nothing about edits changes this run)."""
+    try:
+        req = urllib.request.Request(EDITS_URL, headers={"apikey": ANON_KEY, "Authorization": "Bearer " + ANON_KEY})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            rows = json.load(r)
+    except Exception as e:
+        print("photo edits unavailable, left as they were:", e); return None
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+    from cryptography.hazmat.primitives import hashes
+    k = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt + b"edits", iterations=PBKDF2_ITERS).derive(password.encode())
+    good = []
+    for e in rows:
+        msg = f"{e['photo_id']}\n{e['action']}\n{e['value']}\n{e['ts']}".encode()
+        if hmac.compare_digest(hmac.new(k, msg, hashlib.sha256).hexdigest(), str(e.get("sig", ""))):
+            good.append(e)
+    print(f"photo edits: {len(good)} verified of {len(rows)}")
+    return fold_edits(good)
 
 def b64(b): return base64.b64encode(b).decode()
 def when(x):
@@ -88,9 +137,14 @@ def main():
         original = re.sub(r"\s*\(2\)", "", f["name"], count=1)
         return original in names
 
+    removed = list(old_m.get("removed", []))          # tombstones of photos deleted for good
+    gone_ids = {x.get("id") for x in removed} | {x.get("fid") for x in removed}
+    gone_hash = {x.get("hash") for x in removed if x.get("hash")}
     usable, seen_hash = [], {}
     for f in sorted(files, key=when):
         if f.get("isfolder") or is_redundant_dupe(f):
+            continue
+        if str(f["fileid"]) in gone_ids or (f.get("hash") and str(f["hash"]) in gone_hash):
             continue
         h = str(f.get("hash") or "")
         if h and h in seen_hash:
@@ -285,9 +339,49 @@ def main():
             a = uploaded.get(str(p.get("fid") or p.get("source_id")))
             if a: p["added"] = a
 
+    # ---- edits from the page: trash, purge, rotate, caption, favourite ----
+    ed = load_edits(password, salt)
+    if ed is not None:
+        now_ms = int(time.time() * 1000)
+        kept = []
+        for p in photos:
+            st = ed.get(p["source_id"]) or ed.get(p.get("fid", ""))
+            if not st:
+                p.pop("deleted", None); p.pop("fav", None); kept.append(p); continue
+            if st["purged"] or (st["deleted"] and now_ms - st["deleted"] > PURGE_DAYS * 86400_000):
+                for k in ("file", "poster"):
+                    if p.get(k) and os.path.exists(os.path.join(PHOTOS, p[k])): os.remove(os.path.join(PHOTOS, p[k]))
+                removed.append({"id": p["source_id"], "fid": p.get("fid") or p["source_id"],
+                                "hash": (p.get("stamp") or "").split(":")[-1], "t": now_ms})
+                print("removed for good:", p.get("file") or p.get("poster")); continue
+            if st["deleted"]: p["deleted"] = st["deleted"]
+            else: p.pop("deleted", None)
+            if st["caption"] is not None: p["caption"] = st["caption"]
+            if st["fav"]: p["fav"] = True
+            else: p.pop("fav", None)
+            want, have = st["rot"] % 360, int(p.get("rot", 0)) % 360
+            if not p.get("type") and want != have:
+                try:
+                    src = os.path.join(PHOTOS, p["file"]); raw = open(src, "rb").read()
+                    im = Image.open(io.BytesIO(aes.decrypt(raw[:12], raw[12:], None)))
+                    im = im.rotate(-((want - have) % 360), expand=True)          # PIL turns counter-clockwise
+                    buf = io.BytesIO(); im.convert("RGB").save(buf, "JPEG", quality=90, optimize=True, progressive=True)
+                    base = re.sub(r"-r\d+\.enc$", ".enc", p["file"])
+                    new = base if want == 0 else base[:-4] + f"-r{want}.enc"
+                    open(os.path.join(PHOTOS, new), "wb").write(encrypt(buf.getvalue()))
+                    if new != p["file"]: os.remove(src)
+                    p["file"], p["w"], p["h"] = new, im.width, im.height
+                    if want: p["rot"] = want
+                    else: p.pop("rot", None)
+                    print("rotated", new, want)
+                except Exception as e:
+                    print("  rotate failed:", p.get("file"), e)
+            kept.append(p)
+        photos = kept
+
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": stable(old_m.get("check"), b"grace-ok"),
-           "photos": sorted(photos, key=when)}
+           "photos": sorted(photos, key=when), "removed": removed}
     upload_code = os.environ.get("PHOTOS_UPLOAD_CODE", "").strip()
     if upload_code:
         m = re.search(r"code=([A-Za-z0-9]+)", upload_code)

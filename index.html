@@ -1272,6 +1272,7 @@
     cursor: pointer;
   }
 
+  .lb-nav { z-index: 3; }
   .lb-prev { left: 0.6rem; }
   .lb-next { right: 0.6rem; }
   @media (max-width: 720px) { .lb-nav { display: none; } }
@@ -1342,6 +1343,128 @@
   .lbc-row button:hover { background: #E9CFA0; color: var(--night); }
 
   @media (max-height: 640px) { .lbc-list { max-height: 14vh; } }
+
+  /* ---- gallery tools (filters, select, trash) ---- */
+  .ph-tools {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem;
+    margin-top: 1.8rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 5; background: var(--paper);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .ph-filters { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .ph-tools button {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font: inherit; letter-spacing: inherit; text-transform: inherit;
+    padding: 0.45rem 0.7rem; border: 1px solid transparent; background: none; color: var(--muted); cursor: pointer;
+  }
+  .ph-tools button:hover { color: var(--ink); }
+  .ph-tools button.on { color: var(--accent); border-color: var(--accent); }
+  .ph-n { color: var(--accent); }
+  .ph-count { color: var(--muted); margin-left: auto; }
+  .ph-tools .ph-sel { border-color: var(--line); color: var(--ink-soft); }
+  .ph-tools + .photo-grid { margin-top: 1.2rem; }
+  @media (max-width: 560px) {
+    .ph-tools { flex-wrap: nowrap; gap: 0.4rem; }
+    .ph-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+    .ph-filters::-webkit-scrollbar { display: none; }
+    .ph-tools button { padding: 0.45rem 0.5rem; white-space: nowrap; }
+    .ph-count { display: none; }
+  }
+  .ph-empty { grid-column: 1 / -1; color: var(--muted); font-size: 0.95rem; }
+  .ph-trash-head { justify-content: space-between; }
+  .ph-trash-head::after { display: none; }
+  .ph-empty-trash {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.4rem 0.7rem; border: 1px solid #A23B2E; color: #A23B2E; background: none; cursor: pointer;
+  }
+  .ph-empty-trash:hover { background: #A23B2E; color: var(--paper); }
+
+  /* selection */
+  .sel-tick {
+    position: absolute; top: 0.5rem; left: 0.5rem; z-index: 2; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+    display: none; align-items: center; justify-content: center;
+    border: 1.5px solid rgba(245, 240, 230, 0.95); background: rgba(14, 18, 26, 0.35); color: transparent;
+  }
+  .ph-selecting .sel-tick { display: flex; }
+  .ph-selecting .photo-grid figure, .ph-selecting .photo-strip figure { cursor: pointer; }
+  figure.sel .sel-tick { background: var(--accent, #4E6E8E); border-color: var(--accent, #4E6E8E); color: #fff; }
+  figure.sel .fig-media { outline: 3px solid var(--accent, #4E6E8E); outline-offset: 2px; }
+  figure.sel img { opacity: 0.82; }
+  .ph-selbar {
+    position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 55;
+    display: flex; align-items: center; gap: 0.25rem; max-width: calc(100vw - 1.5rem); overflow-x: auto;
+    padding: 0.4rem; background: #141824; color: #F5F0E6; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .ph-selbar[hidden] { display: none; }
+  .ph-seln { padding: 0 0.6rem; white-space: nowrap; color: #E9CFA0; }
+  .ph-selbar button {
+    display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
+    font: inherit; letter-spacing: inherit; text-transform: inherit;
+    padding: 0.55rem 0.7rem; border: none; background: none; color: inherit; cursor: pointer;
+  }
+  .ph-selbar button:hover:not(:disabled) { background: rgba(245, 240, 230, 0.1); }
+  .ph-selbar button:disabled { opacity: 0.35; cursor: default; }
+  .ph-selbar button.danger { color: #F0A090; }
+  @media (max-width: 560px) { .ph-selbar button span { display: none; } }
+
+  /* trash cards */
+  .fig-actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+  .fig-actions button {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.4rem 0.6rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); cursor: pointer;
+  }
+  .fig-actions button:hover { border-color: var(--accent); color: var(--accent); }
+  .fig-actions button.danger:hover { border-color: #A23B2E; color: #A23B2E; }
+  .ph-trash img { filter: grayscale(0.6); }
+
+  /* toast */
+  .ph-toast {
+    position: fixed; left: 50%; bottom: 4.6rem; transform: translate(-50%, 1rem); z-index: 80;
+    display: flex; align-items: center; gap: 1rem; padding: 0.7rem 1rem;
+    background: #141824; color: #F5F0E6; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .ph-toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .ph-toast button { font: inherit; letter-spacing: inherit; text-transform: inherit; background: none; border: none; color: #E9CFA0; cursor: pointer; padding: 0; }
+
+  /* lightbox toolbar, stage, info */
+  .lb-bar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 3; height: 3.2rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0 0.6rem;
+    background: linear-gradient(rgba(10, 12, 20, 0.85), rgba(10, 12, 20, 0));
+  }
+  .lb-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; color: rgba(245, 240, 230, 0.6); min-width: 4rem; }
+  .lb-tools { display: flex; gap: 0.1rem; overflow-x: auto; scrollbar-width: none; }
+  .lb-tools button {
+    width: 2.4rem; height: 2.4rem; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: none; color: rgba(245, 240, 230, 0.8); cursor: pointer; border-radius: 4px;
+  }
+  .lb-tools button:hover { background: rgba(245, 240, 230, 0.1); color: #fff; }
+  .lb-tools button.on { color: #E9CFA0; }
+  .lb-tools button[data-a="fav"].on { color: #E36C5B; }
+  .lb-tools button[data-a="fav"].on svg { fill: currentColor; }
+  .lb-tools button.danger:hover { color: #F0A090; }
+  .lb-bar .lb-x { position: static; flex: 0 0 auto; }
+  .lb-stage { order: 1; display: flex; align-items: center; justify-content: center; max-width: 100vw; touch-action: none; }
+  .lb-stage img { cursor: zoom-in; user-select: none; -webkit-user-select: none; transform-origin: center center; will-change: transform; }
+  .lightbox.zoomed .lb-stage img { cursor: grab; }
+  .lightbox.zoomed .lb-comments, .lightbox.zoomed .lb-cap, .lightbox.zoomed .lb-info { visibility: hidden; }
+  .lightbox.zoomed .lb-stage { position: relative; z-index: 2; }
+  .lightbox.playing .lb-comments { display: none; }
+  .lightbox .lb-comments { order: 4; }
+  .lb-cap-edit {
+    width: min(30rem, 86vw); text-align: center; font: inherit; letter-spacing: inherit; text-transform: none;
+    padding: 0.45rem 0.6rem; border: 1px solid #E9CFA0; background: rgba(14, 18, 26, 0.8); color: #F5F0E6; outline: none;
+  }
+  @media (max-width: 560px) { .lb-count { display: none; } .lb-tools button { width: 2.05rem; } .lb-bar { padding: 0 0.3rem; } }
+  .lb-info { order: 3; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; color: rgba(245, 240, 230, 0.75); }
+  .lb-info[hidden] { display: none; }
+  .lb-info dl { display: grid; grid-template-columns: auto auto; gap: 0.2rem 1rem; margin: 0; }
+  .lb-info dt { text-transform: uppercase; letter-spacing: 0.14em; color: rgba(245, 240, 230, 0.45); }
+  .lb-info dd { margin: 0; }
 
   .countdown {
     margin: 0 0 1.6rem;
@@ -1482,11 +1605,26 @@
 
 
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Photo viewer">
-  <button class="lb-x" id="lb-x" aria-label="Close">✕</button>
+  <div class="lb-bar" id="lb-bar">
+    <span class="lb-count" id="lb-count"></span>
+    <span class="lb-tools">
+      <button type="button" data-a="rotl" title="Turn left (Shift+R)" aria-label="Turn left"></button>
+      <button type="button" data-a="rotr" title="Turn right (R)" aria-label="Turn right"></button>
+      <button type="button" data-a="fav" data-ico="heart" title="Favourite (F)" aria-label="Favourite"></button>
+      <button type="button" data-a="cap" data-ico="edit" title="Edit caption (E)" aria-label="Edit caption"></button>
+      <button type="button" data-a="info" title="Details (I)" aria-label="Details"></button>
+      <button type="button" data-a="dl" title="Download (D)" aria-label="Download"></button>
+      <button type="button" data-a="play" title="Slideshow (Space)" aria-label="Slideshow"></button>
+      <button type="button" data-a="full" title="Full screen" aria-label="Full screen"></button>
+      <button type="button" data-a="del" data-ico="trash" class="danger" title="Move to Trash (Delete)" aria-label="Move to Trash"></button>
+    </span>
+    <button class="lb-x" id="lb-x" aria-label="Close (Esc)">✕</button>
+  </div>
   <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">←</button>
-  <img id="lb-img" alt="">
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""></div>
   <button class="lb-nav lb-next" id="lb-next" aria-label="Next">→</button>
   <div class="lb-cap" id="lb-cap"></div>
+  <div class="lb-info" id="lb-info" hidden></div>
   <div class="lb-comments" id="lb-comments">
     <div class="lbc-list" id="lbc-list"></div>
     <div class="lbc-row">
@@ -2155,7 +2293,11 @@ And last 'til the end of time, my love
     if (e.key === 'Escape') setOpen(false);
   });
 
-  // Photographs: encrypted gallery — favourites, on-this-day, timeline, lightbox
+  // Photographs: encrypted gallery — timeline, favourites, on-this-day, lightbox, and edits.
+  // Edits (move to Trash / restore / delete for good, rotate, caption, favourite) are appended to the Supabase table
+  // photo_edits, each row signed with an HMAC key derived from the gallery password, so only someone who unlocked the
+  // gallery can change it. The page applies the verified log at once; the Python sync (sync/sync_photos.py) applies the
+  // same log to the files: it re-encodes rotated photos and removes trashed ones for good after 30 days.
   (function(){
     const grid = document.getElementById('photo-grid');
     const unlockRow = document.getElementById('photo-unlock');
@@ -2163,10 +2305,34 @@ And last 'til the end of time, my love
     const passInput = document.getElementById('photo-pass');
     const openBtn = document.getElementById('photo-open');
     const PASSKEY = 'cw_photos_pass', FAVKEY = 'cw_favs';
+    const PURGE_DAYS = 30;
     const enc = new TextEncoder();
-    const esc = t => (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-    const favs = new Set(JSON.parse(localStorage.getItem(FAVKEY) || '[]'));
+    const esc = t => (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
     const blobCache = new Map();
+
+    const SBASE = 'https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/';
+    const CSB = SBASE + 'photo_comments';
+    const ESB = SBASE + 'photo_edits';
+    const CKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs';
+    const CH = {'apikey': CKEY, 'Authorization': 'Bearer ' + CKEY, 'Content-Type': 'application/json'};
+
+    const ICONS = {
+      rotl: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+      rotr: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+      heart: '<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
+      edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+      info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+      dl: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
+      play: '<path d="M6 4l14 8-14 8Z"/>',
+      pause: '<path d="M8 4v16"/><path d="M16 4v16"/>',
+      full: '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+      trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',
+      restore: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
+      check: '<path d="M20 6 9 17l-5-5"/>',
+      x: '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>',
+      zoom: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6"/><path d="M8 11h6"/>'
+    };
+    const ico = (n, s) => `<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 
     async function deriveKey(password, saltB64, iters){
       const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
@@ -2174,6 +2340,15 @@ And last 'til the end of time, my love
       return crypto.subtle.deriveKey(
         {name:'PBKDF2', salt, iterations: iters||250000, hash:'SHA-256'},
         base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+    }
+
+    /* signing key for edits: PBKDF2(password, salt + "edits") -> HMAC-SHA256 (sync_photos.py derives the same) */
+    async function deriveEditKey(password, saltB64, iters){
+      const salt = new Uint8Array([...Uint8Array.from(atob(saltB64), c => c.charCodeAt(0)), ...enc.encode('edits')]);
+      const base = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations: iters||250000, hash:'SHA-256'},
+        base, {name:'HMAC', hash:'SHA-256', length:256}, false, ['sign', 'verify']);
     }
 
     async function decrypt(key, buf){
@@ -2193,26 +2368,159 @@ And last 'til the end of time, my love
     const parseDate = p => { const d = new Date(p.created || 0); return isNaN(d) ? null : d; };
     const idOf = p => p.source_id || p.file;
 
+    /* ---------- edits: signed log -> state per photo ---------- */
+    let EKEY = null, EDITS = [], ED = new Map(), EDITS_OK = false;
+    const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+    const edMsg = e => enc.encode(`${e.photo_id}\n${e.action}\n${e.value}\n${e.ts}`);
+    async function edVerify(e){
+      try{ return await crypto.subtle.verify('HMAC', EKEY, Uint8Array.from(e.sig.match(/../g).map(h => parseInt(h, 16))), edMsg(e)); }
+      catch(x){ return false; }
+    }
+    function fold(rows){
+      const m = new Map();
+      rows.slice().sort((a, b) => (a.ts - b.ts) || (a.sig < b.sig ? -1 : 1)).forEach(e => {
+        const s = m.get(e.photo_id) || {deleted: null, purged: false, rot: 0, caption: null, fav: null};
+        m.set(e.photo_id, s);
+        if (s.purged) return;
+        if (e.action === 'delete') s.deleted = e.ts;
+        else if (e.action === 'restore') s.deleted = null;
+        else if (e.action === 'purge'){ if (s.deleted) s.purged = true; }
+        else if (e.action === 'rotate') s.rot = (((s.rot + (parseInt(e.value, 10) || 0)) % 360) + 360) % 360;
+        else if (e.action === 'caption') s.caption = e.value;
+        else if (e.action === 'fav') s.fav = true;
+        else if (e.action === 'unfav') s.fav = false;
+      });
+      return m;
+    }
+    async function loadEdits(){
+      try{
+        const r = await fetch(`${ESB}?select=photo_id,action,value,ts,sig&order=ts.asc&limit=100000`, {headers: CH});
+        if (!r.ok) return false;
+        const rows = await r.json();
+        const ok = await Promise.all(rows.map(edVerify));
+        EDITS = rows.filter((_, i) => ok[i]); ED = fold(EDITS); EDITS_OK = true;
+        return true;
+      }catch(e){ return false; }
+    }
+    let syncTimer = null;
+    function scheduleSync(){
+      clearTimeout(syncTimer);
+      syncTimer = setTimeout(() => { fetch(SYNC_URL, {method: 'POST', headers: {'content-type': 'application/json'}, body: '{}'}).catch(() => {}); }, 4000);
+    }
+    /* append edits (one row per photo id); applied locally at once, rolled back if the server refuses */
+    async function edit(ids, action, value){
+      if (!EKEY) return false;
+      ids = [].concat(ids);
+      const t = Date.now();
+      const rows = await Promise.all(ids.map(async (id, i) => {
+        const e = {photo_id: String(id), action, value: value == null ? '' : String(value), ts: t + i};
+        e.sig = hex(await crypto.subtle.sign('HMAC', EKEY, edMsg(e)));
+        return e;
+      }));
+      EDITS = EDITS.concat(rows); ED = fold(EDITS);
+      try{
+        const r = await fetch(ESB, {method: 'POST', headers: {...CH, 'Prefer': 'return=minimal'}, body: JSON.stringify(rows)});
+        if (!r.ok) throw new Error(r.status);
+        scheduleSync();
+        return true;
+      }catch(e){
+        EDITS = EDITS.filter(x => !rows.includes(x)); ED = fold(EDITS);
+        toast(EDITS_OK ? 'Not saved: no connection to the gallery service' : 'Editing is not switched on yet (photo_edits table missing)');
+        return false;
+      }
+    }
+    const stOf = p => ED.get(idOf(p));
+    const deletedAt = p => { const s = stOf(p); return EDITS_OK && s ? s.deleted : (p.deleted || null); };
+    const isGone = p => { const s = stOf(p); return !!(s && s.purged); };
+    const isFav = p => { const s = stOf(p); return s && s.fav != null ? s.fav : !!p.fav; };
+    const capOf = p => { const s = stOf(p); return s && s.caption != null ? s.caption : (p.caption || ''); };
+    const pendingRot = p => { if (p.type) return 0; const s = stOf(p); return s ? (((s.rot - (p.rot || 0)) % 360) + 360) % 360 : 0; };
+    const dimsOf = p => pendingRot(p) % 180 ? [p.h, p.w] : [p.w, p.h];
+
+    /* a photo, turned by any rotation the sync has not applied yet (canvas, so it is exact) */
+    async function photoUrl(p){
+      const base = await fetchClear(KEY, p.file, 'image/jpeg');
+      const r = pendingRot(p);
+      if (!r) return base;
+      const k = base + '#r' + r;
+      if (blobCache.has(k)) return blobCache.get(k);
+      const im = new Image(); im.src = base; await im.decode();
+      const c = document.createElement('canvas'), sw = r % 180 !== 0;
+      c.width = sw ? im.naturalHeight : im.naturalWidth; c.height = sw ? im.naturalWidth : im.naturalHeight;
+      const g = c.getContext('2d');
+      g.translate(c.width / 2, c.height / 2); g.rotate(r * Math.PI / 180); g.drawImage(im, -im.naturalWidth / 2, -im.naturalHeight / 2);
+      const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', 0.92));
+      const u = URL.createObjectURL(blob); blobCache.set(k, u); return u;
+    }
+    const fileName = (p, ext) => ((capOf(p) || 'photo').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') || 'photo') + '-' + String(idOf(p)).slice(-5) + ext;
+    async function download(p){
+      let url;
+      if (p.type === 'video') url = await fetchClear(KEY, p.file, 'video/mp4');
+      else if (p.type === 'stream') url = await fetchClear(KEY, p.poster, 'image/jpeg');
+      else url = await photoUrl(p);
+      const a = document.createElement('a');
+      a.href = url; a.download = fileName(p, p.type === 'video' ? '.mp4' : '.jpg');
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    /* ---------- toast with undo ---------- */
+    const toastEl = document.createElement('div');
+    toastEl.className = 'ph-toast'; toastEl.setAttribute('role', 'status');
+    document.body.appendChild(toastEl);
+    let toastT = null;
+    function toast(msg, undo){
+      toastEl.innerHTML = '';
+      const sp = document.createElement('span'); sp.textContent = msg; toastEl.appendChild(sp);
+      if (undo){
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Undo';
+        b.addEventListener('click', () => { toastEl.classList.remove('on'); undo(); });
+        toastEl.appendChild(b);
+      }
+      toastEl.classList.add('on');
+      clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), undo ? 7000 : 3500);
+    }
+
     /* ---------- lightbox ---------- */
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
     const lbCap = document.getElementById('lb-cap');
-    let lbList = [], lbIdx = 0, lbKey = null;
+    const lbCount = document.getElementById('lb-count');
+    const lbInfo = document.getElementById('lb-info');
+    const lbStage = document.getElementById('lb-stage');
+    let lbList = [], lbIdx = 0, lbKey = null, lbSeq = 0;
+
+    document.querySelectorAll('#lb-bar [data-a]').forEach(b => { b.innerHTML = ico(b.dataset.ico || b.dataset.a); });
+    const lbBtn = a => document.querySelector(`#lb-bar [data-a="${a}"]`);
 
     async function lbShow(i){
+      if (!lbList.length){ lbClose(); return; }
       lbIdx = (i + lbList.length) % lbList.length;
-      const p = lbList[lbIdx];
-      lbImg.src = await fetchClear(lbKey, p.file, 'image/jpeg');
-      lbCap.textContent = p.caption || '';
+      const p = lbList[lbIdx], seq = ++lbSeq;
+      resetZoom();
+      lbCount.textContent = `${lbIdx + 1} / ${lbList.length}`;
+      lbCap.textContent = capOf(p);
+      lbBtn('fav').classList.toggle('on', isFav(p));
+      if (!lbInfo.hidden) renderInfo(p);
       loadComments(idOf(p));
+      const url = await photoUrl(p);
+      if (seq === lbSeq) lbImg.src = url;
+      const nx = lbList[(lbIdx + 1) % lbList.length];       // warm the next one
+      if (nx && nx !== p) photoUrl(nx).catch(() => {});
     }
+    const fmtDate = d => { const x = new Date(typeof d === 'number' ? d : (d || 0)); return isNaN(x) || !d ? '—' : x.toLocaleString('en-GB', {day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'}); };
+    function renderInfo(p){
+      const [w, h] = dimsOf(p);
+      const n = (COMMENTS.get(idOf(p)) || []).length;
+      lbInfo.innerHTML = `<dl><dt>Taken</dt><dd>${esc(fmtDate(p.created))}</dd><dt>Added</dt><dd>${esc(fmtDate(p.added))}</dd>`
+        + `<dt>Size</dt><dd>${w && h ? `${w} × ${h}` : '—'}</dd><dt>Favourite</dt><dd>${isFav(p) ? 'yes' : 'no'}</dd><dt>Comments</dt><dd>${n}</dd></dl>`;
+    }
+
     /* ---- comments (Supabase) ---- */
     let COMMENTS = new Map();
 
     async function fetchAllComments(){
       try{
-        const r = await fetch(CSB.replace('photo_comments','photo_comments') +
-          '?select=photo_id,author,body,created_at&order=created_at.asc', {headers: CH});
+        const r = await fetch(CSB + '?select=photo_id,author,body,created_at&order=created_at.asc', {headers: CH});
         if (!r.ok) return;
         const rows = await r.json();
         COMMENTS = new Map();
@@ -2236,9 +2544,6 @@ And last 'til the end of time, my love
         `<div class="fc"><b>${esc(c.author)}</b>${esc(c.body)}</div>`).join('');
     }
 
-    const CSB = 'https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/photo_comments';
-    const CKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs';
-    const CH = {'apikey': CKEY, 'Authorization': 'Bearer ' + CKEY, 'Content-Type': 'application/json'};
     const lbcList = document.getElementById('lbc-list');
     const lbcName = document.getElementById('lbc-name');
     const lbcText = document.getElementById('lbc-text');
@@ -2294,60 +2599,223 @@ And last 'til the end of time, my love
     lbcSend.addEventListener('click', sendComment);
     lbcText.addEventListener('keydown', e => { if (e.key === 'Enter') sendComment(); });
 
-    function lbOpen(list, i, key){ lbList = list; lbKey = key; lb.classList.add('open'); document.body.style.overflow='hidden'; lbShow(i); }
-    function lbClose(){ lb.classList.remove('open'); document.body.style.overflow=''; lbImg.src=''; }
+    /* ---- zoom and pan (double-click / double-tap, wheel, pinch, drag) ---- */
+    let zoom = 1, panX = 0, panY = 0;
+    function applyZoom(){ lbImg.style.transform = zoom === 1 ? '' : `translate(${panX}px, ${panY}px) scale(${zoom})`; lb.classList.toggle('zoomed', zoom > 1); }
+    function resetZoom(){ zoom = 1; panX = panY = 0; applyZoom(); }
+    function zoomAt(z, cx, cy){
+      const r = lbImg.getBoundingClientRect();
+      const ox = cx - (r.left + r.width / 2), oy = cy - (r.top + r.height / 2);
+      const nz = Math.max(1, Math.min(5, z)), k = nz / zoom;
+      panX = (panX - ox) * k + ox; panY = (panY - oy) * k + oy; zoom = nz;
+      if (zoom === 1){ panX = panY = 0; }
+      applyZoom();
+    }
+    lbImg.addEventListener('dblclick', e => { e.preventDefault(); zoom > 1 ? resetZoom() : zoomAt(2.5, e.clientX, e.clientY); });
+    lbStage.addEventListener('wheel', e => { e.preventDefault(); zoomAt(zoom * (e.deltaY < 0 ? 1.18 : 1 / 1.18), e.clientX, e.clientY); }, {passive: false});
+    let drag = null;
+    lbImg.addEventListener('pointerdown', e => { if (zoom === 1 || e.pointerType === 'touch') return; drag = {x: e.clientX - panX, y: e.clientY - panY}; lbImg.setPointerCapture(e.pointerId); e.preventDefault(); });
+    lbImg.addEventListener('pointermove', e => { if (!drag) return; panX = e.clientX - drag.x; panY = e.clientY - drag.y; applyZoom(); });
+    lbImg.addEventListener('pointerup', () => { drag = null; });
+    lbImg.addEventListener('dragstart', e => e.preventDefault());
+
+    let tx = null, ty = null, lastTap = 0, pinch = null, tpan = null;
+    const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    lbStage.addEventListener('touchstart', e => {
+      if (e.touches.length === 2){ pinch = {d: dist(e.touches), z: zoom}; tx = null; return; }
+      tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+      if (zoom > 1) tpan = {x: tx - panX, y: ty - panY};
+    }, {passive: true});
+    lbStage.addEventListener('touchmove', e => {
+      if (pinch && e.touches.length === 2){
+        e.preventDefault();
+        const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2, my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        zoomAt(pinch.z * dist(e.touches) / pinch.d, mx, my);
+      } else if (tpan && zoom > 1){
+        e.preventDefault();
+        panX = e.touches[0].clientX - tpan.x; panY = e.touches[0].clientY - tpan.y; applyZoom();
+      }
+    }, {passive: false});
+    lbStage.addEventListener('touchend', e => {
+      if (pinch){ if (e.touches.length < 2) pinch = null; tx = null; return; }
+      tpan = null;
+      if (tx === null) return;
+      const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+      const now = Date.now();
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10){
+        if (now - lastTap < 300){ zoom > 1 ? resetZoom() : zoomAt(2.5, e.changedTouches[0].clientX, e.changedTouches[0].clientY); lastTap = 0; }
+        else lastTap = now;
+        return;
+      }
+      if (zoom === 1 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) lbShow(lbIdx + (dx < 0 ? 1 : -1));
+    }, {passive: true});
+
+    /* ---- slideshow, full screen ---- */
+    let showT = null;
+    function slideshow(on){
+      clearInterval(showT); showT = null;
+      if (on) showT = setInterval(() => lbShow(lbIdx + 1), 4000);
+      const b = lbBtn('play'); b.innerHTML = ico(on ? 'pause' : 'play'); b.classList.toggle('on', !!on);
+      lb.classList.toggle('playing', !!on);
+    }
+    function fullscreen(){
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else if (lb.requestFullscreen) lb.requestFullscreen().catch(() => {});
+    }
+
+    /* ---- caption editing ---- */
+    function editCaption(){
+      const p = lbList[lbIdx]; if (!p) return;
+      const inp = document.createElement('input');
+      inp.className = 'lb-cap-edit'; inp.maxLength = 300; inp.value = capOf(p); inp.setAttribute('aria-label', 'Caption');
+      lbCap.replaceChildren(inp); inp.focus(); inp.select();
+      let done = false;
+      const finish = async save => {
+        if (done) return; done = true;
+        const v = inp.value.trim();
+        if (save && v !== capOf(p)){ if (await edit(idOf(p), 'caption', v)){ refreshFigure(p); toast('Caption saved'); } }
+        lbCap.textContent = capOf(p);
+      };
+      inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') finish(true); if (e.key === 'Escape') finish(false); });
+      inp.addEventListener('blur', () => finish(true));
+    }
+
+    /* ---- actions shared by the lightbox, the grid and select mode ---- */
+    async function rotate(list, deg){
+      list = list.filter(p => !p.type);
+      if (!list.length){ toast('Videos cannot be turned'); return; }
+      if (!(await edit(list.map(idOf), 'rotate', deg))) return;
+      list.forEach(refreshFigure);
+      if (lb.classList.contains('open') && list.includes(lbList[lbIdx])) lbShow(lbIdx);
+    }
+    async function toggleFav(list){
+      const on = !list.every(isFav);
+      if (!(await edit(list.map(idOf), on ? 'fav' : 'unfav'))) return;
+      list.forEach(p => document.querySelectorAll(`[data-fav-id="${CSS.escape(idOf(p))}"] .fav-btn`).forEach(x => x.classList.toggle('on', on)));
+      if (lb.classList.contains('open')) lbBtn('fav').classList.toggle('on', isFav(lbList[lbIdx]));
+      renderFavStrip();
+    }
+    async function trash(list){
+      if (!list.length) return;
+      if (!(await edit(list.map(idOf), 'delete'))) return;
+      const ids = list.map(idOf);
+      render();
+      toast(list.length === 1 ? 'Moved to Trash' : `${list.length} moved to Trash`, async () => {
+        if (await edit(ids, 'restore')){ render(); toast('Restored'); }
+      });
+    }
+    async function restore(list){
+      if (list.length && await edit(list.map(idOf), 'restore')){ render(); toast(list.length === 1 ? 'Restored' : `${list.length} restored`); }
+    }
+    async function purge(list){
+      if (!list.length) return;
+      if (!confirm(list.length === 1 ? 'Delete this one for good? It cannot be brought back.' : `Delete ${list.length} for good? They cannot be brought back.`)) return;
+      if (await edit(list.map(idOf), 'purge')){ render(); toast(list.length === 1 ? 'Deleted for good' : `${list.length} deleted for good`); }
+    }
+
+    function lbOpen(list, i, key){ lbList = list; lbKey = key; lb.classList.add('open'); document.body.style.overflow = 'hidden'; lbShow(i); }
+    function lbClose(){
+      slideshow(false); resetZoom();
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      lb.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = '';
+    }
+    const lbAct = {
+      rotl: () => rotate([lbList[lbIdx]], -90),
+      rotr: () => rotate([lbList[lbIdx]], 90),
+      fav: () => toggleFav([lbList[lbIdx]]),
+      cap: editCaption,
+      info: () => { lbInfo.hidden = !lbInfo.hidden; lbBtn('info').classList.toggle('on', !lbInfo.hidden); if (!lbInfo.hidden) renderInfo(lbList[lbIdx]); },
+      dl: () => download(lbList[lbIdx]).catch(() => toast('Download failed')),
+      play: () => slideshow(!showT),
+      full: fullscreen,
+      del: async () => {
+        const p = lbList[lbIdx]; if (!p) return;
+        if (!(await edit(idOf(p), 'delete'))) return;
+        lbList = lbList.filter(x => x !== p);
+        render();
+        toast('Moved to Trash', async () => { if (await edit(idOf(p), 'restore')){ render(); toast('Restored'); } });
+        if (!lbList.length) lbClose(); else lbShow(lbIdx);
+      }
+    };
+    document.querySelectorAll('#lb-bar [data-a]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); lbAct[b.dataset.a](); }));
     document.getElementById('lb-x').addEventListener('click', lbClose);
     document.getElementById('lb-prev').addEventListener('click', () => lbShow(lbIdx-1));
     document.getElementById('lb-next').addEventListener('click', () => lbShow(lbIdx+1));
-    lb.addEventListener('click', e => { if (e.target === lb) lbClose(); });
+    lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) lbClose(); });
     document.addEventListener('keydown', e => {
       if (!lb.classList.contains('open')) return;
-      if (e.key === 'Escape') lbClose();
-      if (e.key === 'ArrowLeft') lbShow(lbIdx-1);
-      if (e.key === 'ArrowRight') lbShow(lbIdx+1);
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const k = e.key;
+      if (k === 'Escape') lbClose();
+      else if (k === 'ArrowLeft') lbShow(lbIdx-1);
+      else if (k === 'ArrowRight') lbShow(lbIdx+1);
+      else if (k === 'r') lbAct.rotr();
+      else if (k === 'R') lbAct.rotl();
+      else if (k === 'f') lbAct.fav();
+      else if (k === 'e') { e.preventDefault(); lbAct.cap(); }
+      else if (k === 'i') lbAct.info();
+      else if (k === 'd') lbAct.dl();
+      else if (k === ' ') { e.preventDefault(); lbAct.play(); }
+      else if (k === 'Delete' || k === 'Backspace') { e.preventDefault(); lbAct.del(); }
+      else if (k === '+' || k === '=') zoomAt(zoom * 1.4, innerWidth / 2, innerHeight / 2);
+      else if (k === '-') zoomAt(zoom / 1.4, innerWidth / 2, innerHeight / 2);
+      else if (k === '0') resetZoom();
     });
-    let tx = null;
-    lb.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
-    lb.addEventListener('touchend', e => {
-      if (tx === null) return;
-      const dx = e.changedTouches[0].clientX - tx; tx = null;
-      if (Math.abs(dx) > 45) lbShow(lbIdx + (dx < 0 ? 1 : -1));
-    }, {passive:true});
 
     /* ---------- figures ---------- */
     function heartBtn(p){
       const b = document.createElement('button');
-      b.className = 'fav-btn' + (favs.has(idOf(p)) ? ' on' : '');
+      b.type = 'button';
+      b.className = 'fav-btn' + (isFav(p) ? ' on' : '');
       b.setAttribute('aria-label', 'Favourite');
-      b.textContent = '\u2665';
-      b.addEventListener('click', e => {
-        e.stopPropagation(); e.preventDefault();
-        const id = idOf(p);
-        favs.has(id) ? favs.delete(id) : favs.add(id);
-        localStorage.setItem(FAVKEY, JSON.stringify([...favs]));
-        document.querySelectorAll(`[data-fav-id="${CSS.escape(id)}"] .fav-btn`)
-          .forEach(x => x.classList.toggle('on', favs.has(id)));
-        renderFavStrip();
-      });
+      b.textContent = '♥';
+      b.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); toggleFav([p]); });
       return b;
     }
 
-    function makeFigure(p, key, photoList){
+    function selectToggle(p, fig){
+      const id = idOf(p);
+      SEL.has(id) ? SEL.delete(id) : SEL.add(id);
+      document.querySelectorAll(`[data-fav-id="${CSS.escape(id)}"]`).forEach(f => f.classList.toggle('sel', SEL.has(id)));
+      updateSelBar();
+    }
+
+    function makeFigure(p, key, photoList, opts){
+      opts = opts || {};
       const fig = document.createElement('figure');
       fig.dataset.favId = idOf(p);
-      const ratio = p.w && p.h ? (p.h / p.w * 100) : 66;
+      if (SEL.has(idOf(p))) fig.classList.add('sel');
+      const [w, h] = dimsOf(p);
+      const ratio = w && h ? (h / w * 100) : 66;
       const a = document.createElement('a');
       a.href = '#'; a.rel = 'noopener';
       a.style.cssText = `position:relative;display:block;padding-top:${ratio}%;background:var(--surface);outline:1px solid var(--line)`;
       const media = document.createElement('div');
       media.className = 'fig-media';
       media.appendChild(a);
-      media.appendChild(heartBtn(p));
+      if (!opts.trash) media.appendChild(heartBtn(p));
+      const tick = document.createElement('span');
+      tick.className = 'sel-tick'; tick.innerHTML = ico('check', 14);
+      media.appendChild(tick);
       fig.appendChild(media);
       const cap = document.createElement('figcaption');
-      cap.textContent = p.caption || '';
+      cap.textContent = opts.trash ? trashNote(p) : capOf(p);
       fig.appendChild(cap);
-      renderFigComments(fig, idOf(p));
+      if (opts.trash){
+        const row = document.createElement('div');
+        row.className = 'fig-actions';
+        row.innerHTML = `<button type="button" data-x="restore">${ico('restore', 14)}Restore</button><button type="button" data-x="purge" class="danger">${ico('trash', 14)}Delete for good</button>`;
+        row.querySelector('[data-x="restore"]').addEventListener('click', () => restore([p]));
+        row.querySelector('[data-x="purge"]').addEventListener('click', () => purge([p]));
+        fig.appendChild(row);
+      } else renderFigComments(fig, idOf(p));
+
+      // select mode: a click selects instead of opening (capture runs before the media handlers)
+      fig.addEventListener('click', e => {
+        if (!SELMODE || e.target.closest('.fav-btn') || e.target.closest('.fig-actions')) return;
+        e.preventDefault(); e.stopPropagation();
+        selectToggle(p, fig);
+      }, true);
 
       fig._load = async () => {
         try{
@@ -2355,14 +2823,16 @@ And last 'til the end of time, my love
             const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
             a.removeAttribute('style');
             a.innerHTML = `<span style="position:relative;display:block">
-              <img src="${posterUrl}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>
+              <img src="${posterUrl}" alt="${esc(capOf(p))}"${p.w?` width="${p.w}" height="${p.h}"`:''}>
               <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">▶ Play${p.mb?` · ${p.mb} MB`:''}</span>
               </span></span>`;
+            if (opts.trash) return;
             a.addEventListener('click', async e => {
               e.preventDefault();
+              if (SELMODE) return;
               const btn = a.querySelector('span span span');
-              if (btn) btn.textContent = 'loading\u2026';
+              if (btn) btn.textContent = 'loading…';
               try{
                 const vUrl = await fetchClear(key, p.file, 'video/mp4');
                 const v = document.createElement('video');
@@ -2370,19 +2840,21 @@ And last 'til the end of time, my love
                 v.style.cssText = 'display:block;width:100%;height:auto;outline:1px solid var(--line)';
                 a.replaceWith(v);
               }catch(err){ if (btn) btn.textContent = 'could not load'; }
-            }, {once:true});
+            });
           } else if (p.type === 'stream'){
             const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
             a.removeAttribute('style');
             a.innerHTML = `<span style="position:relative;display:block">
-              <img src="${posterUrl}" alt="${esc(p.caption)}">
+              <img src="${posterUrl}" alt="${esc(capOf(p))}">
               <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">\u25B6 Play${p.mb?` \u00B7 ${p.mb} MB`:''}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:0.66rem;letter-spacing:0.14em;color:#F5F0E6;background:rgba(14,18,26,0.62);padding:0.55rem 1rem;text-transform:uppercase">▶ Play${p.mb?` · ${p.mb} MB`:''}</span>
               </span></span>`;
+            if (opts.trash) return;
             a.addEventListener('click', async e => {
               e.preventDefault();
+              if (SELMODE) return;
               const btn = a.querySelector('span span span');
-              if (btn) btn.textContent = 'loading\u2026';
+              if (btn) btn.textContent = 'loading…';
               try{
                 const j = await fetch(`https://eapi.pcloud.com/getpubvideolinks?code=${MANIFEST.pcloud}&fileid=${p.fileid}`).then(r=>r.json());
                 const variants = (j.variants||[]).sort((x,y)=>(x.isoriginal?1:0)-(y.isoriginal?1:0));
@@ -2394,13 +2866,15 @@ And last 'til the end of time, my love
                 v.onerror = () => window.open(`https://e.pcloud.link/publink/show?code=${MANIFEST.pcloud}`, '_blank');
                 a.replaceWith(v);
               }catch(err){ window.open(`https://e.pcloud.link/publink/show?code=${MANIFEST.pcloud}`, '_blank'); }
-            }, {once:true});
+            });
           } else {
-            const url = await fetchClear(key, p.file, 'image/jpeg');
+            const url = await photoUrl(p);
+            const [iw, ih] = dimsOf(p);
             a.removeAttribute('style');
-            a.innerHTML = `<img src="${url}" alt="${esc(p.caption)}"${p.w?` width="${p.w}" height="${p.h}"`:''}>`;
+            a.innerHTML = `<img src="${url}" alt="${esc(capOf(p))}"${iw?` width="${iw}" height="${ih}"`:''}>`;
             a.addEventListener('click', e => {
               e.preventDefault();
+              if (SELMODE || opts.trash) return;
               lbOpen(photoList, photoList.indexOf(p), key);
             });
           }
@@ -2409,15 +2883,34 @@ And last 'til the end of time, my love
       return fig;
     }
 
+    /* redraw every copy of one photo (after a rotation or a caption change) */
+    function refreshFigure(p){
+      document.querySelectorAll(`[data-fav-id="${CSS.escape(idOf(p))}"]`).forEach(old => {
+        const fig = makeFigure(p, KEY, old._list || [], old._opts);
+        fig._list = old._list; fig._opts = old._opts;
+        old.replaceWith(fig); fig._load && fig._load();
+      });
+    }
+
     const lazy = new IntersectionObserver((entries) => {
       entries.forEach(en => {
         if (en.isIntersecting){ lazy.unobserve(en.target); en.target._load && en.target._load(); }
       });
     }, { rootMargin: '600px 0px' });
 
+    function place(parent, p, list, opts){
+      const fig = makeFigure(p, KEY, list, opts);
+      fig._list = list; fig._opts = opts;
+      parent.appendChild(fig);
+      lazy.observe(fig);
+      return fig;
+    }
+
     /* ---------- sections ---------- */
     let MANIFEST = null, KEY = null;
     let favWrap = null, otdWrap = null;
+    let FILTER = 'all', SELMODE = false;
+    const SEL = new Set();
 
     function stripSection(title, cls){
       const head = document.createElement('div');
@@ -2432,16 +2925,22 @@ And last 'til the end of time, my love
 
     function fillStrip(strip, list, photosOnly){
       strip.innerHTML = '';
-      list.forEach(p => {
-        const fig = makeFigure(p, KEY, photosOnly);
-        strip.appendChild(fig);
-        lazy.observe(fig);
-      });
+      list.forEach(p => place(strip, p, photosOnly));
+    }
+
+    /* everything that is not in the Trash and not deleted for good */
+    const visible = () => (MANIFEST ? MANIFEST.photos : []).filter(p => !isGone(p) && !deletedAt(p));
+    const trashed = () => (MANIFEST ? MANIFEST.photos : []).filter(p => !isGone(p) && deletedAt(p))
+      .sort((a, b) => deletedAt(b) - deletedAt(a));
+    function trashNote(p){
+      const t = deletedAt(p), left = Math.max(0, Math.ceil(PURGE_DAYS - (Date.now() - t) / 86400000));
+      const days = Math.floor((Date.now() - t) / 86400000);
+      return `${days === 0 ? 'deleted today' : days === 1 ? 'deleted yesterday' : `deleted ${days} days ago`} · gone for good in ${left} day${left === 1 ? '' : 's'}`;
     }
 
     function renderFavStrip(){
       if (!MANIFEST) return;
-      const favList = MANIFEST.photos.filter(p => favs.has(idOf(p)));
+      const favList = FILTER === 'all' ? visible().filter(isFav) : [];
       const photosOnly = favList.filter(p => !p.type);
       if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
       if (!favWrap){
@@ -2455,14 +2954,204 @@ And last 'til the end of time, my love
         grid.parentNode.insertBefore(favWrap, otdWrap || grid);
       }
       favWrap.querySelector('.photo-strip-head').textContent =
-        `Favourites \u2665 \u2014 ${favList.length}`;
+        `Favourites ♥ — ${favList.length}`;
       const g = favWrap.querySelector('.photo-grid');
       g.innerHTML = '';
-      favList.forEach(p => {
-        const fig = makeFigure(p, KEY, photosOnly);
-        g.appendChild(fig);
-        lazy.observe(fig);
+      favList.forEach(p => place(g, p, photosOnly));
+    }
+
+    /* ---------- toolbar: filters, select mode, trash ---------- */
+    let tools = null, selBar = null;
+    function buildTools(){
+      if (tools) return;
+      tools = document.createElement('div');
+      tools.className = 'ph-tools';
+      tools.innerHTML = `<div class="ph-filters" role="tablist" aria-label="Show">
+          <button type="button" data-f="all">All</button><button type="button" data-f="photos">Photos</button>
+          <button type="button" data-f="videos">Videos</button><button type="button" data-f="favs">♥ Favourites</button>
+          <button type="button" data-f="trash">${ico('trash', 13)}Trash <span class="ph-n" id="ph-trash-n"></span></button></div>
+        <span class="ph-count" id="ph-count"></span>
+        <button type="button" class="ph-sel" id="ph-sel">${ico('check', 13)}Select</button>`;
+      grid.parentNode.insertBefore(tools, grid);
+      const ix = document.querySelector('.index');                     // stay under the site's sticky section bar
+      const navH = () => ix ? ix.offsetHeight : 0;
+      const setTop = () => { tools.style.top = navH() + 'px'; };
+      setTop(); addEventListener('resize', setTop);
+      tools.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => {
+        FILTER = b.dataset.f; SEL.clear(); render();
+        const top = tools.parentNode.getBoundingClientRect().top + scrollY;
+        if (scrollY > top) window.scrollTo({top: Math.max(0, grid.getBoundingClientRect().top + scrollY - navH() - tools.offsetHeight - 24)});
+      }));
+      tools.querySelector('#ph-sel').addEventListener('click', () => setSelMode(!SELMODE));
+
+      selBar = document.createElement('div');
+      selBar.className = 'ph-selbar'; selBar.hidden = true;
+      document.body.appendChild(selBar);
+    }
+    function setSelMode(on){
+      SELMODE = on; if (!on) SEL.clear();
+      document.querySelectorAll('figure.sel').forEach(f => f.classList.remove('sel'));
+      document.body.classList.toggle('ph-selecting', on);
+      tools.querySelector('#ph-sel').classList.toggle('on', on);
+      tools.querySelector('#ph-sel').innerHTML = on ? `${ico('x', 13)}Cancel` : `${ico('check', 13)}Select`;
+      updateSelBar();
+    }
+    const selected = () => (MANIFEST ? MANIFEST.photos : []).filter(p => SEL.has(idOf(p)));
+    function updateSelBar(){
+      if (!selBar) return;
+      selBar.hidden = !SELMODE;
+      if (!SELMODE) return;
+      const n = SEL.size, T = FILTER === 'trash';
+      selBar.innerHTML = `<span class="ph-seln">${n ? `${n} selected` : 'Tap photos to select'}</span>
+        <button type="button" data-s="all">${n && n === currentList().length ? 'None' : 'All'}</button>
+        ${T ? `<button type="button" data-s="restore" ${n ? '' : 'disabled'}>${ico('restore', 15)}<span>Restore</span></button>
+               <button type="button" data-s="purge" class="danger" ${n ? '' : 'disabled'}>${ico('trash', 15)}<span>Delete for good</span></button>`
+            : `<button type="button" data-s="rotl" ${n ? '' : 'disabled'} title="Turn left">${ico('rotl', 15)}</button>
+               <button type="button" data-s="rotr" ${n ? '' : 'disabled'} title="Turn right">${ico('rotr', 15)}</button>
+               <button type="button" data-s="fav" ${n ? '' : 'disabled'} title="Favourite">${ico('heart', 15)}</button>
+               <button type="button" data-s="dl" ${n ? '' : 'disabled'} title="Download">${ico('dl', 15)}</button>
+               <button type="button" data-s="del" class="danger" ${n ? '' : 'disabled'}>${ico('trash', 15)}<span>Delete</span></button>`}
+        <button type="button" data-s="done">Done</button>`;
+      const S = {
+        all: () => { const L = currentList(); if (SEL.size === L.length) SEL.clear(); else L.forEach(p => SEL.add(idOf(p)));
+          document.querySelectorAll('[data-fav-id]').forEach(f => f.classList.toggle('sel', SEL.has(f.dataset.favId))); updateSelBar(); },
+        rotl: () => rotate(selected(), -90), rotr: () => rotate(selected(), 90), fav: () => toggleFav(selected()),
+        dl: async () => { const L = selected(); for (const p of L){ try{ await download(p); }catch(e){} await new Promise(r => setTimeout(r, 350)); } },
+        del: async () => { const L = selected(); SEL.clear(); await trash(L); updateSelBar(); },
+        restore: async () => { const L = selected(); SEL.clear(); await restore(L); updateSelBar(); },
+        purge: async () => { const L = selected(); await purge(L); SEL.clear(); updateSelBar(); },
+        done: () => setSelMode(false)
+      };
+      selBar.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => S[b.dataset.s]()));
+    }
+    let CURRENT = [];
+    const currentList = () => CURRENT;
+
+    async function showGallery(m, key){
+      MANIFEST = m; KEY = key;
+      unlockRow.hidden = true; note.hidden = true;
+      setupUpload(m, key);
+      await Promise.all([fetchAllComments(), loadEdits()]);
+      migrateFavs();
+      render();
+    }
+
+    /* favourites used to live in this browser only: move them into the shared log once */
+    async function migrateFavs(){
+      if (!EDITS_OK) return;
+      let local = [];
+      try{ local = JSON.parse(localStorage.getItem(FAVKEY) || '[]'); }catch(e){}
+      if (!local.length) return;
+      const ids = local.filter(id => { const s = ED.get(id); return !s || s.fav == null; });
+      if (!ids.length || await edit(ids, 'fav')){ localStorage.removeItem(FAVKEY); renderFavStrip(); }
+    }
+
+    /* another device may have changed something: re-read the log when the page comes back */
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState !== 'visible' || !KEY) return;
+      const n = EDITS.length;
+      if (await loadEdits() && EDITS.length !== n) render();
+    });
+
+    function render(){
+      if (!MANIFEST) return;
+      buildTools();
+      const y = window.scrollY;
+      if (otdWrap){ otdWrap.remove(); otdWrap = null; }
+      grid.innerHTML = '';
+      grid.classList.toggle('ph-trash', FILTER === 'trash');
+      const vis = visible(), tr = trashed();
+      tools.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === FILTER));
+      document.getElementById('ph-trash-n').textContent = tr.length ? tr.length : '';
+      const nPhotos = vis.filter(p => !p.type).length, nVideos = vis.length - nPhotos;
+      document.getElementById('ph-count').textContent = FILTER === 'trash'
+        ? `${tr.length} in the Trash · kept ${PURGE_DAYS} days`
+        : `${nPhotos} photo${nPhotos === 1 ? '' : 's'} · ${nVideos} video${nVideos === 1 ? '' : 's'}`;
+
+      if (FILTER === 'trash'){
+        CURRENT = tr;
+        renderFavStrip();
+        if (!tr.length){
+          grid.innerHTML = '<p class="ph-empty">The Trash is empty.</p>';
+        } else {
+          const head = document.createElement('div');
+          head.className = 'photo-month ph-trash-head'; head.style.gridColumn = '1 / -1';
+          head.innerHTML = `<span>Deleted · restore within ${PURGE_DAYS} days</span>`;
+          const all = document.createElement('button');
+          all.type = 'button'; all.className = 'ph-empty-trash'; all.textContent = 'Empty Trash';
+          all.addEventListener('click', () => purge(trashed()));
+          head.appendChild(all);
+          grid.appendChild(head);
+          tr.forEach(p => place(grid, p, [], {trash: true}));
+        }
+        updateSelBar();
+        window.scrollTo(0, y);
+        return;
+      }
+
+      const shown = vis.filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p) : true);
+      const withDates = shown.map(p => ({p, d: parseDate(p)}));
+      const today = new Date();
+
+      // On this day — same day of the month, from an earlier month or year (only on "All")
+      if (FILTER === 'all'){
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const otd = withDates.filter(({d}) => d && d.getDate() === today.getDate() && d < startOfToday).map(x => x.p);
+        if (otd.length){
+          const sec = stripSection('On this day');
+          sec.wrap.classList.add('otd');
+          otdWrap = sec.wrap;
+          grid.parentNode.insertBefore(sec.wrap, grid);
+          fillStrip(sec.strip, otd, otd.filter(p => !p.type));
+        }
+      }
+      renderFavStrip();
+
+      if (!shown.length){
+        grid.innerHTML = `<p class="ph-empty">${FILTER === 'favs' ? 'No favourites yet — tap ♥ on a photo.' : 'Nothing here yet.'}</p>`;
+        CURRENT = []; updateSelBar(); window.scrollTo(0, y); return;
+      }
+
+      // Timeline: newest month first, chronological within month
+      const groups = new Map();
+      withDates.forEach(({p, d}) => {
+        const k = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'undated';
+        if (!groups.has(k)) groups.set(k, {d, list: []});
+        groups.get(k).list.push(p);
       });
+      const monthName = d => d.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'});
+      const keys = [...groups.keys()].sort().reverse();
+      // Newly added (uploaded since ADDED_FROM): left out of the months above and shown last, in upload order,
+      // so every new upload lands at the end of the gallery.
+      const ADDED_FROM = new Date('2026-11-06T00:00:00+01:00');
+      const addedAt = p => { const d = new Date(p.added || 0); return isNaN(d) ? null : d; };
+      const recent = shown.filter(p => { const a = addedAt(p); return a && a >= ADDED_FROM; })
+        .sort((a, b) => addedAt(a) - addedAt(b));
+      const isRecent = new Set(recent);
+      groups.forEach(g => { g.list = g.list.filter(p => !isRecent.has(p)); });
+      // lightbox order = the order on the page
+      const allPhotosOnly = [...keys.flatMap(k => groups.get(k).list), ...recent].filter(p => !p.type);
+      CURRENT = [...keys.flatMap(k => groups.get(k).list), ...recent];
+      keys.forEach(k => {
+        const g = groups.get(k);
+        if (!g.list.length) return;
+        const head = document.createElement('div');
+        head.className = 'photo-month';
+        head.textContent = g.d ? monthName(g.d) : 'Undated';
+        grid.appendChild(head);
+        head.style.gridColumn = '1 / -1';
+        g.list.forEach(p => place(grid, p, allPhotosOnly));
+      });
+      if (recent.length){
+        const head = document.createElement('div');
+        head.className = 'photo-month';
+        head.textContent = 'Newly added';
+        head.style.gridColumn = '1 / -1';
+        grid.appendChild(head);
+        recent.forEach(p => place(grid, p, allPhotosOnly));
+      }
+      updateSelBar();
+      window.scrollTo(0, y);
     }
 
     /* ---------- uploads: straight into the pCloud folder the sync reads from ----------
@@ -2608,88 +3297,17 @@ And last 'til the end of time, my love
       upDrop.addEventListener('drop', e => uploadFiles(e.dataTransfer.files));
     }
 
-    async function showGallery(m, key){
-      MANIFEST = m; KEY = key;
-      unlockRow.hidden = true; note.hidden = true;
-      if (otdWrap){ otdWrap.remove(); otdWrap = null; }
-      setupUpload(m, key);
-      await fetchAllComments();
-      grid.innerHTML = '';
-
-      const withDates = m.photos.map(p => ({p, d: parseDate(p)}));
-      const today = new Date();
-
-      // On this day — same day of the month, from an earlier month or year
-      const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const otd = withDates.filter(({d}) => d && d.getDate() === today.getDate()
-        && d < startOfToday).map(x => x.p);
-      if (otd.length){
-        const sec = stripSection('On this day');
-        sec.wrap.classList.add('otd');
-        otdWrap = sec.wrap;
-        grid.parentNode.insertBefore(sec.wrap, grid);
-        fillStrip(sec.strip, otd, otd.filter(p => !p.type));
-      }
-
-      renderFavStrip();
-
-      // Timeline: newest month first, chronological within month
-      const groups = new Map();
-      withDates.forEach(({p, d}) => {
-        const k = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'undated';
-        if (!groups.has(k)) groups.set(k, {d, list: []});
-        groups.get(k).list.push(p);
-      });
-      const monthName = d => d.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'});
-      const keys = [...groups.keys()].sort().reverse();
-      // Newly added (uploaded since ADDED_FROM): left out of the months above and shown last, in upload order,
-      // so every new upload lands at the end of the gallery.
-      const ADDED_FROM = new Date('2026-11-06T00:00:00+01:00');
-      const addedAt = p => { const d = new Date(p.added || 0); return isNaN(d) ? null : d; };
-      const recent = m.photos.filter(p => { const a = addedAt(p); return a && a >= ADDED_FROM; })
-        .sort((a, b) => addedAt(a) - addedAt(b));
-      const isRecent = new Set(recent);
-      groups.forEach(g => { g.list = g.list.filter(p => !isRecent.has(p)); });
-      // lightbox order = the order on the page
-      const allPhotosOnly = [...keys.flatMap(k => groups.get(k).list), ...recent].filter(p => !p.type);
-      keys.forEach(k => {
-        const g = groups.get(k);
-        if (!g.list.length) return;
-        const head = document.createElement('div');
-        head.className = 'photo-month';
-        head.textContent = g.d ? monthName(g.d) : 'Undated';
-        grid.appendChild(head);
-        head.style.gridColumn = '1 / -1';
-        g.list.forEach(p => {
-          const fig = makeFigure(p, key, allPhotosOnly);
-          grid.appendChild(fig);
-          lazy.observe(fig);
-        });
-      });
-      if (recent.length){
-        const head = document.createElement('div');
-        head.className = 'photo-month';
-        head.textContent = 'Newly added';
-        head.style.gridColumn = '1 / -1';
-        grid.appendChild(head);
-        recent.forEach(p => {
-          const fig = makeFigure(p, key, allPhotosOnly);
-          grid.appendChild(fig);
-          lazy.observe(fig);
-        });
-      }
-    }
-
     fetch('photos/manifest.json').then(r => r.json()).then(async m => {
       if (!m || !m.v || !m.photos || !m.photos.length) return;
       unlockRow.hidden = false;
       note.hidden = false;
-      note.textContent = m.photos.length + ' more \u2014 for the two of us';
+      note.textContent = m.photos.filter(p => !p.deleted).length + ' more \u2014 for the two of us';
 
       async function tryPass(password, silent){
         try{
           const key = await deriveKey(password, m.salt, m.iters);
           await decrypt(key, Uint8Array.from(atob(m.check), c=>c.charCodeAt(0)).buffer);
+          EKEY = await deriveEditKey(password, m.salt, m.iters);
           localStorage.setItem(PASSKEY, password);
           await showGallery(m, key);
           return true;
@@ -2705,6 +3323,7 @@ And last 'til the end of time, my love
       passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryPass(passInput.value, false); });
     }).catch(() => {});
   })();
+
 
   // Daily quote from the relationship shelf
   fetch('quotes.json').then(r => r.json()).then(list => {
