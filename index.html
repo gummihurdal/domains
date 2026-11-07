@@ -1524,6 +1524,12 @@
   .pp-box button.danger:hover { background: #A23B2E; color: var(--paper); }
   .pp-main { width: 100%; margin-top: 0.3rem; }
   @media (max-width: 560px) { .ph-search { order: 5; flex-basis: 100%; max-width: none; } .ph-tools { flex-wrap: wrap; } .ph-acts { margin-left: 0; } }
+  .ph-newcard .ph-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; color: var(--accent); border: 1px dashed var(--accent); outline: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; }
+  .ph-newcard .ph-cover:hover { background: rgba(78, 110, 142, 0.08); }
+  .ph-selecting .photo-month.pickable { cursor: pointer; color: var(--accent); }
+  .ph-selecting .photo-month.pickable::before { content: 'select all \2192'; order: 2; font-size: 0.54rem; opacity: 0.7; }
+  .ph-selbar .ph-primary { background: #E9CFA0; color: #141824; }
+  .ph-selbar .ph-primary:hover:not(:disabled) { background: #F2DDB6; }
   .lb-info { order: 3; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; color: rgba(245, 240, 230, 0.75); }
   .lb-info[hidden] { display: none; }
   .lb-info dl { display: grid; grid-template-columns: auto auto; gap: 0.2rem 1rem; margin: 0; }
@@ -3205,8 +3211,13 @@ And last 'til the end of time, my love
       const by = new Map();
       vis.forEach(p => albumsOf(p).forEach(a => { if (!by.has(a)) by.set(a, []); by.get(a).push(p); }));
       grid.classList.add('ph-cards');
+      const nc = document.createElement('figure');
+      nc.className = 'ph-card ph-newcard';
+      nc.innerHTML = `<button type="button" class="ph-cover" aria-label="New album">${ico('plus', 34)}<span>New album</span></button><figcaption><b>Create</b><span>then pick photos</span></figcaption>`;
+      nc.querySelector('button').addEventListener('click', newAlbum);
+      grid.appendChild(nc);
       if (!by.size){
-        grid.innerHTML = '<p class="ph-empty">No albums yet. Tap <b>Select</b>, choose photos, then <b>Album</b> — or use the album button in the viewer.</p>';
+        grid.insertAdjacentHTML('beforeend', '<p class="ph-empty">No albums yet. Tap <b>New album</b>, give it a name, then tap the photos that belong in it.</p>');
         return;
       }
       [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([name, list]) => {
@@ -3214,6 +3225,39 @@ And last 'til the end of time, my love
         grid.appendChild(card(name, `${list.length} item${list.length === 1 ? '' : 's'}`, cover, () => go('album:' + name)));
       });
     }
+    /* picking photos for one album: the selection bar becomes "Add N to <album>" */
+    let PICK = null;
+    function newAlbum(){
+      panel(`<h4>${ico('album', 16)} New album</h4><p class="pp-note">Give it a name, then tap the photos (and videos) that belong in it. Tip: tap a month's heading to take the whole month.</p>
+        <div class="pp-new"><input placeholder="Album name, e.g. Ticino summer" maxlength="60" aria-label="Album name"><button type="button">Next</button></div>`, root => {
+        const inp = root.querySelector('input');
+        const next = () => { const n = inp.value.trim().slice(0, 60); if (!n) { inp.focus(); return; } closePanel(); pickFor(n); };
+        root.querySelector('button').addEventListener('click', next);
+        inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') next(); if (e.key === 'Escape') closePanel(); });
+        inp.focus();
+      });
+    }
+    function pickFor(name){
+      FILTER = 'all'; SEARCH = ''; const q = document.getElementById('ph-q'); if (q) q.value = '';
+      PICK = name;
+      render();
+      setSelMode(true);
+      visible().filter(p => albumsOf(p).includes(name)).forEach(p => SEL.add(idOf(p)));   // what is already in it
+      document.querySelectorAll('[data-fav-id]').forEach(f => f.classList.toggle('sel', SEL.has(f.dataset.favId)));
+      updateSelBar();
+      window.scrollTo({top: Math.max(0, tools.getBoundingClientRect().top + scrollY - (document.querySelector('.index') || {offsetHeight: 0}).offsetHeight - 8)});
+      toast(`Tap the photos for \u201C${name}\u201D`);
+    }
+    async function finishPick(){
+      const name = PICK, chosen = selected(), had = visible().filter(p => albumsOf(p).includes(name));
+      const add = chosen.filter(p => !albumsOf(p).includes(name)), drop = had.filter(p => !SEL.has(idOf(p)));
+      if (add.length && !(await edit(add.map(idOf), 'album_add', name))) return;
+      if (drop.length && !(await edit(drop.map(idOf), 'album_remove', name))) return;
+      PICK = null; setSelMode(false);
+      toast(add.length || drop.length ? `\u201C${name}\u201D: ${add.length} added${drop.length ? `, ${drop.length} taken out` : ''}` : 'No change');
+      go(chosen.length ? 'album:' + name : 'albums');
+    }
+
     async function renameAlbum(old){
       const n = (prompt('New name for the album', old) || '').trim().slice(0, 60);
       if (!n || n === old) return;
@@ -3405,7 +3449,7 @@ And last 'til the end of time, my love
       document.body.appendChild(selBar);
     }
     function setSelMode(on){
-      SELMODE = on; if (!on) SEL.clear();
+      SELMODE = on; if (!on){ SEL.clear(); PICK = null; }
       document.querySelectorAll('figure.sel').forEach(f => f.classList.remove('sel'));
       document.body.classList.toggle('ph-selecting', on);
       tools.querySelector('#ph-sel').classList.toggle('on', on);
@@ -3418,6 +3462,14 @@ And last 'til the end of time, my love
       selBar.hidden = !SELMODE;
       if (!SELMODE) return;
       const n = SEL.size, T = FILTER === 'trash';
+      if (PICK){
+        selBar.innerHTML = `<span class="ph-seln">${n} for \u201C${esc(PICK)}\u201D</span>
+          <button type="button" data-p="save" class="ph-primary">${ico('check', 15)}<span>Save album</span></button>
+          <button type="button" data-p="cancel">Cancel</button>`;
+        selBar.querySelector('[data-p="save"]').addEventListener('click', finishPick);
+        selBar.querySelector('[data-p="cancel"]').addEventListener('click', () => { PICK = null; setSelMode(false); toast('Album not saved'); });
+        return;
+      }
       selBar.innerHTML = `<span class="ph-seln">${n ? `${n} selected` : 'Tap photos to select'}</span>
         <button type="button" data-s="all">${n && n === currentList().length ? 'None' : 'All'}</button>
         ${T ? `<button type="button" data-s="restore" ${n ? '' : 'disabled'}>${ico('restore', 15)}<span>Restore</span></button>
@@ -3474,6 +3526,17 @@ And last 'til the end of time, my love
       const n = EDITS.length;
       if (await loadEdits() && EDITS.length !== n) render();
     });
+
+    function monthPick(head, list){
+      head.classList.add('pickable');
+      head.addEventListener('click', () => {
+        if (!SELMODE) return;
+        const all = list.every(p => SEL.has(idOf(p)));
+        list.forEach(p => all ? SEL.delete(idOf(p)) : SEL.add(idOf(p)));
+        list.forEach(p => document.querySelectorAll(`[data-fav-id="${CSS.escape(idOf(p))}"]`).forEach(f => f.classList.toggle('sel', SEL.has(idOf(p)))));
+        updateSelBar();
+      });
+    }
 
     function render(){
       if (!MANIFEST) return;
@@ -3534,7 +3597,8 @@ And last 'til the end of time, my love
         const n = shown.length;
         if (inAlbum){
           h.innerHTML = `<button type="button" class="ph-back">\u2190 Albums</button><h3>${esc(inAlbum)}</h3><span class="ph-sub">${n} item${n === 1 ? '' : 's'}</span>
-            <span class="ph-acts"><button type="button" data-h="rename">Rename</button><button type="button" data-h="drop">Remove album</button></span>`;
+            <span class="ph-acts"><button type="button" data-h="add">${ico('plus', 12)} Add photos</button><button type="button" data-h="rename">Rename</button><button type="button" data-h="drop">Remove album</button></span>`;
+          h.querySelector('[data-h="add"]').addEventListener('click', () => pickFor(inAlbum));
           h.querySelector('[data-h="rename"]').addEventListener('click', () => renameAlbum(inAlbum));
           h.querySelector('[data-h="drop"]').addEventListener('click', () => dropAlbum(inAlbum));
         } else {
@@ -3600,6 +3664,7 @@ And last 'til the end of time, my love
         head.textContent = g.d ? monthName(g.d) : 'Undated';
         grid.appendChild(head);
         head.style.gridColumn = '1 / -1';
+        monthPick(head, g.list);
         g.list.forEach(p => place(grid, p, allPhotosOnly));
       });
       if (recent.length){
@@ -3608,6 +3673,7 @@ And last 'til the end of time, my love
         head.textContent = 'Newly added';
         head.style.gridColumn = '1 / -1';
         grid.appendChild(head);
+        monthPick(head, recent);
         recent.forEach(p => place(grid, p, allPhotosOnly));
       }
       updateSelBar();
