@@ -10,6 +10,11 @@ Filenames become captions.
   gallery can upload. The page names uploaded files "YYYY-MM-DD HH-MM-SS <original>"; that date becomes the
   photo's date in the timeline (new files only — entries already in the manifest keep their dates).
 - Each entry also gets "added" (pCloud upload time); the page lists uploads since its ADDED_FROM date last, in upload order.
+- "geo": where it was taken (EXIF GPS of the original, ffprobe for videos), encrypted with the photo key; the page's map.
+- People: faces.py finds and groups faces; photos/faces.enc (people, portraits, which photos) for the page and
+  photos/faces.idx.enc (per-photo faces with embeddings) for the next run, both encrypted.
+- Sharing: a signed "share" edit carries (encrypted) a link id and a fresh key; the photo is re-encrypted with that key to
+  photos/shared/<id>.enc, opened by share.html#<id>.<key>. "unshare", Trash or removal deletes the file.
 - Edits from the page (Supabase table photo_edits: delete / restore / purge / rotate / caption / fav / unfav) are signed
   with an HMAC key derived from the password; only rows that verify count. Applied here: "deleted" marks an entry for the
   Trash, after PURGE_DAYS (or "purge") its files are removed and it is tombstoned in "removed" so the pCloud original never
@@ -32,12 +37,24 @@ ANON_KEY = os.environ.get("SUPABASE_ANON_KEY") or ("eyJhbGciOiJIUzI1NiIsInR5cCI6
             "Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjgzMzQsImV4cCI6MjA4NzgwNDMzNH0.dsmzK7SS4_RSC5wbN6ifhjRlOSbfDZjIcfh2MKkDQIs")
 
 
+ENC_ACTIONS = {"album_add", "album_remove", "person", "share", "unshare"}   # values encrypted by the page
+
+
 def fold_edits(rows):
     """Signed edit log (oldest first) -> {photo_id: state}. Same rules as the page's fold()."""
     out = {}
     for e in sorted(rows, key=lambda e: (int(e["ts"]), e["sig"])):
-        s = out.setdefault(e["photo_id"], {"deleted": None, "purged": False, "rot": 0, "caption": None, "fav": None})
+        s = out.setdefault(e["photo_id"], {"deleted": None, "purged": False, "rot": 0, "caption": None, "fav": None, "shares": {}})
         a = e["action"]
+        if a == "share" and not s["purged"]:
+            try:
+                v = json.loads(e.get("plain") or "{}")
+                if re.fullmatch(r"[A-Za-z0-9_-]{8,40}", v.get("sid", "")) and len(base64.urlsafe_b64decode(v["k"] + "==")) == 32:
+                    s["shares"][v["sid"]] = v["k"]
+            except Exception: pass
+            continue
+        if a == "unshare":
+            s["shares"].pop(e.get("plain") or "", None); continue
         if s["purged"]:
             continue
         if a == "delete": s["deleted"] = int(e["ts"])
@@ -63,10 +80,17 @@ def load_edits(password, salt):
     from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
     from cryptography.hazmat.primitives import hashes
     k = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt + b"edits", iterations=PBKDF2_ITERS).derive(password.encode())
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    vk = AESGCM(PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt + b"values", iterations=PBKDF2_ITERS).derive(password.encode()))
     good = []
     for e in rows:
         msg = f"{e['photo_id']}\n{e['action']}\n{e['value']}\n{e['ts']}".encode()
         if hmac.compare_digest(hmac.new(k, msg, hashlib.sha256).hexdigest(), str(e.get("sig", ""))):
+            if e["action"] in ENC_ACTIONS:
+                try:
+                    raw = base64.b64decode(e["value"]); e["plain"] = vk.decrypt(raw[:12], raw[12:], None).decode()
+                except Exception:
+                    continue
             good.append(e)
     print(f"photo edits: {len(good)} verified of {len(rows)}")
     return fold_edits(good)
@@ -77,6 +101,39 @@ def when(x):
     try: return parsedate_to_datetime(x.get("created", "")).timestamp()
     except Exception: return 0.0
 def unb64(s): return base64.b64decode(s)
+
+def gps_of(im):
+    """(lat, lon) from a PIL image's EXIF GPS block, or None."""
+    try:
+        g = im.getexif().get_ifd(0x8825)
+        if not g or 2 not in g or 4 not in g:
+            return None
+        dms = lambda v: float(v[0]) + float(v[1]) / 60 + float(v[2]) / 3600
+        lat = dms(g[2]) * (-1 if str(g.get(1, "N")).strip("\x00 ").upper().startswith("S") else 1)
+        lon = dms(g[4]) * (-1 if str(g.get(3, "E")).strip("\x00 ").upper().startswith("W") else 1)
+        if (abs(lat) < 1e-6 and abs(lon) < 1e-6) or abs(lat) > 90 or abs(lon) > 180:
+            return None
+        return round(lat, 6), round(lon, 6)
+    except Exception:
+        return None
+
+
+def video_gps(path):
+    """(lat, lon) from a phone video's ISO 6709 location tag (ffprobe), or None."""
+    import subprocess
+    try:
+        out = subprocess.run(["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", path],
+                             capture_output=True, text=True, timeout=60).stdout
+        tags = (json.loads(out or "{}").get("format") or {}).get("tags") or {}
+        for k, v in tags.items():
+            if "location" in k.lower():
+                m = re.match(r"\s*([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)", str(v))
+                if m:
+                    return round(float(m.group(1)), 6), round(float(m.group(2)), 6)
+    except Exception:
+        pass
+    return None
+
 
 def get_code():
     if not os.path.exists(SOURCE): return None
@@ -236,9 +293,12 @@ def main():
         slug = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(f["name"])[0].lower()).strip("-")[:60] or fid
         fname = f"{slug}-{fid[-5:]}.enc"
         open(os.path.join(PHOTOS, fname), "wb").write(encrypt(buf.getvalue()))
-        photos.append({"source_id": fid, "stamp": stamp, "file": fname,
-                       "caption": caption_for(f["name"]),
-                       "w": im.width, "h": im.height, "created": created_for(f, raw)})
+        ent = {"source_id": fid, "stamp": stamp, "file": fname,
+               "caption": caption_for(f["name"]),
+               "w": im.width, "h": im.height, "created": created_for(f, raw), "geo_done": 1}
+        g = gps_of(raw)
+        if g: ent["geo"] = b64(encrypt(f"{g[0]},{g[1]}".encode()))
+        photos.append(ent)
 
     # ---- videos: transcode to 720p mp4, poster frame, encrypt both ----
     import subprocess, tempfile
@@ -282,6 +342,7 @@ def main():
                                    capture_output=True, text=True).stdout.strip().split(",")
             vw, vh = (int(probe[0]), int(probe[1])) if len(probe) == 2 else (0, 0)
             slug = re.sub(r"[^a-z0-9]+", "-", os.path.splitext(f["name"])[0].lower()).strip("-")[:60] or fid
+            vgeo = video_gps(src)
             vname = f"{slug}-{fid[-5:]}.mp4.enc"
             pname = f"{slug}-{fid[-5:]}.poster.enc"
             open(os.path.join(PHOTOS, vname), "wb").write(encrypt(open(mp4, "rb").read()))
@@ -290,7 +351,8 @@ def main():
                            "file": vname, "poster": pname,
                            "caption": caption_for(f["name"]),
                            "w": vw, "h": vh, "mb": round(os.path.getsize(mp4)/1048576, 1),
-                           "created": created_for(f)})
+                           "created": created_for(f), "geo_done": 1,
+                           **({"geo": b64(encrypt(f"{vgeo[0]},{vgeo[1]}".encode()))} if vgeo else {})})
 
     # ---- oversized videos: encrypted thumbnail poster, streamed from pCloud on tap ----
     for f in sorted(big_videos, key=when):
@@ -403,6 +465,99 @@ def main():
         except Exception as e:
             print("  preview failed:", src, e)
     if made: print(f"previews: {made} made")
+
+    def dec_file(name):
+        raw = open(os.path.join(PHOTOS, name), "rb").read()
+        return aes.decrypt(raw[:12], raw[12:], None)
+
+    # ---- where: GPS from the pCloud originals for photos made before locations were read (once each) ----
+    t_geo, n_geo = time.time(), 0
+    for p in photos:
+        if p.get("type") or p.get("geo_done") or time.time() - t_geo > 480:
+            continue
+        fid = str(p.get("fid") or p["source_id"])
+        try:
+            with urllib.request.urlopen(f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}", timeout=300) as r:
+                z = zipfile.ZipFile(io.BytesIO(r.read()))
+            g = gps_of(Image.open(io.BytesIO(z.read(z.namelist()[0]))))
+            if g: p["geo"] = b64(encrypt(f"{g[0]},{g[1]}".encode())); n_geo += 1
+            p["geo_done"] = 1
+        except Exception as e:
+            print("  location lookup failed:", p.get("file"), type(e).__name__)
+    for p in photos:
+        if p.get("type") == "stream": p["geo_done"] = 1
+    if n_geo: print(f"locations: {n_geo} found")
+
+    # ---- people: faces per photo (cached by file), grouped into people, portraits for the page ----
+    FIDX, FOUT = os.path.join(PHOTOS, "faces.idx.enc"), os.path.join(PHOTOS, "faces.enc")
+    def read_enc_json(path):
+        try: return json.loads(dec_file(os.path.relpath(path, PHOTOS) if os.path.isabs(path) else path))
+        except Exception: return None
+    idx = read_enc_json(FIDX) or {}
+    present = {p["source_id"]: p for p in photos if not p.get("type")}
+    changed = False
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import faces as F
+    except Exception as e:
+        F = None; print("faces unavailable this run:", e)
+    for pid in list(idx):
+        if pid not in present: idx.pop(pid); changed = True
+    todo = [p for p in present.values() if (idx.get(p["source_id"]) or {}).get("of") != p["file"]]
+    if todo and F:
+        try:
+            t0 = time.time()
+            for p in todo:
+                if time.time() - t0 > 600: break
+                try: idx[p["source_id"]] = {"of": p["file"], "f": F.detect(dec_file(p["file"]))}
+                except Exception as e: print("  faces failed:", p["file"], e); idx[p["source_id"]] = {"of": p["file"], "f": []}
+                changed = True
+            print(f"faces: {len(todo)} photos looked at")
+        except Exception as e:
+            print("faces unavailable this run:", e)
+    if F and (changed or (idx and not os.path.exists(FOUT))):
+        items, where = [], {}
+        for pid, v in idx.items():
+            for i, f in enumerate(v.get("f", [])):
+                key = f"{pid}#{i}"; items.append((key, f["emb"], f["score"])); where[key] = (pid, f)
+        people = []
+        for keys in F.group(items)[:200]:
+            pids = sorted({where[k][0] for k in keys})
+            best = max(keys, key=lambda k: (where[k][1]["score"], where[k][1]["box"][2]))
+            try: portrait = b64(F.crop(dec_file(present[where[best][0]]["file"]), where[best][1]["box"]))
+            except Exception: portrait = None
+            people.append({"id": keys[0], "faces": keys, "photos": pids, "portrait": portrait,
+                           "boxes": {k: where[k][1]["box"] for k in keys}})
+        open(FOUT, "wb").write(encrypt(json.dumps({"v": 1, "people": people}, separators=(",", ":")).encode()))
+        open(FIDX, "wb").write(encrypt(json.dumps(idx, separators=(",", ":")).encode()))
+        print(f"people: {len(people)} groups from {len(items)} faces")
+
+    # ---- shared links: one photo re-encrypted with its own key; nothing else is reachable from the link ----
+    if ed is not None:
+        SH = os.path.join(PHOTOS, "shared"); os.makedirs(SH, exist_ok=True)
+        want = {}
+        for p in photos:
+            st = ed.get(p["source_id"]) or {}
+            if p.get("deleted") or p.get("type") == "stream":
+                continue
+            for sid, k in (st.get("shares") or {}).items():
+                want[sid] = (p, k)
+        sidx_path = os.path.join(SH, "index.enc")          # link id -> photo file, encrypted (ids stay private)
+        sidx = read_enc_json(os.path.join("shared", "index.enc")) or {}
+        for sid, (p, k) in want.items():
+            if sidx.get(sid) == p["file"] and os.path.exists(os.path.join(SH, sid + ".enc")):
+                continue
+            body = (b"v" if p.get("type") == "video" else b"i") + dec_file(p["file"])
+            iv = os.urandom(12)
+            open(os.path.join(SH, sid + ".enc"), "wb").write(iv + AESGCM(base64.urlsafe_b64decode(k + "==")).encrypt(iv, body, None))
+            sidx[sid] = p["file"]; print("shared:", sid)
+        for sid in list(sidx):
+            if sid not in want:
+                fp = os.path.join(SH, sid + ".enc")
+                if os.path.exists(fp): os.remove(fp)
+                sidx.pop(sid); print("share stopped:", sid)
+        old_sidx = read_enc_json(os.path.join("shared", "index.enc"))
+        if old_sidx != sidx: open(sidx_path, "wb").write(encrypt(json.dumps(sidx, sort_keys=True).encode()))
 
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": stable(old_m.get("check"), b"grace-ok"),

@@ -1,3 +1,5 @@
 pillow
 pillow-heif
 cryptography
+numpy
+opencv-python-headless>=4.8

@@ -1474,6 +1474,56 @@
   .lb-tools button:disabled { opacity: 0.3; cursor: default; }
   .ph-tools .ph-play { border-color: var(--accent); color: var(--accent); }
   .ph-tools .ph-play:hover { background: var(--accent); color: var(--paper); }
+
+  /* ---- search, cards (albums, people), headers, map, panels ---- */
+  .ph-search { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--muted); border: 1px solid var(--line); padding: 0 0.5rem; background: var(--surface); min-width: 12rem; flex: 1 1 14rem; max-width: 22rem; }
+  .ph-search input { flex: 1; min-width: 0; border: none; outline: none; background: none; color: var(--ink); font: inherit; letter-spacing: 0.06em; text-transform: none; padding: 0.5rem 0; }
+  .ph-search:focus-within { border-color: var(--accent); }
+  .photo-grid.ph-cards { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 1.2rem; }
+  .ph-card { margin: 0; }
+  .ph-cover { display: block; width: 100%; padding: 0; border: none; background: var(--surface); cursor: pointer; aspect-ratio: 4 / 3; overflow: hidden; outline: 1px solid var(--line); }
+  .ph-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .ph-cover:hover img { transform: scale(1.04); }
+  .ph-card.round .ph-cover { aspect-ratio: 1; border-radius: 50%; outline: none; box-shadow: 0 0 0 1px var(--line); }
+  .ph-people { grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)) !important; }
+  .ph-card figcaption { margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.15rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .ph-card.round figcaption { text-align: center; }
+  .ph-card figcaption b { color: var(--ink); font-weight: 500; }
+  .ph-more { grid-column: 1 / -1; justify-self: start; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.5rem 0.8rem; border: 1px solid var(--line); background: none; color: var(--ink-soft); cursor: pointer; }
+  .ph-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin: 0.4rem 0 0.2rem; }
+  .ph-head h3 { margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400; font-size: 1.5rem; color: var(--ink); }
+  .ph-head button { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.45rem 0.7rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
+  .ph-head button:hover { border-color: var(--accent); color: var(--accent); }
+  .ph-head .ph-back { border-color: transparent; background: none; padding-left: 0; }
+  .ph-face { width: 3.2rem; height: 3.2rem; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
+  .ph-name { font-family: 'Newsreader', Georgia, serif; font-size: 1.25rem; padding: 0.3rem 0.5rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); outline: none; min-width: 0; width: 14rem; }
+  .ph-name:focus { border-color: var(--accent); }
+  .ph-sub { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .ph-acts { margin-left: auto; display: flex; gap: 0.4rem; }
+  .ph-map { grid-column: 1 / -1; height: min(72vh, 44rem); outline: 1px solid var(--line); background: var(--surface); z-index: 1; }
+  .ph-mapnote { grid-column: 1 / -1; margin: 0.2rem 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .ph-pin-wrap { background: none; border: none; }
+  .ph-pin { position: relative; width: 52px; height: 52px; border-radius: 6px; overflow: visible; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); border: 2px solid #fff; background: #ddd; }
+  .ph-pin img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block; }
+  .ph-pin b { position: absolute; top: -9px; right: -9px; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: var(--accent, #4E6E8E); color: #fff; font: 600 11px/22px 'IBM Plex Mono', monospace; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+  .ph-panel { position: fixed; inset: 0; z-index: 90; background: rgba(10, 12, 20, 0.45); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .pp-box { position: relative; width: min(26rem, 100%); max-height: 86vh; overflow: auto; background: var(--paper); color: var(--ink); padding: 1.2rem 1.2rem 1rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35); }
+  .pp-box h4 { margin: 0 2rem 0.8rem 0; display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
+  .pp-box h4 span { color: var(--muted); }
+  .pp-x { position: absolute; top: 0.7rem; right: 0.7rem; width: 2rem; height: 2rem; border: none; background: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .pp-note { margin: 0 0 0.8rem; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45; }
+  .pp-albums { display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 0.8rem; max-height: 40vh; overflow: auto; }
+  .pp-albums label { display: flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0.3rem; cursor: pointer; font-size: 0.95rem; border-bottom: 1px solid var(--line); }
+  .pp-albums input { width: 1.05rem; height: 1.05rem; accent-color: var(--accent, #4E6E8E); }
+  .pp-new, .pp-link { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; }
+  .pp-new input, .pp-link input { flex: 1; min-width: 0; padding: 0.55rem 0.6rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 0.85rem 'IBM Plex Mono', monospace; outline: none; }
+  .pp-new input:focus { border-color: var(--accent, #4E6E8E); }
+  .pp-box button:not(.pp-x) { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.55rem 0.8rem; border: 1px solid var(--accent, #4E6E8E); background: none; color: var(--accent, #4E6E8E); cursor: pointer; }
+  .pp-box button:not(.pp-x):hover { background: var(--accent, #4E6E8E); color: var(--paper); }
+  .pp-box button.danger { border-color: #A23B2E; color: #A23B2E; }
+  .pp-box button.danger:hover { background: #A23B2E; color: var(--paper); }
+  .pp-main { width: 100%; margin-top: 0.3rem; }
+  @media (max-width: 560px) { .ph-search { order: 5; flex-basis: 100%; max-width: none; } .ph-tools { flex-wrap: wrap; } .ph-acts { margin-left: 0; } }
   .lb-info { order: 3; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; color: rgba(245, 240, 230, 0.75); }
   .lb-info[hidden] { display: none; }
   .lb-info dl { display: grid; grid-template-columns: auto auto; gap: 0.2rem 1rem; margin: 0; }
@@ -1626,6 +1676,8 @@
       <button type="button" data-a="rotr" title="Turn right (R)" aria-label="Turn right"></button>
       <button type="button" data-a="fav" data-ico="heart" title="Favourite (F)" aria-label="Favourite"></button>
       <button type="button" data-a="cap" data-ico="edit" title="Edit caption (E)" aria-label="Edit caption"></button>
+      <button type="button" data-a="album" title="Albums (A)" aria-label="Albums"></button>
+      <button type="button" data-a="share" title="Share a link (S)" aria-label="Share"></button>
       <button type="button" data-a="info" title="Details (I)" aria-label="Details"></button>
       <button type="button" data-a="dl" title="Download (D)" aria-label="Download"></button>
       <button type="button" data-a="play" title="Slideshow (Space)" aria-label="Slideshow"></button>
@@ -2345,7 +2397,14 @@ And last 'til the end of time, my love
       restore: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
       check: '<path d="M20 6 9 17l-5-5"/>',
       x: '<path d="M18 6 6 18"/><path d="M6 6l12 12"/>',
-      zoom: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6"/><path d="M8 11h6"/>'
+      zoom: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M11 8v6"/><path d="M8 11h6"/>',
+      album: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+      share: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+      people: '<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4a4 4 0 0 1 0 8"/><path d="M22 21a7 7 0 0 0-5-6.7"/>',
+      map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2Z"/><path d="M9 4v14"/><path d="M15 6v14"/>',
+      search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+      plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+      copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>'
     };
     const ico = (n, s) => `<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
 
@@ -2366,6 +2425,26 @@ And last 'til the end of time, my love
         base, {name:'HMAC', hash:'SHA-256', length:256}, false, ['sign', 'verify']);
     }
 
+    /* AES key for edit values that should not be readable in the database (album / person names, share keys) */
+    async function deriveValKey(password, saltB64, iters){
+      const salt = new Uint8Array([...Uint8Array.from(atob(saltB64), c => c.charCodeAt(0)), ...enc.encode('values')]);
+      const base = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        {name:'PBKDF2', salt, iterations: iters||250000, hash:'SHA-256'},
+        base, {name:'AES-GCM', length:256}, false, ['encrypt', 'decrypt']);
+    }
+    const b64e = u8 => btoa(String.fromCharCode(...u8));
+    const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    async function encVal(text){
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ct = new Uint8Array(await crypto.subtle.encrypt({name: 'AES-GCM', iv}, VKEY, enc.encode(text)));
+      return b64e(new Uint8Array([...iv, ...ct]));
+    }
+    async function decVal(v){
+      const b = b64d(v);
+      return new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b.slice(0, 12)}, VKEY, b.slice(12)));
+    }
+
     async function decrypt(key, buf){
       const b = new Uint8Array(buf);
       return crypto.subtle.decrypt({name:'AES-GCM', iv: b.slice(0,12)}, key, b.slice(12));
@@ -2384,7 +2463,9 @@ And last 'til the end of time, my love
     const idOf = p => p.source_id || p.file;
 
     /* ---------- edits: signed log -> state per photo ---------- */
-    let EKEY = null, EDITS = [], ED = new Map(), EDITS_OK = false;
+    let EKEY = null, VKEY = null, EDITS = [], ED = new Map(), EDITS_OK = false;
+    const ENC_ACTIONS = new Set(['album_add', 'album_remove', 'person', 'share', 'unshare']);
+    let NAMES = new Map();          // face key -> {name, ts}: people named on the page
     const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
     const edMsg = e => enc.encode(`${e.photo_id}\n${e.action}\n${e.value}\n${e.ts}`);
     async function edVerify(e){
@@ -2392,11 +2473,16 @@ And last 'til the end of time, my love
       catch(x){ return false; }
     }
     function fold(rows){
-      const m = new Map();
+      const m = new Map(), names = new Map();
       rows.slice().sort((a, b) => (a.ts - b.ts) || (a.sig < b.sig ? -1 : 1)).forEach(e => {
-        const s = m.get(e.photo_id) || {deleted: null, purged: false, rot: 0, caption: null, fav: null};
+        if (e.action === 'person'){ names.set(e.photo_id, {name: e.plain || '', ts: e.ts}); return; }
+        const s = m.get(e.photo_id) || {deleted: null, purged: false, rot: 0, caption: null, fav: null, albums: new Set(), shares: new Map()};
         m.set(e.photo_id, s);
         if (s.purged) return;
+        if (e.action === 'album_add'){ if (e.plain) s.albums.add(e.plain); return; }
+        if (e.action === 'album_remove'){ s.albums.delete(e.plain); return; }
+        if (e.action === 'share'){ try{ const v = JSON.parse(e.plain); s.shares.set(v.sid, {k: v.k, ts: e.ts}); }catch(x){} return; }
+        if (e.action === 'unshare'){ s.shares.delete(e.plain); return; }
         if (e.action === 'delete') s.deleted = e.ts;
         else if (e.action === 'restore') s.deleted = null;
         else if (e.action === 'purge'){ if (s.deleted) s.purged = true; }
@@ -2405,6 +2491,7 @@ And last 'til the end of time, my love
         else if (e.action === 'fav') s.fav = true;
         else if (e.action === 'unfav') s.fav = false;
       });
+      NAMES = names;
       return m;
     }
     async function loadEdits(){
@@ -2412,7 +2499,11 @@ And last 'til the end of time, my love
         const r = await fetch(`${ESB}?select=photo_id,action,value,ts,sig&order=ts.asc&limit=100000`, {headers: CH});
         if (!r.ok) return false;
         const rows = await r.json();
-        const ok = await Promise.all(rows.map(edVerify));
+        const ok = await Promise.all(rows.map(async e => {
+          if (!(await edVerify(e))) return false;
+          if (ENC_ACTIONS.has(e.action)){ try{ e.plain = await decVal(e.value); }catch(x){ return false; } }
+          return true;
+        }));
         EDITS = rows.filter((_, i) => ok[i]); ED = fold(EDITS); EDITS_OK = true;
         return true;
       }catch(e){ return false; }
@@ -2428,10 +2519,13 @@ And last 'til the end of time, my love
       ids = [].concat(ids);
       const t = Date.now();
       const rows = await Promise.all(ids.map(async (id, i) => {
-        const e = {photo_id: String(id), action, value: value == null ? '' : String(value), ts: t + i};
+        const plain = value == null ? '' : String(value);
+        const e = {photo_id: String(id), action, value: ENC_ACTIONS.has(action) ? await encVal(plain) : plain, ts: t + i};
         e.sig = hex(await crypto.subtle.sign('HMAC', EKEY, edMsg(e)));
         return e;
       }));
+      const plains = new Map(rows.map((e, i) => [e, ENC_ACTIONS.has(action) ? (value == null ? '' : String(value)) : undefined]));
+      rows.forEach(e => { if (plains.get(e) !== undefined) Object.defineProperty(e, 'plain', {value: plains.get(e), enumerable: false}); });
       EDITS = EDITS.concat(rows); ED = fold(EDITS);
       try{
         const r = await fetch(ESB, {method: 'POST', headers: {...CH, 'Prefer': 'return=minimal'}, body: JSON.stringify(rows)});
@@ -2451,6 +2545,8 @@ And last 'til the end of time, my love
     const capOf = p => { const s = stOf(p); return s && s.caption != null ? s.caption : (p.caption || ''); };
     const pendingRot = p => { if (p.type) return 0; const s = stOf(p); return s ? (((s.rot - (p.rot || 0)) % 360) + 360) % 360 : 0; };
     const dimsOf = p => pendingRot(p) % 180 ? [p.h, p.w] : [p.w, p.h];
+    const albumsOf = p => { const s = stOf(p); return s ? [...s.albums] : []; };
+    const sharesOf = p => { const s = stOf(p); return s ? [...s.shares.entries()] : []; };
 
     /* a photo, turned by any rotation the sync has not applied yet (canvas, so it is exact) */
     async function photoUrl(p, file){
@@ -2552,6 +2648,9 @@ And last 'til the end of time, my love
       const [w, h] = dimsOf(p);
       const n = (COMMENTS.get(idOf(p)) || []).length;
       lbInfo.innerHTML = `<dl><dt>Taken</dt><dd>${esc(fmtDate(p.created))}</dd><dt>Added</dt><dd>${esc(fmtDate(p.added))}</dd>`
+        + `${albumsOf(p).length ? `<dt>Albums</dt><dd>${esc(albumsOf(p).join(', '))}</dd>` : ''}`
+        + `${peopleIn(p).some(personName) ? `<dt>People</dt><dd>${esc(peopleIn(p).map(personName).filter(Boolean).join(', '))}</dd>` : ''}`
+        + `${sharesOf(p).length ? `<dt>Shared</dt><dd>${sharesOf(p).length} link${sharesOf(p).length > 1 ? 's' : ''}</dd>` : ''}`
         + `<dt>Size</dt><dd>${w && h ? `${w} × ${h}` : '—'}${p.mb ? ` \u00B7 ${p.mb} MB` : ''}</dd><dt>Favourite</dt><dd>${isFav(p) ? 'yes' : 'no'}</dd><dt>Comments</dt><dd>${n}</dd></dl>`;
     }
 
@@ -2798,6 +2897,8 @@ And last 'til the end of time, my love
       rotr: () => rotate([lbList[lbIdx]], 90),
       fav: () => toggleFav([lbList[lbIdx]]),
       cap: editCaption,
+      album: () => albumPanel([lbList[lbIdx]]),
+      share: () => sharePanel(lbList[lbIdx]),
       info: () => { lbInfo.hidden = !lbInfo.hidden; lbBtn('info').classList.toggle('on', !lbInfo.hidden); if (!lbInfo.hidden) renderInfo(lbList[lbIdx]); },
       dl: () => download(lbList[lbIdx]).catch(() => toast('Download failed')),
       play: () => slideshow(!PLAY),
@@ -2823,6 +2924,7 @@ And last 'til the end of time, my love
     document.getElementById('lb-next').addEventListener('click', () => lbShow(lbIdx+1));
     lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) lbClose(); });
     document.addEventListener('keydown', e => {
+      if (PANEL){ if (e.key === 'Escape') closePanel(); return; }
       if (!lb.classList.contains('open')) return;
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       const k = e.key;
@@ -2834,6 +2936,8 @@ And last 'til the end of time, my love
       else if (k === 'f') lbAct.fav();
       else if (k === 'e') { e.preventDefault(); lbAct.cap(); }
       else if (k === 'i') lbAct.info();
+      else if (k === 'a') lbAct.album();
+      else if (k === 's') lbAct.share();
       else if (k === 'd') lbAct.dl();
       else if (k === ' ') { e.preventDefault(); lbAct.play(); }
       else if (k === 'Delete' || k === 'Backspace') { e.preventDefault(); lbAct.del(); }
@@ -3021,7 +3125,7 @@ And last 'til the end of time, my love
 
     function renderFavStrip(){
       if (!MANIFEST) return;
-      const favList = FILTER === 'all' ? visible().filter(isFav) : [];
+      const favList = FILTER === 'all' && !SEARCH ? visible().filter(isFav) : [];
       const photosOnly = favList.filter(p => p.type !== 'stream');
       if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
       if (!favWrap){
@@ -3041,6 +3145,227 @@ And last 'til the end of time, my love
       favList.forEach(p => place(g, p, photosOnly));
     }
 
+    /* ---------- panels (albums, sharing) ---------- */
+    let PANEL = null;
+    function closePanel(){ if (PANEL){ PANEL.remove(); PANEL = null; } }
+    function panel(html, wire){
+      closePanel();
+      const el = document.createElement('div');
+      el.className = 'ph-panel';
+      el.innerHTML = `<div class="pp-box" role="dialog">${html}<button type="button" class="pp-x" aria-label="Close">${ico('x', 16)}</button></div>`;
+      el.addEventListener('click', e => { if (e.target === el) closePanel(); });
+      el.querySelector('.pp-x').addEventListener('click', closePanel);
+      document.body.appendChild(el); PANEL = el;
+      if (wire) wire(el.querySelector('.pp-box'));
+      return el;
+    }
+
+    /* ---------- albums ---------- */
+    const allAlbums = () => {
+      const s = new Set();
+      (MANIFEST ? MANIFEST.photos : []).forEach(p => { if (!isGone(p)) albumsOf(p).forEach(a => s.add(a)); });
+      return [...s].sort((a, b) => a.localeCompare(b));
+    };
+    const afterAlbum = () => { if (!lb.classList.contains('open')) render(); else if (!lbInfo.hidden) renderInfo(lbList[lbIdx]); };
+    function albumPanel(list){
+      list = list.filter(Boolean);
+      if (!list.length) return;
+      const names = allAlbums();
+      const has = n => list.every(p => albumsOf(p).includes(n));
+      panel(`<h4>${ico('album', 16)} Albums${list.length > 1 ? ` <span>· ${list.length} selected</span>` : ''}</h4>
+        <div class="pp-albums">${names.map(n => `<label><input type="checkbox" data-n="${esc(n)}"${has(n) ? ' checked' : ''}> ${esc(n)}</label>`).join('') || '<p class="pp-note">No albums yet — make the first one.</p>'}</div>
+        <div class="pp-new"><input placeholder="New album name" maxlength="60" aria-label="New album name"><button type="button">${ico('plus', 14)}Add</button></div>`, root => {
+        root.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', async () => {
+          const ok = await edit(list.map(idOf), cb.checked ? 'album_add' : 'album_remove', cb.dataset.n);
+          if (!ok) cb.checked = !cb.checked; else afterAlbum();
+        }));
+        const inp = root.querySelector('.pp-new input');
+        const add = async () => {
+          const n = inp.value.trim().slice(0, 60);
+          if (!n) return;
+          if (await edit(list.map(idOf), 'album_add', n)){ toast(`Added to “${n}”`); albumPanel(list); afterAlbum(); }
+        };
+        root.querySelector('.pp-new button').addEventListener('click', add);
+        inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') add(); if (e.key === 'Escape') closePanel(); });
+        if (!names.length) inp.focus();
+      });
+    }
+    const previewOf = p => photoUrl(p, p.thumb || (p.type ? p.poster : p.file));
+    function card(title, sub, cover, onOpen, round){
+      const c = document.createElement('figure');
+      c.className = 'ph-card' + (round ? ' round' : '');
+      c.innerHTML = `<button type="button" class="ph-cover" aria-label="${esc(title)}"><img alt=""></button><figcaption><b>${esc(title)}</b><span>${esc(sub)}</span></figcaption>`;
+      const img = c.querySelector('img');
+      if (typeof cover === 'string') img.src = cover;
+      else if (cover) previewOf(cover).then(u => { img.src = u; }).catch(() => {});
+      c.querySelector('.ph-cover').addEventListener('click', onOpen);
+      return c;
+    }
+    function renderAlbums(vis){
+      const by = new Map();
+      vis.forEach(p => albumsOf(p).forEach(a => { if (!by.has(a)) by.set(a, []); by.get(a).push(p); }));
+      grid.classList.add('ph-cards');
+      if (!by.size){
+        grid.innerHTML = '<p class="ph-empty">No albums yet. Tap <b>Select</b>, choose photos, then <b>Album</b> — or use the album button in the viewer.</p>';
+        return;
+      }
+      [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([name, list]) => {
+        const cover = list.find(p => p.type !== 'stream') || list[0];
+        grid.appendChild(card(name, `${list.length} item${list.length === 1 ? '' : 's'}`, cover, () => go('album:' + name)));
+      });
+    }
+    async function renameAlbum(old){
+      const n = (prompt('New name for the album', old) || '').trim().slice(0, 60);
+      if (!n || n === old) return;
+      const ids = visible().filter(p => albumsOf(p).includes(old)).map(idOf);
+      if (await edit(ids, 'album_add', n) && await edit(ids, 'album_remove', old)){ toast('Album renamed'); go('album:' + n); }
+    }
+    async function dropAlbum(name){
+      const ids = (MANIFEST ? MANIFEST.photos : []).filter(p => albumsOf(p).includes(name)).map(idOf);
+      if (!confirm(`Remove the album “${name}”? The photos stay in the gallery.`)) return;
+      if (await edit(ids, 'album_remove', name)){ toast('Album removed'); go('albums'); }
+    }
+
+    /* ---------- people (faces found and grouped by the Python sync, photos/faces.enc) ---------- */
+    let PEOPLE = null, peopleLoading = null, ALL_PEOPLE = false;
+    function loadPeople(){
+      if (PEOPLE) return Promise.resolve(PEOPLE);
+      if (!peopleLoading) peopleLoading = (async () => {
+        try{
+          const r = await fetch('photos/faces.enc', {cache: 'no-cache'});
+          if (!r.ok) throw new Error(r.status);
+          PEOPLE = (JSON.parse(new TextDecoder().decode(await decrypt(KEY, await r.arrayBuffer()))).people) || [];
+        }catch(e){ PEOPLE = []; }
+        return PEOPLE;
+      })();
+      return peopleLoading;
+    }
+    const nameRec = pp => { let best = null; pp.faces.forEach(k => { const n = NAMES.get(k); if (n && (!best || n.ts > best.ts)) best = n; }); return best; };
+    const isHiddenPerson = pp => { const n = nameRec(pp); return !!(n && n.name === '#hidden'); };
+    const personName = pp => { const n = nameRec(pp); return n && n.name && n.name !== '#hidden' ? n.name : ''; };
+    const portraitOf = pp => pp.portrait ? 'data:image/jpeg;base64,' + pp.portrait : '';
+    const peopleIn = p => (PEOPLE || []).filter(pp => pp.photos.includes(idOf(p)) && !isHiddenPerson(pp));
+    function renderPeople(vis){
+      grid.classList.add('ph-cards', 'ph-people');
+      if (!PEOPLE){ grid.innerHTML = '<p class="ph-empty">Looking for faces…</p>'; loadPeople().then(() => { if (FILTER === 'people') render(); }); return; }
+      const ids = new Set(vis.map(idOf));
+      const list = PEOPLE.filter(pp => !isHiddenPerson(pp)).map(pp => ({pp, n: pp.photos.filter(id => ids.has(id)).length})).filter(x => x.n);
+      list.sort((a, b) => (!!personName(b.pp) - !!personName(a.pp)) || (b.n - a.n));
+      const main = list.filter(x => x.n >= 2 || personName(x.pp)), once = list.filter(x => !(x.n >= 2 || personName(x.pp)));
+      if (!list.length){ grid.innerHTML = '<p class="ph-empty">No faces found yet. The gallery looks for faces after each upload; it can take a few minutes.</p>'; return; }
+      (ALL_PEOPLE ? main.concat(once) : main).forEach(({pp, n}) =>
+        grid.appendChild(card(personName(pp) || 'Add a name', `${n} photo${n === 1 ? '' : 's'}`, portraitOf(pp), () => go('person:' + pp.id), true)));
+      if (once.length){
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'ph-more'; b.textContent = ALL_PEOPLE ? 'Show fewer' : `Show ${once.length} more (seen once)`;
+        b.addEventListener('click', () => { ALL_PEOPLE = !ALL_PEOPLE; render(); });
+        grid.appendChild(b);
+      }
+    }
+    async function namePerson(pp, name){
+      if (await edit(pp.id, 'person', name)){ toast(name === '#hidden' ? 'Hidden from People' : name ? `Named ${name}` : 'Name cleared'); return true; }
+      return false;
+    }
+
+    /* ---------- map (Leaflet + OpenStreetMap, loaded only when the map is opened) ---------- */
+    let LEAF = null, MAPI = null;
+    function loadLeaflet(){
+      if (LEAF) return LEAF;
+      const css = h => { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = h; document.head.appendChild(l); };
+      const js = h => new Promise((res, rej) => { const s = document.createElement('script'); s.src = h; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      const U = 'https://unpkg.com/';
+      css(U + 'leaflet@1.9.4/dist/leaflet.css');
+      css(U + 'leaflet.markercluster@1.5.3/dist/MarkerCluster.css');
+      css(U + 'leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css');
+      LEAF = js(U + 'leaflet@1.9.4/dist/leaflet.js').then(() => js(U + 'leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js'));
+      LEAF.catch(() => { LEAF = null; });
+      return LEAF;
+    }
+    const GEO = new Map();
+    async function geoOf(p){
+      if (!p.geo) return null;
+      if (GEO.has(p.geo)) return GEO.get(p.geo);
+      let v = null;
+      try{ const [la, lo] = new TextDecoder().decode(await decrypt(KEY, b64d(p.geo).buffer)).split(',').map(Number); if (isFinite(la) && isFinite(lo)) v = [la, lo]; }catch(e){}
+      GEO.set(p.geo, v); return v;
+    }
+    async function renderMap(vis){
+      if (MAPI){ MAPI.remove(); MAPI = null; }
+      const box = document.createElement('div'); box.className = 'ph-map';
+      const foot = document.createElement('p'); foot.className = 'ph-mapnote'; foot.textContent = 'Loading the map…';
+      grid.appendChild(box); grid.appendChild(foot);
+      const pts = [];
+      for (const p of vis){ if (p.type === 'stream') continue; const g = await geoOf(p); if (g) pts.push({p, g}); }
+      try{ await loadLeaflet(); }catch(e){ foot.textContent = 'The map could not load (no connection to the map service).'; return; }
+      if (!box.isConnected) return;
+      await Promise.all(pts.map(async x => { try{ x.u = await previewOf(x.p); }catch(e){ x.u = ''; } }));
+      if (!box.isConnected) return;
+      const list = pts.map(x => x.p);
+      CURRENT = list;
+      const map = L.map(box, {worldCopyJump: true}); MAPI = map;
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '© OpenStreetMap contributors'}).addTo(map);
+      const pin = (u, n) => L.divIcon({html: `<div class="ph-pin"><img src="${u}" alt="">${n ? `<b>${n}</b>` : ''}</div>`, className: 'ph-pin-wrap', iconSize: [52, 52], iconAnchor: [26, 26]});
+      const cl = L.markerClusterGroup({showCoverageOnHover: false, maxClusterRadius: 56, spiderfyOnMaxZoom: true,
+        iconCreateFunction: c => { const ms = c.getAllChildMarkers(); return pin(ms[0].options.thumb, ms.length); }});
+      pts.forEach((x, i) => {
+        const m = L.marker(x.g, {icon: pin(x.u), thumb: x.u});
+        m.on('click', () => lbOpen(list, i, KEY));
+        cl.addLayer(m);
+      });
+      map.addLayer(cl);
+      if (pts.length) map.fitBounds(cl.getBounds().pad(0.25), {maxZoom: 13}); else map.setView([46.8, 8.2], 7);
+      const miss = vis.filter(p => p.type !== 'stream').length - pts.length;
+      foot.textContent = pts.length
+        ? `${pts.length} on the map${miss ? ` · ${miss} without a location (screenshots, sent photos, or the location was off)` : ''}`
+        : 'No locations yet. They are read from the originals by the sync, a few minutes after upload.';
+      updateSelBar();
+    }
+
+    /* ---------- sharing one photo ---------- */
+    const b64url = u8 => b64e(u8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const shareUrl = (sid, k) => `${location.origin}/share.html#${sid}.${k}`;
+    function sharePanel(p){
+      if (!p) return;
+      if (p.type === 'stream'){ toast('This video lives on pCloud and cannot be shared from here'); return; }
+      const links = sharesOf(p);
+      panel(`<h4>${ico('share', 16)} Share this ${p.type === 'video' ? 'video' : 'photo'}</h4>
+        <p class="pp-note">Whoever has the link sees only this one ${p.type === 'video' ? 'video' : 'photo'} — nothing else from the gallery. A new link starts working 2–4 minutes after you make it. Stop it any time.</p>
+        <div class="pp-links">${links.map(([sid, v]) => `<div class="pp-link"><input readonly value="${esc(shareUrl(sid, v.k))}" aria-label="Link"><button type="button" data-copy title="Copy">${ico('copy', 14)}</button><button type="button" data-stop="${esc(sid)}" class="danger">Stop</button></div>`).join('')}</div>
+        <button type="button" class="pp-main" data-new>${ico('plus', 14)}${links.length ? 'Make another link' : 'Make a link'}</button>`, root => {
+        root.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => {
+          const v = b.parentNode.querySelector('input').value;
+          (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => toast('Link copied'), () => { b.parentNode.querySelector('input').select(); });
+        }));
+        root.querySelectorAll('[data-stop]').forEach(b => b.addEventListener('click', async () => {
+          if (await edit(idOf(p), 'unshare', b.dataset.stop)){ toast('Link stopped — it goes dead within minutes'); sharePanel(p); }
+        }));
+        root.querySelector('[data-new]').addEventListener('click', async () => {
+          const sid = b64url(crypto.getRandomValues(new Uint8Array(9))), k = b64url(crypto.getRandomValues(new Uint8Array(32)));
+          if (!(await edit(idOf(p), 'share', JSON.stringify({sid, k})))) return;
+          const url = shareUrl(sid, k);
+          sharePanel(p);
+          if (navigator.share && matchMedia('(pointer: coarse)').matches){ navigator.share({url}).catch(() => {}); }
+          else if (navigator.clipboard){ navigator.clipboard.writeText(url).then(() => toast('Link made and copied — it works in a few minutes'), () => {}); }
+        });
+      });
+    }
+
+    /* ---------- search: captions, albums, people's names, month and year ---------- */
+    let SEARCH = '';
+    function matches(p){
+      const d = parseDate(p);
+      const hay = [capOf(p), ...albumsOf(p), ...peopleIn(p).map(personName),
+        d ? d.toLocaleDateString('en-GB', {month: 'long', year: 'numeric'}) : ''].join(' ').toLowerCase();
+      return SEARCH.toLowerCase().split(/\s+/).filter(Boolean).every(w => hay.includes(w));
+    }
+    function go(f){
+      FILTER = f; SEL.clear();
+      if (SELMODE) setSelMode(false);
+      render();
+      const top = tools.getBoundingClientRect().top + scrollY;
+      if (scrollY > top) window.scrollTo({top: Math.max(0, top - (document.querySelector('.index') || {offsetHeight: 0}).offsetHeight - 8)});
+    }
+
     /* ---------- toolbar: filters, select mode, trash ---------- */
     let tools = null, selBar = null;
     function buildTools(){
@@ -3049,8 +3374,11 @@ And last 'til the end of time, my love
       tools.className = 'ph-tools';
       tools.innerHTML = `<div class="ph-filters" role="tablist" aria-label="Show">
           <button type="button" data-f="all">All</button><button type="button" data-f="photos">Photos</button>
-          <button type="button" data-f="videos">Videos</button><button type="button" data-f="favs">♥ Favourites</button>
+          <button type="button" data-f="videos">Videos</button><button type="button" data-f="favs">\u2665 Favourites</button>
+          <button type="button" data-f="albums">${ico('album', 13)}Albums</button><button type="button" data-f="people">${ico('people', 13)}People</button>
+          <button type="button" data-f="map">${ico('map', 13)}Map</button>
           <button type="button" data-f="trash">${ico('trash', 13)}Trash <span class="ph-n" id="ph-trash-n"></span></button></div>
+        <label class="ph-search">${ico('search', 13)}<input type="search" id="ph-q" placeholder="Search names, albums, captions, months" aria-label="Search the gallery"></label>
         <span class="ph-count" id="ph-count"></span>
         <button type="button" class="ph-play" id="ph-play">${ico('play', 13)}Slideshow</button>
         <button type="button" class="ph-sel" id="ph-sel">${ico('check', 13)}Select</button>`;
@@ -3059,11 +3387,16 @@ And last 'til the end of time, my love
       const navH = () => ix ? ix.offsetHeight : 0;
       const setTop = () => { tools.style.top = navH() + 'px'; };
       setTop(); addEventListener('resize', setTop);
-      tools.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => {
-        FILTER = b.dataset.f; SEL.clear(); render();
-        const top = tools.parentNode.getBoundingClientRect().top + scrollY;
-        if (scrollY > top) window.scrollTo({top: Math.max(0, grid.getBoundingClientRect().top + scrollY - navH() - tools.offsetHeight - 24)});
-      }));
+      tools.querySelectorAll('[data-f]').forEach(b => b.addEventListener('click', () => go(b.dataset.f)));
+      let qT = null;
+      const q = tools.querySelector('#ph-q');
+      q.addEventListener('input', () => { clearTimeout(qT); qT = setTimeout(async () => {
+        SEARCH = q.value.trim();
+        if (SEARCH && ['albums', 'people', 'map', 'trash'].includes(FILTER)) FILTER = 'all';
+        if (SEARCH) await loadPeople();
+        render();
+      }, 180); });
+      q.addEventListener('keydown', e => { if (e.key === 'Escape'){ q.value = ''; SEARCH = ''; render(); } });
       tools.querySelector('#ph-sel').addEventListener('click', () => setSelMode(!SELMODE));
       tools.querySelector('#ph-play').addEventListener('click', () => { if (SELMODE) setSelMode(false); startShow(FILTER === 'trash' ? [] : CURRENT, 0, true); });
 
@@ -3092,6 +3425,8 @@ And last 'til the end of time, my love
             : `<button type="button" data-s="rotl" ${n ? '' : 'disabled'} title="Turn left">${ico('rotl', 15)}</button>
                <button type="button" data-s="rotr" ${n ? '' : 'disabled'} title="Turn right">${ico('rotr', 15)}</button>
                <button type="button" data-s="fav" ${n ? '' : 'disabled'} title="Favourite">${ico('heart', 15)}</button>
+               <button type="button" data-s="album" ${n ? '' : 'disabled'} title="Add to album">${ico('album', 15)}<span>Album</span></button>
+               ${FILTER.startsWith('album:') ? `<button type="button" data-s="unalbum" ${n ? '' : 'disabled'}>${ico('x', 15)}<span>Take out</span></button>` : ''}
                <button type="button" data-s="dl" ${n ? '' : 'disabled'} title="Download">${ico('dl', 15)}</button>
                <button type="button" data-s="del" class="danger" ${n ? '' : 'disabled'}>${ico('trash', 15)}<span>Delete</span></button>`}
         <button type="button" data-s="done">Done</button>`;
@@ -3099,6 +3434,8 @@ And last 'til the end of time, my love
         all: () => { const L = currentList(); if (SEL.size === L.length) SEL.clear(); else L.forEach(p => SEL.add(idOf(p)));
           document.querySelectorAll('[data-fav-id]').forEach(f => f.classList.toggle('sel', SEL.has(f.dataset.favId))); updateSelBar(); },
         rotl: () => rotate(selected(), -90), rotr: () => rotate(selected(), 90), fav: () => toggleFav(selected()),
+        album: () => albumPanel(selected()),
+        unalbum: async () => { const L = selected(), n = FILTER.slice(6); if (await edit(L.map(idOf), 'album_remove', n)){ SEL.clear(); render(); toast(`${L.length} taken out of \u201C${n}\u201D`); } },
         dl: async () => { const L = selected(); for (const p of L){ try{ await download(p); }catch(e){} await new Promise(r => setTimeout(r, 350)); } },
         del: async () => { const L = selected(); SEL.clear(); await trash(L); updateSelBar(); },
         restore: async () => { const L = selected(); SEL.clear(); await restore(L); updateSelBar(); },
@@ -3115,6 +3452,7 @@ And last 'til the end of time, my love
       unlockRow.hidden = true; note.hidden = true;
       setupUpload(m, key);
       await Promise.all([fetchAllComments(), loadEdits()]);
+      loadPeople();
       migrateFavs();
       render();
       if (/^#slideshow/.test(location.hash) && !lb.classList.contains('open')) startShow(CURRENT, 0, false);
@@ -3142,13 +3480,16 @@ And last 'til the end of time, my love
       buildTools();
       const y = window.scrollY;
       if (otdWrap){ otdWrap.remove(); otdWrap = null; }
+      if (MAPI && FILTER !== 'map'){ MAPI.remove(); MAPI = null; }
       grid.innerHTML = '';
       grid.classList.toggle('ph-trash', FILTER === 'trash');
+      grid.classList.remove('ph-cards', 'ph-people');
       const vis = visible(), tr = trashed();
-      tools.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === FILTER));
+      const tab = FILTER.startsWith('album:') ? 'albums' : FILTER.startsWith('person:') ? 'people' : FILTER;
+      tools.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === tab));
       document.getElementById('ph-trash-n').textContent = tr.length ? tr.length : '';
       const nPhotos = vis.filter(p => !p.type).length, nVideos = vis.length - nPhotos;
-      document.getElementById('ph-count').textContent = FILTER === 'trash'
+      document.getElementById('ph-count').textContent = SEARCH ? 'search results' : FILTER === 'trash'
         ? `${tr.length} in the Trash · kept ${PURGE_DAYS} days`
         : `${nPhotos} photo${nPhotos === 1 ? '' : 's'} · ${nVideos} video${nVideos === 1 ? '' : 's'}`;
 
@@ -3173,12 +3514,47 @@ And last 'til the end of time, my love
         return;
       }
 
-      const shown = vis.filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p) : true);
+      if (FILTER === 'albums' || FILTER === 'people' || FILTER === 'map'){
+        CURRENT = [];
+        renderFavStrip();
+        if (FILTER === 'albums') renderAlbums(vis);
+        else if (FILTER === 'people') renderPeople(vis);
+        else renderMap(vis);
+        updateSelBar(); window.scrollTo(0, y); return;
+      }
+      const inAlbum = FILTER.startsWith('album:') ? FILTER.slice(6) : null;
+      const person = FILTER.startsWith('person:') ? (PEOPLE || []).find(pp => pp.id === FILTER.slice(7)) : null;
+      if (FILTER.startsWith('person:') && !PEOPLE){ loadPeople().then(render); grid.innerHTML = '<p class="ph-empty">Loading\u2026</p>'; return; }
+      let shown = vis.filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
+        : inAlbum ? albumsOf(p).includes(inAlbum) : person ? person.photos.includes(idOf(p)) : true);
+      if (SEARCH) shown = shown.filter(matches);
+      if (inAlbum || person){
+        const h = document.createElement('div');
+        h.className = 'ph-head'; h.style.gridColumn = '1 / -1';
+        const n = shown.length;
+        if (inAlbum){
+          h.innerHTML = `<button type="button" class="ph-back">\u2190 Albums</button><h3>${esc(inAlbum)}</h3><span class="ph-sub">${n} item${n === 1 ? '' : 's'}</span>
+            <span class="ph-acts"><button type="button" data-h="rename">Rename</button><button type="button" data-h="drop">Remove album</button></span>`;
+          h.querySelector('[data-h="rename"]').addEventListener('click', () => renameAlbum(inAlbum));
+          h.querySelector('[data-h="drop"]').addEventListener('click', () => dropAlbum(inAlbum));
+        } else {
+          h.innerHTML = `<button type="button" class="ph-back">\u2190 People</button><img class="ph-face" alt="" src="${portraitOf(person)}">
+            <input class="ph-name" maxlength="60" placeholder="Who is this?" aria-label="Name" value="${esc(personName(person))}"><button type="button" data-h="save">Save name</button>
+            <span class="ph-sub">${n} photo${n === 1 ? '' : 's'}</span><span class="ph-acts"><button type="button" data-h="hide">Not a person \u00B7 hide</button></span>`;
+          const inp = h.querySelector('.ph-name');
+          const save = async () => { if (inp.value.trim() !== personName(person)) await namePerson(person, inp.value.trim()); };
+          h.querySelector('[data-h="save"]').addEventListener('click', save);
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+          h.querySelector('[data-h="hide"]').addEventListener('click', async () => { if (await namePerson(person, '#hidden')) go('people'); });
+        }
+        h.querySelector('.ph-back').addEventListener('click', () => go(inAlbum ? 'albums' : 'people'));
+        grid.appendChild(h);
+      }
       const withDates = shown.map(p => ({p, d: parseDate(p)}));
       const today = new Date();
 
       // On this day — same day of the month, from an earlier month or year (only on "All")
-      if (FILTER === 'all'){
+      if (FILTER === 'all' && !SEARCH){
         const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const otd = withDates.filter(({d}) => d && d.getDate() === today.getDate() && d < startOfToday).map(x => x.p);
         if (otd.length){
@@ -3192,7 +3568,7 @@ And last 'til the end of time, my love
       renderFavStrip();
 
       if (!shown.length){
-        grid.innerHTML = `<p class="ph-empty">${FILTER === 'favs' ? 'No favourites yet — tap ♥ on a photo.' : 'Nothing here yet.'}</p>`;
+        grid.insertAdjacentHTML('beforeend', `<p class="ph-empty">${SEARCH ? `Nothing matches \u201C${esc(SEARCH)}\u201D.` : FILTER === 'favs' ? 'No favourites yet \u2014 tap \u2665 on a photo.' : 'Nothing here yet.'}</p>`);
         CURRENT = []; updateSelBar(); window.scrollTo(0, y); return;
       }
 
@@ -3392,6 +3768,7 @@ And last 'til the end of time, my love
           const key = await deriveKey(password, m.salt, m.iters);
           await decrypt(key, Uint8Array.from(atob(m.check), c=>c.charCodeAt(0)).buffer);
           EKEY = await deriveEditKey(password, m.salt, m.iters);
+          VKEY = await deriveValKey(password, m.salt, m.iters);
           localStorage.setItem(PASSKEY, password);
           await showGallery(m, key);
           return true;
