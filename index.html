@@ -1460,6 +1460,20 @@
     padding: 0.45rem 0.6rem; border: 1px solid #E9CFA0; background: rgba(14, 18, 26, 0.8); color: #F5F0E6; outline: none;
   }
   @media (max-width: 560px) { .lb-count { display: none; } .lb-tools button { width: 2.05rem; } .lb-bar { padding: 0 0.3rem; } }
+  .lb-stage img { transition: opacity 0.45s ease; }
+  .lb-stage img.fading { opacity: 0; }
+  .lb-stage img[hidden], .lb-stage video[hidden] { display: none; }
+  .lb-stage video { display: block; max-width: 96vw; max-height: 64vh; background: #000; outline: none; }
+  .lightbox.playing { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+  .lightbox.playing .lb-stage img, .lightbox.playing .lb-stage video { max-width: 98vw; max-height: 88vh; }
+  .lightbox .lb-bar, .lightbox .lb-nav, .lightbox .lb-cap, .lightbox .lb-info { transition: opacity 0.4s ease; }
+  .lightbox.idle { cursor: none; }
+  .lightbox.idle .lb-bar, .lightbox.idle .lb-nav, .lightbox.idle .lb-info { opacity: 0; pointer-events: none; }
+  .lightbox.idle .lb-cap { opacity: 0.55; }
+  .lb-tools .lb-speed { width: auto; min-width: 2.4rem; padding: 0 0.45rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; }
+  .lb-tools button:disabled { opacity: 0.3; cursor: default; }
+  .ph-tools .ph-play { border-color: var(--accent); color: var(--accent); }
+  .ph-tools .ph-play:hover { background: var(--accent); color: var(--paper); }
   .lb-info { order: 3; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; color: rgba(245, 240, 230, 0.75); }
   .lb-info[hidden] { display: none; }
   .lb-info dl { display: grid; grid-template-columns: auto auto; gap: 0.2rem 1rem; margin: 0; }
@@ -1615,13 +1629,14 @@
       <button type="button" data-a="info" title="Details (I)" aria-label="Details"></button>
       <button type="button" data-a="dl" title="Download (D)" aria-label="Download"></button>
       <button type="button" data-a="play" title="Slideshow (Space)" aria-label="Slideshow"></button>
+      <button type="button" data-a="speed" class="lb-speed" title="Seconds per photo in the slideshow" aria-label="Slideshow speed"></button>
       <button type="button" data-a="full" title="Full screen" aria-label="Full screen"></button>
       <button type="button" data-a="del" data-ico="trash" class="danger" title="Move to Trash (Delete)" aria-label="Move to Trash"></button>
     </span>
     <button class="lb-x" id="lb-x" aria-label="Close (Esc)">✕</button>
   </div>
   <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">←</button>
-  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""></div>
+  <div class="lb-stage" id="lb-stage"><img id="lb-img" alt=""><video id="lb-vid" playsinline controls preload="auto" hidden></video></div>
   <button class="lb-nav lb-next" id="lb-next" aria-label="Next">→</button>
   <div class="lb-cap" id="lb-cap"></div>
   <div class="lb-info" id="lb-info" hidden></div>
@@ -2438,8 +2453,8 @@ And last 'til the end of time, my love
     const dimsOf = p => pendingRot(p) % 180 ? [p.h, p.w] : [p.w, p.h];
 
     /* a photo, turned by any rotation the sync has not applied yet (canvas, so it is exact) */
-    async function photoUrl(p){
-      const base = await fetchClear(KEY, p.file, 'image/jpeg');
+    async function photoUrl(p, file){
+      const base = await fetchClear(KEY, file || p.file, 'image/jpeg');
       const r = pendingRot(p);
       if (!r) return base;
       const k = base + '#r' + r;
@@ -2489,7 +2504,8 @@ And last 'til the end of time, my love
     const lbStage = document.getElementById('lb-stage');
     let lbList = [], lbIdx = 0, lbKey = null, lbSeq = 0;
 
-    document.querySelectorAll('#lb-bar [data-a]').forEach(b => { b.innerHTML = ico(b.dataset.ico || b.dataset.a); });
+    document.querySelectorAll('#lb-bar [data-a]').forEach(b => { if (b.dataset.a !== 'speed') b.innerHTML = ico(b.dataset.ico || b.dataset.a); });
+    const lbVid = document.getElementById('lb-vid');
     const lbBtn = a => document.querySelector(`#lb-bar [data-a="${a}"]`);
 
     async function lbShow(i){
@@ -2502,17 +2518,41 @@ And last 'til the end of time, my love
       lbBtn('fav').classList.toggle('on', isFav(p));
       if (!lbInfo.hidden) renderInfo(p);
       loadComments(idOf(p));
-      const url = await photoUrl(p);
-      if (seq === lbSeq) lbImg.src = url;
-      const nx = lbList[(lbIdx + 1) % lbList.length];       // warm the next one
-      if (nx && nx !== p) photoUrl(nx).catch(() => {});
+      const isV = p.type === 'video';
+      lbBtn('rotl').disabled = lbBtn('rotr').disabled = isV;
+      lbVid.onended = null;
+      if (!lbVid.paused) lbVid.pause();
+      try{
+        if (isV){
+          lbImg.hidden = true; lbVid.hidden = false;
+          lbVid.poster = await fetchClear(KEY, p.poster, 'image/jpeg');
+          const u = await fetchClear(KEY, p.file, 'video/mp4');
+          if (seq !== lbSeq) return;
+          lbVid.src = u; lbVid.muted = false;
+          lbVid.play().catch(() => { lbVid.muted = true; lbVid.play().catch(() => {}); });
+        } else {
+          lbVid.hidden = true; lbVid.removeAttribute('src'); lbVid.removeAttribute('poster'); lbVid.load();
+          lbImg.hidden = false; lbImg.classList.add('fading');
+          const url = await photoUrl(p);
+          if (seq !== lbSeq) return;
+          lbImg.src = url;
+          try{ await lbImg.decode(); }catch(e){}
+          if (seq !== lbSeq) return;
+          lbImg.classList.remove('fading');
+        }
+      }catch(e){ if (seq === lbSeq && PLAY){ showT = setTimeout(() => lbShow(lbIdx + 1), 800); } return; }
+      pace(p);
+      for (const k of [1, 2]){                               // warm the next two photos
+        const nx = lbList[(lbIdx + k) % lbList.length];
+        if (nx && nx !== p && !nx.type) photoUrl(nx).catch(() => {});
+      }
     }
     const fmtDate = d => { const x = new Date(typeof d === 'number' ? d : (d || 0)); return isNaN(x) || !d ? '—' : x.toLocaleString('en-GB', {day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'}); };
     function renderInfo(p){
       const [w, h] = dimsOf(p);
       const n = (COMMENTS.get(idOf(p)) || []).length;
       lbInfo.innerHTML = `<dl><dt>Taken</dt><dd>${esc(fmtDate(p.created))}</dd><dt>Added</dt><dd>${esc(fmtDate(p.added))}</dd>`
-        + `<dt>Size</dt><dd>${w && h ? `${w} × ${h}` : '—'}</dd><dt>Favourite</dt><dd>${isFav(p) ? 'yes' : 'no'}</dd><dt>Comments</dt><dd>${n}</dd></dl>`;
+        + `<dt>Size</dt><dd>${w && h ? `${w} × ${h}` : '—'}${p.mb ? ` \u00B7 ${p.mb} MB` : ''}</dd><dt>Favourite</dt><dd>${isFav(p) ? 'yes' : 'no'}</dd><dt>Comments</dt><dd>${n}</dd></dl>`;
     }
 
     /* ---- comments (Supabase) ---- */
@@ -2651,12 +2691,45 @@ And last 'til the end of time, my love
     }, {passive: true});
 
     /* ---- slideshow, full screen ---- */
-    let showT = null;
+    /* slideshow: photos stay SPEED seconds (crossfade), videos play to the end; the screen is kept awake and the
+       controls fade out after a moment without the mouse or a touch */
+    const SPEEDS = [3, 5, 8, 12];
+    let showT = null, PLAY = false, wake = null, idleT = null;
+    let SPEED = (() => { const v = parseInt(localStorage.getItem('cw_show_speed') || '5', 10); return SPEEDS.includes(v) ? v : 5; })();
+    lbBtn('speed').textContent = SPEED + 's';
+    function pace(p){
+      clearTimeout(showT); showT = null;
+      if (!PLAY) return;
+      if (p && p.type === 'video'){
+        lbVid.onended = () => { if (PLAY) lbShow(lbIdx + 1); };
+        showT = setTimeout(() => { if (PLAY) lbShow(lbIdx + 1); }, 10 * 60 * 1000);   // safety net
+      } else showT = setTimeout(() => lbShow(lbIdx + 1), SPEED * 1000);
+    }
+    async function keepAwake(on){
+      try{
+        if (on && 'wakeLock' in navigator && !wake){ wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); }
+        if (!on && wake){ await wake.release(); wake = null; }
+      }catch(e){ wake = null; }
+    }
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && PLAY) keepAwake(true); });
+    function poke(){
+      lb.classList.remove('idle'); clearTimeout(idleT);
+      if (PLAY) idleT = setTimeout(() => lb.classList.add('idle'), 2500);
+    }
+    ['mousemove', 'touchstart', 'keydown'].forEach(ev => lb.addEventListener(ev, poke, {passive: true}));
     function slideshow(on){
-      clearInterval(showT); showT = null;
-      if (on) showT = setInterval(() => lbShow(lbIdx + 1), 4000);
-      const b = lbBtn('play'); b.innerHTML = ico(on ? 'pause' : 'play'); b.classList.toggle('on', !!on);
-      lb.classList.toggle('playing', !!on);
+      PLAY = !!on;
+      const b = lbBtn('play'); b.innerHTML = ico(on ? 'pause' : 'play'); b.classList.toggle('on', PLAY);
+      lb.classList.toggle('playing', PLAY);
+      keepAwake(PLAY); poke();
+      if (PLAY) pace(lbList[lbIdx]); else { clearTimeout(showT); showT = null; lbVid.onended = null; }
+    }
+    function startShow(list, i, full){
+      list = list.filter(p => p.type !== 'stream');
+      if (!list.length) return;
+      lbOpen(list, i || 0, KEY);
+      if (full) fullscreen();
+      slideshow(true);
     }
     function fullscreen(){
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -2717,7 +2790,8 @@ And last 'til the end of time, my love
     function lbClose(){
       slideshow(false); resetZoom();
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-      lb.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = '';
+      lb.classList.remove('open', 'idle'); document.body.style.overflow = ''; lbImg.src = '';
+      lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
     }
     const lbAct = {
       rotl: () => rotate([lbList[lbIdx]], -90),
@@ -2726,7 +2800,13 @@ And last 'til the end of time, my love
       cap: editCaption,
       info: () => { lbInfo.hidden = !lbInfo.hidden; lbBtn('info').classList.toggle('on', !lbInfo.hidden); if (!lbInfo.hidden) renderInfo(lbList[lbIdx]); },
       dl: () => download(lbList[lbIdx]).catch(() => toast('Download failed')),
-      play: () => slideshow(!showT),
+      play: () => slideshow(!PLAY),
+      speed: () => {
+        SPEED = SPEEDS[(SPEEDS.indexOf(SPEED) + 1) % SPEEDS.length];
+        lbBtn('speed').textContent = SPEED + 's';
+        try{ localStorage.setItem('cw_show_speed', String(SPEED)); }catch(e){}
+        if (PLAY) pace(lbList[lbIdx]);
+      },
       full: fullscreen,
       del: async () => {
         const p = lbList[lbIdx]; if (!p) return;
@@ -2820,7 +2900,7 @@ And last 'til the end of time, my love
       fig._load = async () => {
         try{
           if (p.type === 'video'){
-            const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
+            const posterUrl = await fetchClear(key, p.thumb || p.poster, 'image/jpeg');
             a.removeAttribute('style');
             a.innerHTML = `<span style="position:relative;display:block">
               <img src="${posterUrl}" alt="${esc(capOf(p))}"${p.w?` width="${p.w}" height="${p.h}"`:''}>
@@ -2831,6 +2911,7 @@ And last 'til the end of time, my love
             a.addEventListener('click', async e => {
               e.preventDefault();
               if (SELMODE) return;
+              if (photoList.includes(p)){ lbOpen(photoList, photoList.indexOf(p), key); return; }
               const btn = a.querySelector('span span span');
               if (btn) btn.textContent = 'loading…';
               try{
@@ -2842,7 +2923,7 @@ And last 'til the end of time, my love
               }catch(err){ if (btn) btn.textContent = 'could not load'; }
             });
           } else if (p.type === 'stream'){
-            const posterUrl = await fetchClear(key, p.poster, 'image/jpeg');
+            const posterUrl = await fetchClear(key, p.thumb || p.poster, 'image/jpeg');
             a.removeAttribute('style');
             a.innerHTML = `<span style="position:relative;display:block">
               <img src="${posterUrl}" alt="${esc(capOf(p))}">
@@ -2868,7 +2949,7 @@ And last 'til the end of time, my love
               }catch(err){ window.open(`https://e.pcloud.link/publink/show?code=${MANIFEST.pcloud}`, '_blank'); }
             });
           } else {
-            const url = await photoUrl(p);
+            const url = await photoUrl(p, p.thumb || p.file);
             const [iw, ih] = dimsOf(p);
             a.removeAttribute('style');
             a.innerHTML = `<img src="${url}" alt="${esc(capOf(p))}"${iw?` width="${iw}" height="${ih}"`:''}>`;
@@ -2941,7 +3022,7 @@ And last 'til the end of time, my love
     function renderFavStrip(){
       if (!MANIFEST) return;
       const favList = FILTER === 'all' ? visible().filter(isFav) : [];
-      const photosOnly = favList.filter(p => !p.type);
+      const photosOnly = favList.filter(p => p.type !== 'stream');
       if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
       if (!favWrap){
         favWrap = document.createElement('div');
@@ -2971,6 +3052,7 @@ And last 'til the end of time, my love
           <button type="button" data-f="videos">Videos</button><button type="button" data-f="favs">♥ Favourites</button>
           <button type="button" data-f="trash">${ico('trash', 13)}Trash <span class="ph-n" id="ph-trash-n"></span></button></div>
         <span class="ph-count" id="ph-count"></span>
+        <button type="button" class="ph-play" id="ph-play">${ico('play', 13)}Slideshow</button>
         <button type="button" class="ph-sel" id="ph-sel">${ico('check', 13)}Select</button>`;
       grid.parentNode.insertBefore(tools, grid);
       const ix = document.querySelector('.index');                     // stay under the site's sticky section bar
@@ -2983,6 +3065,7 @@ And last 'til the end of time, my love
         if (scrollY > top) window.scrollTo({top: Math.max(0, grid.getBoundingClientRect().top + scrollY - navH() - tools.offsetHeight - 24)});
       }));
       tools.querySelector('#ph-sel').addEventListener('click', () => setSelMode(!SELMODE));
+      tools.querySelector('#ph-play').addEventListener('click', () => { if (SELMODE) setSelMode(false); startShow(FILTER === 'trash' ? [] : CURRENT, 0, true); });
 
       selBar = document.createElement('div');
       selBar.className = 'ph-selbar'; selBar.hidden = true;
@@ -3034,6 +3117,7 @@ And last 'til the end of time, my love
       await Promise.all([fetchAllComments(), loadEdits()]);
       migrateFavs();
       render();
+      if (/^#slideshow/.test(location.hash) && !lb.classList.contains('open')) startShow(CURRENT, 0, false);
     }
 
     /* favourites used to live in this browser only: move them into the shared log once */
@@ -3102,7 +3186,7 @@ And last 'til the end of time, my love
           sec.wrap.classList.add('otd');
           otdWrap = sec.wrap;
           grid.parentNode.insertBefore(sec.wrap, grid);
-          fillStrip(sec.strip, otd, otd.filter(p => !p.type));
+          fillStrip(sec.strip, otd, otd.filter(p => p.type !== 'stream'));
         }
       }
       renderFavStrip();
@@ -3130,7 +3214,7 @@ And last 'til the end of time, my love
       const isRecent = new Set(recent);
       groups.forEach(g => { g.list = g.list.filter(p => !isRecent.has(p)); });
       // lightbox order = the order on the page
-      const allPhotosOnly = [...keys.flatMap(k => groups.get(k).list), ...recent].filter(p => !p.type);
+      const allPhotosOnly = [...keys.flatMap(k => groups.get(k).list), ...recent].filter(p => p.type !== 'stream');
       CURRENT = [...keys.flatMap(k => groups.get(k).list), ...recent];
       keys.forEach(k => {
         const g = groups.get(k);

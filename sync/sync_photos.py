@@ -25,6 +25,7 @@ SOURCE = os.path.join(PHOTOS, "source.txt")
 MAX_W, QUALITY = 1600, 70
 PBKDF2_ITERS = 250_000
 PURGE_DAYS = 30
+THUMB_W, THUMB_Q = 640, 72       # grid previews: the page loads these, the full photo only in the viewer
 EDITS_URL = "https://mjphpctvuxmbjhmcscoj.supabase.co/rest/v1/photo_edits?select=photo_id,action,value,ts,sig&order=ts.asc&limit=100000"
 # public anon key (the same one the page ships); the table is append-only and every row must carry a valid signature
 ANON_KEY = os.environ.get("SUPABASE_ANON_KEY") or ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qcGhwY3R2dXhtYmpobWNzY29q"
@@ -316,7 +317,7 @@ def main():
     # remove deleted
     for fid, p in old.items():
         if fid not in keep:
-            for k in ("file", "poster"):
+            for k in ("file", "poster", "thumb"):
                 if p.get(k):
                     fp = os.path.join(PHOTOS, p[k])
                     if os.path.exists(fp): os.remove(fp)
@@ -349,7 +350,7 @@ def main():
             if not st:
                 p.pop("deleted", None); p.pop("fav", None); kept.append(p); continue
             if st["purged"] or (st["deleted"] and now_ms - st["deleted"] > PURGE_DAYS * 86400_000):
-                for k in ("file", "poster"):
+                for k in ("file", "poster", "thumb"):
                     if p.get(k) and os.path.exists(os.path.join(PHOTOS, p[k])): os.remove(os.path.join(PHOTOS, p[k]))
                 removed.append({"id": p["source_id"], "fid": p.get("fid") or p["source_id"],
                                 "hash": (p.get("stamp") or "").split(":")[-1], "t": now_ms})
@@ -378,6 +379,30 @@ def main():
                     print("  rotate failed:", p.get("file"), e)
             kept.append(p)
         photos = kept
+
+    # ---- grid previews: one small encrypted JPEG per photo / video poster, rebuilt when the source changes ----
+    made = 0
+    for p in photos:
+        src = p.get("poster") if p.get("type") else p.get("file")
+        if not src or not os.path.exists(os.path.join(PHOTOS, src)):
+            continue
+        if p.get("thumb") and p.get("thumb_of") == src and os.path.exists(os.path.join(PHOTOS, p["thumb"])):
+            continue
+        try:
+            raw = open(os.path.join(PHOTOS, src), "rb").read()
+            im = Image.open(io.BytesIO(aes.decrypt(raw[:12], raw[12:], None))).convert("RGB")
+            if im.width > THUMB_W:
+                im = im.resize((THUMB_W, max(1, round(im.height * THUMB_W / im.width))), Image.LANCZOS)
+            buf = io.BytesIO(); im.save(buf, "JPEG", quality=THUMB_Q, optimize=True, progressive=True)
+            name = re.sub(r"(\.mp4|\.poster)?\.enc$", "", src) + ".t.enc"
+            if p.get("thumb") and p["thumb"] != name and os.path.exists(os.path.join(PHOTOS, p["thumb"])):
+                os.remove(os.path.join(PHOTOS, p["thumb"]))
+            open(os.path.join(PHOTOS, name), "wb").write(encrypt(buf.getvalue()))
+            p["thumb"], p["thumb_of"] = name, src
+            made += 1
+        except Exception as e:
+            print("  preview failed:", src, e)
+    if made: print(f"previews: {made} made")
 
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": stable(old_m.get("check"), b"grace-ok"),
