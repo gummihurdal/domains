@@ -1364,8 +1364,8 @@
   .ph-tools .ph-sel { border-color: var(--line); color: var(--ink-soft); }
   .ph-tools + .photo-grid { margin-top: 1.2rem; }
   @media (max-width: 560px) {
-    .ph-tools { flex-wrap: nowrap; gap: 0.4rem; }
-    .ph-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+    .ph-tools { flex-wrap: wrap; gap: 0.4rem; }
+    .ph-filters { flex-wrap: wrap; flex: 1 1 100%; min-width: 0; gap: 0.15rem; }
     .ph-filters::-webkit-scrollbar { display: none; }
     .ph-tools button { padding: 0.45rem 0.5rem; white-space: nowrap; }
     .ph-count { display: none; }
@@ -1397,6 +1397,8 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
   }
   .ph-selbar[hidden] { display: none; }
+  .ph-selbar .ph-mob { display: none !important; }
+  @media (max-width: 560px) { .ph-selbar .ph-mob { display: block !important; } }
   .ph-seln { padding: 0 0.6rem; white-space: nowrap; color: #E9CFA0; }
   .ph-selbar button {
     display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
@@ -1406,7 +1408,14 @@
   .ph-selbar button:hover:not(:disabled) { background: rgba(245, 240, 230, 0.1); }
   .ph-selbar button:disabled { opacity: 0.35; cursor: default; }
   .ph-selbar button.danger { color: #F0A090; }
-  @media (max-width: 560px) { .ph-selbar button span { display: none; } }
+  @media (max-width: 560px) {
+    .ph-selbar { left: 0; right: 0; bottom: 0; transform: none; max-width: none; flex-wrap: wrap; justify-content: center; gap: 0.1rem;
+      padding: 0.35rem 0.3rem calc(0.35rem + env(safe-area-inset-bottom)); }
+    .ph-seln { flex-basis: 100%; max-width: none !important; text-align: center; padding: 0.1rem 0 0.2rem !important; }
+    .ph-selbar button { flex-direction: column; gap: 0.2rem; padding: 0.4rem 0.45rem; font-size: 0.5rem; }
+    .ph-selbar button span { display: block; }
+    .ph-seln { padding: 0 0.35rem; font-size: 0.52rem; white-space: normal; max-width: 4.5rem; line-height: 1.3; }
+  }
 
   /* trash cards */
   .fig-actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
@@ -1580,6 +1589,7 @@
   }
   #back-to-top:hover, #back-to-top:focus-visible { border-color: #8A6E20; }
   #back-to-top[hidden] { display: none; }
+  .ph-selecting #back-to-top { display: none; }
 </style>
 <script type="application/ld+json">
 {
@@ -3474,12 +3484,12 @@ And last 'til the end of time, my love
         <button type="button" data-s="all">${n && n === currentList().length ? 'None' : 'All'}</button>
         ${T ? `<button type="button" data-s="restore" ${n ? '' : 'disabled'}>${ico('restore', 15)}<span>Restore</span></button>
                <button type="button" data-s="purge" class="danger" ${n ? '' : 'disabled'}>${ico('trash', 15)}<span>Delete for good</span></button>`
-            : `<button type="button" data-s="rotl" ${n ? '' : 'disabled'} title="Turn left">${ico('rotl', 15)}</button>
-               <button type="button" data-s="rotr" ${n ? '' : 'disabled'} title="Turn right">${ico('rotr', 15)}</button>
-               <button type="button" data-s="fav" ${n ? '' : 'disabled'} title="Favourite">${ico('heart', 15)}</button>
+            : `<button type="button" data-s="rotl" ${n ? '' : 'disabled'} title="Turn left">${ico('rotl', 15)}<span class="ph-mob">Left</span></button>
+               <button type="button" data-s="rotr" ${n ? '' : 'disabled'} title="Turn right">${ico('rotr', 15)}<span class="ph-mob">Right</span></button>
+               <button type="button" data-s="fav" ${n ? '' : 'disabled'} title="Favourite">${ico('heart', 15)}<span class="ph-mob">Fav</span></button>
                <button type="button" data-s="album" ${n ? '' : 'disabled'} title="Add to album">${ico('album', 15)}<span>Album</span></button>
                ${FILTER.startsWith('album:') ? `<button type="button" data-s="unalbum" ${n ? '' : 'disabled'}>${ico('x', 15)}<span>Take out</span></button>` : ''}
-               <button type="button" data-s="dl" ${n ? '' : 'disabled'} title="Download">${ico('dl', 15)}</button>
+               <button type="button" data-s="dl" ${n ? '' : 'disabled'} title="Download">${ico('dl', 15)}<span class="ph-mob">Save</span></button>
                <button type="button" data-s="del" class="danger" ${n ? '' : 'disabled'}>${ico('trash', 15)}<span>Delete</span></button>`}
         <button type="button" data-s="done">Done</button>`;
       const S = {
