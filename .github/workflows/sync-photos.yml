@@ -15,6 +15,7 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,7 +23,7 @@ jobs:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: sync/requirements.txt
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg
+      - run: command -v ffmpeg >/dev/null || timeout 180 bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg' || echo "ffmpeg install failed, continuing"
       - run: pip install -q -r sync/requirements.txt
       - run: python sync/sync_photos.py
         env:
