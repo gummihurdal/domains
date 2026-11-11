@@ -3131,6 +3131,17 @@ And last 'til the end of time, my love
 
     /* everything that is not in the Trash and not deleted for good */
     const visible = () => (MANIFEST ? MANIFEST.photos : []).filter(p => !isGone(p) && !deletedAt(p));
+    /* a photo that lives in an album exists only there: everywhere else (timeline, favourites, people, map) shows the loose ones.
+       While picking photos for an album, the ones already in it stay visible so they can be un-picked. */
+    let PICK = null;
+    const loose = () => visible().filter(p => { const a = albumsOf(p); return !a.length || (PICK && a.includes(PICK)); });
+    /* adding to an album moves the photo: take it out of any other album first */
+    async function moveToAlbum(ids, name){
+      const idset = new Set(ids), by = new Map();
+      (MANIFEST ? MANIFEST.photos : []).forEach(p => { if (!idset.has(idOf(p))) return; albumsOf(p).forEach(a => { if (a !== name){ if (!by.has(a)) by.set(a, []); by.get(a).push(idOf(p)); } }); });
+      for (const [a, list] of by) if (!(await edit(list, 'album_remove', a))) return false;
+      return edit(ids, 'album_add', name);
+    }
     const trashed = () => (MANIFEST ? MANIFEST.photos : []).filter(p => !isGone(p) && deletedAt(p))
       .sort((a, b) => deletedAt(b) - deletedAt(a));
     function trashNote(p){
@@ -3141,7 +3152,7 @@ And last 'til the end of time, my love
 
     function renderFavStrip(){
       if (!MANIFEST) return;
-      const favList = FILTER === 'all' && !SEARCH ? visible().filter(isFav) : [];
+      const favList = FILTER === 'all' && !SEARCH ? loose().filter(isFav) : [];
       const photosOnly = favList.filter(p => p.type !== 'stream');
       if (!favList.length){ if (favWrap){ favWrap.remove(); favWrap = null; } return; }
       if (!favWrap){
@@ -3192,14 +3203,14 @@ And last 'til the end of time, my love
         <div class="pp-albums">${names.map(n => `<label><input type="checkbox" data-n="${esc(n)}"${has(n) ? ' checked' : ''}> ${esc(n)}</label>`).join('') || '<p class="pp-note">No albums yet — make the first one.</p>'}</div>
         <div class="pp-new"><input placeholder="New album name" maxlength="60" aria-label="New album name"><button type="button">${ico('plus', 14)}Add</button></div>`, root => {
         root.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', async () => {
-          const ok = await edit(list.map(idOf), cb.checked ? 'album_add' : 'album_remove', cb.dataset.n);
-          if (!ok) cb.checked = !cb.checked; else afterAlbum();
+          const ok = cb.checked ? await moveToAlbum(list.map(idOf), cb.dataset.n) : await edit(list.map(idOf), 'album_remove', cb.dataset.n);
+          if (!ok) cb.checked = !cb.checked; else { afterAlbum(); albumPanel(list); }
         }));
         const inp = root.querySelector('.pp-new input');
         const add = async () => {
           const n = inp.value.trim().slice(0, 60);
           if (!n) return;
-          if (await edit(list.map(idOf), 'album_add', n)){ toast(`Added to “${n}”`); albumPanel(list); afterAlbum(); }
+          if (await moveToAlbum(list.map(idOf), n)){ toast(`Added to “${n}”`); albumPanel(list); afterAlbum(); }
         };
         root.querySelector('.pp-new button').addEventListener('click', add);
         inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') add(); if (e.key === 'Escape') closePanel(); });
@@ -3236,7 +3247,6 @@ And last 'til the end of time, my love
       });
     }
     /* picking photos for one album: the selection bar becomes "Add N to <album>" */
-    let PICK = null;
     function newAlbum(){
       panel(`<h4>${ico('album', 16)} New album</h4><p class="pp-note">Give it a name, then tap the photos (and videos) that belong in it. Tip: tap a month's heading to take the whole month.</p>
         <div class="pp-new"><input placeholder="Album name, e.g. Ticino summer" maxlength="60" aria-label="Album name"><button type="button">Next</button></div>`, root => {
@@ -3261,7 +3271,7 @@ And last 'til the end of time, my love
     async function finishPick(){
       const name = PICK, chosen = selected(), had = visible().filter(p => albumsOf(p).includes(name));
       const add = chosen.filter(p => !albumsOf(p).includes(name)), drop = had.filter(p => !SEL.has(idOf(p)));
-      if (add.length && !(await edit(add.map(idOf), 'album_add', name))) return;
+      if (add.length && !(await moveToAlbum(add.map(idOf), name))) return;
       if (drop.length && !(await edit(drop.map(idOf), 'album_remove', name))) return;
       PICK = null; setSelMode(false);
       toast(add.length || drop.length ? `\u201C${name}\u201D: ${add.length} added${drop.length ? `, ${drop.length} taken out` : ''}` : 'No change');
@@ -3557,11 +3567,11 @@ And last 'til the end of time, my love
       grid.innerHTML = '';
       grid.classList.toggle('ph-trash', FILTER === 'trash');
       grid.classList.remove('ph-cards', 'ph-people');
-      const vis = visible(), tr = trashed();
+      const vis = visible(), pool = loose(), tr = trashed();
       const tab = FILTER.startsWith('album:') ? 'albums' : FILTER.startsWith('person:') ? 'people' : FILTER;
       tools.querySelectorAll('[data-f]').forEach(b => b.classList.toggle('on', b.dataset.f === tab));
       document.getElementById('ph-trash-n').textContent = tr.length ? tr.length : '';
-      const nPhotos = vis.filter(p => !p.type).length, nVideos = vis.length - nPhotos;
+      const nPhotos = pool.filter(p => !p.type).length, nVideos = pool.length - nPhotos;
       document.getElementById('ph-count').textContent = SEARCH ? 'search results' : FILTER === 'trash'
         ? `${tr.length} in the Trash · kept ${PURGE_DAYS} days`
         : `${nPhotos} photo${nPhotos === 1 ? '' : 's'} · ${nVideos} video${nVideos === 1 ? '' : 's'}`;
@@ -3591,14 +3601,14 @@ And last 'til the end of time, my love
         CURRENT = [];
         renderFavStrip();
         if (FILTER === 'albums') renderAlbums(vis);
-        else if (FILTER === 'people') renderPeople(vis);
-        else renderMap(vis);
+        else if (FILTER === 'people') renderPeople(pool);
+        else renderMap(pool);
         updateSelBar(); window.scrollTo(0, y); return;
       }
       const inAlbum = FILTER.startsWith('album:') ? FILTER.slice(6) : null;
       const person = FILTER.startsWith('person:') ? (PEOPLE || []).find(pp => pp.id === FILTER.slice(7)) : null;
       if (FILTER.startsWith('person:') && !PEOPLE){ loadPeople().then(render); grid.innerHTML = '<p class="ph-empty">Loading\u2026</p>'; return; }
-      let shown = vis.filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
+      let shown = (inAlbum ? vis : pool).filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
         : inAlbum ? albumsOf(p).includes(inAlbum) : person ? person.photos.includes(idOf(p)) : true);
       if (SEARCH) shown = shown.filter(matches);
       if (inAlbum || person){
