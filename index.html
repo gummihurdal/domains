@@ -3708,8 +3708,7 @@ And last 'til the end of time, my love
       // so every new upload lands at the end of the gallery.
       const ADDED_FROM = new Date('2026-11-06T00:00:00+01:00');
       const addedAt = p => { const d = new Date(p.added || 0); return isNaN(d) ? null : d; };
-      const recent = shown.filter(p => { const a = addedAt(p); return a && a >= ADDED_FROM; })
-        .sort((a, b) => addedAt(a) - addedAt(b));
+      const recent = [];   // the separate "Newly added" section was switched off (owner 2026-11-11): new uploads sit in their month
       const isRecent = new Set(recent);
       groups.forEach(g => { g.list = g.list.filter(p => !isRecent.has(p)); });
       // lightbox order = the order on the page

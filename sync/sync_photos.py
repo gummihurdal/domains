@@ -595,7 +595,7 @@ def main():
                 pick = next(p for p in pool if p["source_id"] == new["id"])
                 new["tries"] = new.get("tries", 0) + 1
                 try:
-                    body = json.dumps({"model": "claude-haiku-5-5", "max_tokens": 200, "messages": [{"role": "user", "content": [
+                    body = json.dumps({"model": "claude-haiku-5-5", "max_tokens": 2000, "messages": [{"role": "user", "content": [
                         {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": b64(dec_file(pick["thumb"]))}},
                         {"type": "text", "text": "This is today's 'picture of the day' in a private family photo gallery of a loving couple, Gudmundur and Grace. "
                          "Write ONE short, witty, warm and funny line about the picture (max 25 words) as a caption. Tease gently, never about looks or bodies, "
