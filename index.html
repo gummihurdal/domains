@@ -3309,12 +3309,25 @@ And last 'til the end of time, my love
     const isHiddenPerson = pp => { const n = nameRec(pp); return !!(n && n.name === '#hidden'); };
     const personName = pp => { const n = nameRec(pp); return n && n.name && n.name !== '#hidden' ? n.name : ''; };
     const portraitOf = pp => pp.portrait ? 'data:image/jpeg;base64,' + pp.portrait : '';
-    const peopleIn = p => (PEOPLE || []).filter(pp => pp.photos.includes(idOf(p)) && !isHiddenPerson(pp));
+    /* face groups that carry the same name are one person: merged into a single card (names stay stored per group) */
+    const peopleList = () => {
+      const out = [], byName = new Map();
+      (PEOPLE || []).forEach(pp => {
+        const n = personName(pp).trim().toLowerCase();
+        if (!n){ out.push(pp); return; }
+        const m = byName.get(n);
+        if (!m){ const c = {...pp, ids: [pp.id], faces: [...pp.faces], photos: [...pp.photos]}; byName.set(n, c); out.push(c); return; }
+        m.ids.push(pp.id); m.faces.push(...pp.faces); m.photos = [...new Set(m.photos.concat(pp.photos))];
+        if (!m.portrait) m.portrait = pp.portrait;
+      });
+      return out;
+    };
+    const peopleIn = p => peopleList().filter(pp => pp.photos.includes(idOf(p)) && !isHiddenPerson(pp));
     function renderPeople(vis){
       grid.classList.add('ph-cards', 'ph-people');
       if (!PEOPLE){ grid.innerHTML = '<p class="ph-empty">Looking for faces…</p>'; loadPeople().then(() => { if (FILTER === 'people') render(); }); return; }
       const ids = new Set(vis.map(idOf));
-      const list = PEOPLE.filter(pp => !isHiddenPerson(pp)).map(pp => ({pp, n: pp.photos.filter(id => ids.has(id)).length})).filter(x => x.n);
+      const list = peopleList().filter(pp => !isHiddenPerson(pp)).map(pp => ({pp, n: pp.photos.filter(id => ids.has(id)).length})).filter(x => x.n);
       list.sort((a, b) => (!!personName(b.pp) - !!personName(a.pp)) || (b.n - a.n));
       const main = list.filter(x => x.n >= 2 || personName(x.pp)), once = list.filter(x => !(x.n >= 2 || personName(x.pp)));
       if (!list.length){ grid.innerHTML = '<p class="ph-empty">No faces found yet. The gallery looks for faces after each upload; it can take a few minutes.</p>'; return; }
@@ -3328,7 +3341,7 @@ And last 'til the end of time, my love
       }
     }
     async function namePerson(pp, name){
-      if (await edit(pp.id, 'person', name)){ toast(name === '#hidden' ? 'Hidden from People' : name ? `Named ${name}` : 'Name cleared'); return true; }
+      if (await edit(pp.ids || pp.id, 'person', name)){ toast(name === '#hidden' ? 'Hidden from People' : name ? `Named ${name}` : 'Name cleared'); return true; }
       return false;
     }
 
@@ -3608,7 +3621,7 @@ And last 'til the end of time, my love
         updateSelBar(); window.scrollTo(0, y); return;
       }
       const inAlbum = FILTER.startsWith('album:') ? FILTER.slice(6) : null;
-      const person = FILTER.startsWith('person:') ? (PEOPLE || []).find(pp => pp.id === FILTER.slice(7)) : null;
+      const person = FILTER.startsWith('person:') ? peopleList().find(pp => pp.id === FILTER.slice(7) || (pp.ids || []).includes(FILTER.slice(7))) : null;
       if (FILTER.startsWith('person:') && !PEOPLE){ loadPeople().then(render); grid.innerHTML = '<p class="ph-empty">Loading\u2026</p>'; return; }
       let shown = (inAlbum || person || SEARCH ? vis : pool).filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
         : inAlbum ? albumsOf(p).includes(inAlbum) : person ? person.photos.includes(idOf(p)) : true);
