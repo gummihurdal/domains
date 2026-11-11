@@ -578,6 +578,41 @@ def main():
         old_sidx = read_enc_json(os.path.join("shared", "index.enc"))
         if old_sidx != sidx: open(sidx_path, "wb").write(encrypt(json.dumps(sidx, sort_keys=True).encode()))
 
+    # ---- picture of the day: one photo per day (Zurich date), picked from every photo, albums included, with a witty line
+    # from Claude (needs the ANTHROPIC_API_KEY secret; without it the page shows the picture with no line) ----
+    try:
+        import hashlib, zoneinfo
+        today = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/Zurich")).strftime("%Y-%m-%d")
+        cur = read_enc_json("potd.enc") or {}
+        pool = sorted([p for p in photos if not p.get("type") and not p.get("deleted") and p.get("thumb")],
+                      key=lambda p: p["source_id"])
+        akey = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        if pool:
+            same = cur.get("date") == today and cur.get("id") in {p["source_id"] for p in pool}
+            new = dict(cur) if same else {"date": today, "tries": 0,
+                   "id": pool[int(hashlib.sha256(today.encode()).hexdigest(), 16) % len(pool)]["source_id"]}
+            if not new.get("caption") and akey and new.get("tries", 0) < 3:
+                pick = next(p for p in pool if p["source_id"] == new["id"])
+                new["tries"] = new.get("tries", 0) + 1
+                try:
+                    body = json.dumps({"model": "claude-haiku-5-5", "max_tokens": 200, "messages": [{"role": "user", "content": [
+                        {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": b64(dec_file(pick["thumb"]))}},
+                        {"type": "text", "text": "This is today's 'picture of the day' in a private family photo gallery of a loving couple, Gudmundur and Grace. "
+                         "Write ONE short, witty, warm and funny line about the picture (max 25 words) as a caption. Tease gently, never about looks or bodies, "
+                         "no hashtags, no emojis, don't guess names. Reply with the caption only."}]}]}).encode()
+                    rq = urllib.request.Request("https://api.anthropic.com/v1/messages", data=body, headers={
+                        "x-api-key": akey, "anthropic-version": "2023-06-01", "content-type": "application/json"})
+                    with urllib.request.urlopen(rq, timeout=90) as r:
+                        txt = "".join(c.get("text", "") for c in json.load(r).get("content", [])).strip().strip('"')
+                    if txt: new["caption"] = txt[:300]
+                except Exception as e:
+                    print("potd caption failed:", type(e).__name__, e)
+            if new != cur:
+                open(os.path.join(PHOTOS, "potd.enc"), "wb").write(encrypt(json.dumps(new, ensure_ascii=False).encode()))
+                print("picture of the day:", new["id"], "captioned" if new.get("caption") else "no caption")
+    except Exception as e:
+        print("potd skipped:", type(e).__name__, e)
+
     out = {"v": 2, "salt": b64(salt), "iters": PBKDF2_ITERS, "pcloud": code,
            "check": stable(old_m.get("check"), b"grace-ok"),
            "photos": sorted(photos, key=when), "removed": removed}

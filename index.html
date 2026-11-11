@@ -1134,6 +1134,7 @@
   }
 
   .photo-strip-head { color: var(--accent); }
+  .potd-cap { margin: 0.2rem 0 1rem; font-family: var(--serif, Georgia, serif); font-style: italic; font-size: 1.05rem; line-height: 1.45; color: var(--ink); }
 
   .photo-strip {
     display: flex;
@@ -3110,7 +3111,16 @@ And last 'til the end of time, my love
 
     /* ---------- sections ---------- */
     let MANIFEST = null, KEY = null;
-    let favWrap = null, otdWrap = null;
+    let favWrap = null, otdWrap = null, potdWrap = null, POTD = null;
+    /* picture of the day: the sync picks one photo a day (potd.enc: date, id, witty caption) */
+    async function loadPotd(){
+      try{
+        const r = await fetch('photos/potd.enc', {cache: 'no-cache'});
+        if (!r.ok) return;
+        POTD = JSON.parse(new TextDecoder().decode(await decrypt(KEY, await r.arrayBuffer())));
+        if (FILTER === 'all' && !SEARCH) render();
+      }catch(e){}
+    }
     let FILTER = 'all', SELMODE = false;
     const SEL = new Set();
 
@@ -3539,7 +3549,7 @@ And last 'til the end of time, my love
       unlockRow.hidden = true; note.hidden = true;
       setupUpload(m, key);
       await Promise.all([fetchAllComments(), loadEdits()]);
-      loadPeople();
+      loadPeople(); loadPotd();
       migrateFavs();
       render();
       if (/^#slideshow/.test(location.hash) && !lb.classList.contains('open')) startShow(CURRENT, 0, false);
@@ -3578,6 +3588,17 @@ And last 'til the end of time, my love
       buildTools();
       const y = window.scrollY;
       if (otdWrap){ otdWrap.remove(); otdWrap = null; }
+      if (potdWrap){ potdWrap.remove(); potdWrap = null; }
+      if (POTD && FILTER === 'all' && !SEARCH){
+        const pp = visible().find(p => idOf(p) === POTD.id);
+        if (pp){
+          const sec = stripSection('Picture of the day');
+          potdWrap = sec.wrap; potdWrap.classList.add('potd');
+          grid.parentNode.insertBefore(potdWrap, grid);
+          fillStrip(sec.strip, [pp], [pp]);
+          if (POTD.caption){ const c = document.createElement('p'); c.className = 'potd-cap'; c.textContent = POTD.caption; potdWrap.appendChild(c); }
+        }
+      }
       if (MAPI && FILTER !== 'map'){ MAPI.remove(); MAPI = null; }
       grid.innerHTML = '';
       grid.classList.toggle('ph-trash', FILTER === 'trash');

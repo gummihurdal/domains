@@ -27,6 +27,7 @@ jobs:
       - run: python sync/sync_photos.py
         env:
           PHOTOS_PASSWORD: ${{ secrets.PHOTOS_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # optional: daily picture-of-the-day caption
           PHOTOS_UPLOAD_CODE: ${{ secrets.PHOTOS_UPLOAD_CODE }}   # code of the pCloud upload link into the same folder
       - name: Commit changes
         run: |
