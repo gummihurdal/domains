@@ -1134,7 +1134,7 @@
   }
 
   .photo-strip-head { color: var(--accent); }
-  .potd-cap { margin: 0.2rem 0 1rem; font-family: var(--serif, Georgia, serif); font-style: italic; font-size: 1.3rem; line-height: 1.45; color: var(--ink); max-width: 46rem; }
+  .potd-cap { margin: 0.2rem 0 1rem; font-family: var(--serif, Georgia, serif); font-style: italic; font-size: clamp(1.5rem, 4.2vw, 2.2rem); line-height: 1.4; color: var(--ink); max-width: 56rem; text-align: center; margin: 0.8rem auto 1.6rem; }
 
   .photo-strip {
     display: flex;
@@ -1147,9 +1147,12 @@
   .photo-strip::-webkit-scrollbar { display: none; }
 
   .photo-strip figure { flex: 0 0 11rem; margin: 0; }
-  .potd .photo-strip { overflow: visible; }
-  .potd .photo-strip figure { flex: 0 0 min(100%, 46rem); }
-  .potd .photo-strip figure img { width: 100%; height: auto; display: block; }
+  .potd { text-align: center; margin-bottom: 1.5rem; }
+  .potd .photo-strip-head { justify-content: center; text-align: center; }
+  .potd .photo-strip { overflow: visible; justify-content: center; }
+  .potd .photo-strip figure { flex: 0 0 min(100%, 64rem); margin: 0 auto; }
+  .potd .photo-strip figure img { width: 100%; height: auto; max-height: 88vh; object-fit: contain; display: block; margin: 0 auto; }
+  .potd .photo-strip figcaption { text-align: center; }
 
   .photo-strip img { display: block; width: 100%; height: 8rem; object-fit: cover; outline: 1px solid var(--line); }
 
