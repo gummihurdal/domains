@@ -2492,11 +2492,11 @@ And last 'til the end of time, my love
       const m = new Map(), names = new Map();
       rows.slice().sort((a, b) => (a.ts - b.ts) || (a.sig < b.sig ? -1 : 1)).forEach(e => {
         if (e.action === 'person'){ names.set(e.photo_id, {name: e.plain || '', ts: e.ts}); return; }
-        const s = m.get(e.photo_id) || {deleted: null, purged: false, rot: 0, caption: null, fav: null, albums: new Set(), shares: new Map()};
+        const s = m.get(e.photo_id) || {deleted: null, purged: false, rot: 0, caption: null, fav: null, albums: new Set(), gone: new Set(), shares: new Map()};
         m.set(e.photo_id, s);
         if (s.purged) return;
-        if (e.action === 'album_add'){ if (e.plain) s.albums.add(e.plain); return; }
-        if (e.action === 'album_remove'){ s.albums.delete(e.plain); return; }
+        if (e.action === 'album_add'){ if (e.plain){ s.albums.add(e.plain); s.gone.delete(e.plain); } return; }
+        if (e.action === 'album_remove'){ s.albums.delete(e.plain); s.gone.add(e.plain); return; }
         if (e.action === 'share'){ try{ const v = JSON.parse(e.plain); s.shares.set(v.sid, {k: v.k, ts: e.ts}); }catch(x){} return; }
         if (e.action === 'unshare'){ s.shares.delete(e.plain); return; }
         if (e.action === 'delete') s.deleted = e.ts;
@@ -2561,7 +2561,8 @@ And last 'til the end of time, my love
     const capOf = p => { const s = stOf(p); return s && s.caption != null ? s.caption : (p.caption || ''); };
     const pendingRot = p => { if (p.type) return 0; const s = stOf(p); return s ? (((s.rot - (p.rot || 0)) % 360) + 360) % 360 : 0; };
     const dimsOf = p => pendingRot(p) % 180 ? [p.h, p.w] : [p.w, p.h];
-    const albumsOf = p => { const s = stOf(p); return s ? [...s.albums] : []; };
+    /* albums = the one the sync put it in (p.album0, decrypted at unlock) plus album edits; an album_remove wins over album0 */
+    const albumsOf = p => { const s = stOf(p), a = new Set(s ? s.albums : []); if (p._a0 && !(s && s.gone.has(p._a0))) a.add(p._a0); return [...a]; };
     const sharesOf = p => { const s = stOf(p); return s ? [...s.shares.entries()] : []; };
 
     /* a photo, turned by any rotation the sync has not applied yet (canvas, so it is exact) */
@@ -3521,6 +3522,7 @@ And last 'til the end of time, my love
 
     async function showGallery(m, key){
       MANIFEST = m; KEY = key;
+      await Promise.all(m.photos.filter(p => p.album0).map(async p => { try{ p._a0 = new TextDecoder().decode(await decrypt(key, b64d(p.album0).buffer)); }catch(e){} }));
       unlockRow.hidden = true; note.hidden = true;
       setupUpload(m, key);
       await Promise.all([fetchAllComments(), loadEdits()]);

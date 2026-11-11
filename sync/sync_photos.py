@@ -27,6 +27,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PHOTOS = os.path.join(ROOT, "photos")
 MANIFEST = os.path.join(PHOTOS, "manifest.json")
 SOURCE = os.path.join(PHOTOS, "source.txt")
+SOURCES = os.path.join(PHOTOS, "sources.json")
 MAX_W, QUALITY = 1600, 70
 PBKDF2_ITERS = 250_000
 PURGE_DAYS = 30
@@ -187,6 +188,19 @@ def main():
             else:
                 yield f
     files = list(walk(md.get("contents", []))) if md.get("isfolder") else [md]
+    for f in files: f["_code"] = code
+    # extra sources: photos/sources.json = [{"code": "<pCloud public link code>", "album": "<album name>"}]
+    # everything in such a folder is synced like the main folder and put in that album ("album0" in the manifest)
+    for src in (json.load(open(SOURCES)) if os.path.exists(SOURCES) else []):
+        xc = re.search(r"code=([A-Za-z0-9]+)", src["code"]); xc = xc.group(1) if xc else src["code"]
+        xm = api(f"https://eapi.pcloud.com/showpublink?code={xc}")
+        if xm.get("result") != 0: sys.exit(f"pCloud error ({src.get('album')}): {xm}")
+        xmd = xm["metadata"]
+        xfiles = list(walk(xmd.get("contents", []))) if xmd.get("isfolder") else [xmd]
+        for f in xfiles: f["_code"] = xc; f["_album"] = src.get("album", "")
+        files += xfiles
+        print(f"extra source {src.get('album')!r}: {len(xfiles)} files")
+    code_of = {str(f["fileid"]): f["_code"] for f in files}
     names = {f["name"] for f in files if not f.get("isfolder")}
     def is_redundant_dupe(f):
         # "IMG (2).jpg" is redundant only while "IMG.jpg" still exists
@@ -212,7 +226,7 @@ def main():
     images = [f for f in usable if f.get("category") == 1]
     videos = [f for f in usable if f.get("category") == 2
               and f.get("size", 0) <= 300 * 1024 * 1024]
-    big_videos = [f for f in usable if f.get("category") == 2
+    big_videos = [f for f in usable if f.get("category") == 2 and not f.get("_album")
                   and f.get("size", 0) > 300 * 1024 * 1024]   # streamed from pCloud
     print(f"{len(images)} images, {len(videos)} transcodable videos, {len(big_videos)} streamed videos")
 
@@ -278,7 +292,7 @@ def main():
             print("carried over (same content):", f["name"])
             continue
         print("processing", f["name"])
-        url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
+        url = f"https://eapi.pcloud.com/getpubzip?code={f['_code']}&fileids={fid}"
         try:
             with urllib.request.urlopen(url, timeout=300) as r:
                 z = zipfile.ZipFile(io.BytesIO(r.read()))
@@ -308,7 +322,7 @@ def main():
         if fid in old and old[fid].get("stamp") == stamp and os.path.exists(os.path.join(PHOTOS, old[fid]["file"])):
             photos.append(old[fid]); continue
         print("video:", f["name"], f.get("size",0)//(1024*1024), "MB")
-        url = f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}"
+        url = f"https://eapi.pcloud.com/getpubzip?code={f['_code']}&fileids={fid}"
         with tempfile.TemporaryDirectory() as td:
             zp = os.path.join(td, "v.zip")
             with urllib.request.urlopen(url, timeout=1800) as r, open(zp, "wb") as out:
@@ -402,6 +416,11 @@ def main():
             a = uploaded.get(str(p.get("fid") or p.get("source_id")))
             if a: p["added"] = a
 
+    album_of = {str(f["fileid"]): f["_album"] for f in files if f.get("_album")}
+    for p in photos:
+        a = album_of.get(str(p.get("fid") or p["source_id"]))
+        if a: p["album0"] = stable(p.get("album0"), a.encode())
+
     # ---- edits from the page: trash, purge, rotate, caption, favourite ----
     ed = load_edits(password, salt)
     if ed is not None:
@@ -477,7 +496,7 @@ def main():
             continue
         fid = str(p.get("fid") or p["source_id"])
         try:
-            with urllib.request.urlopen(f"https://eapi.pcloud.com/getpubzip?code={code}&fileids={fid}", timeout=300) as r:
+            with urllib.request.urlopen(f"https://eapi.pcloud.com/getpubzip?code={code_of.get(fid, code)}&fileids={fid}", timeout=300) as r:
                 z = zipfile.ZipFile(io.BytesIO(r.read()))
             g = gps_of(Image.open(io.BytesIO(z.read(z.namelist()[0]))))
             if g: p["geo"] = b64(encrypt(f"{g[0]},{g[1]}".encode())); n_geo += 1
