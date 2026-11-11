@@ -3608,7 +3608,7 @@ And last 'til the end of time, my love
       const inAlbum = FILTER.startsWith('album:') ? FILTER.slice(6) : null;
       const person = FILTER.startsWith('person:') ? (PEOPLE || []).find(pp => pp.id === FILTER.slice(7)) : null;
       if (FILTER.startsWith('person:') && !PEOPLE){ loadPeople().then(render); grid.innerHTML = '<p class="ph-empty">Loading\u2026</p>'; return; }
-      let shown = (inAlbum ? vis : pool).filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
+      let shown = (inAlbum || SEARCH ? vis : pool).filter(p => FILTER === 'photos' ? !p.type : FILTER === 'videos' ? !!p.type : FILTER === 'favs' ? isFav(p)
         : inAlbum ? albumsOf(p).includes(inAlbum) : person ? person.photos.includes(idOf(p)) : true);
       if (SEARCH) shown = shown.filter(matches);
       if (inAlbum || person){
