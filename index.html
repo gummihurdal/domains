@@ -1148,7 +1148,8 @@
 
   .photo-strip figure { flex: 0 0 11rem; margin: 0; }
   .potd { text-align: center; margin-bottom: 1.5rem; }
-  .potd .photo-strip-head { justify-content: center; text-align: center; }
+  .potd .photo-strip-head { justify-content: center; text-align: center; font-size: clamp(1.1rem, 3.2vw, 1.7rem); letter-spacing: 0.22em; gap: 1.2rem; margin: 1.6rem 0 1.2rem; }
+  .potd .photo-strip-head::before { content: ''; flex: 1; height: 1px; background: var(--line); }
   .potd .photo-strip { overflow: visible; justify-content: center; }
   .potd .photo-strip figure { flex: 0 0 min(100%, 64rem); margin: 0 auto; }
   .potd .photo-strip figure img { width: 100%; height: auto; max-height: 88vh; object-fit: contain; display: block; margin: 0 auto; }
